@@ -9,38 +9,6 @@
 
 #include "memory.h"
 
-static Mesh meshCreate(char *meshData)
-{
-	int numberOfVertices = (int)*meshData;
-	void *data = meshData + sizeof(int);
-	
-	unsigned int vao;
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
-
-	unsigned int vbo;
-	glGenBuffers(1, &vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * numberOfVertices, data, GL_STATIC_DRAW);
-
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)(sizeof(float) * 3));
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)(sizeof(float) * 5));
-	
-	Mesh result;
-	result.numberOfVertices = numberOfVertices;
-	result.numberOfIndices = 0;
-	result.vertexArray = vao;
-	result.vertexBuffer = vbo;
-	result.indexBuffer = 0;
-	
-	return result;
-}
-
 static unsigned int shaderCreate(char *shaderCode, unsigned int shaderType, const char *shaderString)
 {
 	unsigned int shader = glCreateShader(shaderType);
@@ -136,7 +104,6 @@ void rendererInitialize(Renderer *renderer)
 	renderer->textShader = shaderProgramCreate("shaders/text.vert", "shaders/text.frag");
 
 	renderer->projection = glm::perspective(glm::radians(90.0f), 16.0f / 9.0f, 0.01f, 1000.0f);
-	renderer->boxes = meshCreate((char *)&box);
 
 	renderer->mod.position = glm::vec3(0.0f, 0.0f, -3.0f);
 	renderer->cam.focus = &renderer->mod;
@@ -144,6 +111,9 @@ void rendererInitialize(Renderer *renderer)
 
 	renderer->cam.yaw = 0.0f;
 	renderer->cam.pitch = 0.0f;
+
+	renderer->meshStorage = meshStorageCreate(1024 * 1024);
+	renderer->boxes = meshCreate(&renderer->meshStorage, (Vertex *)box, 36);
 }
 
 void cubeRender(Renderer *renderer)
@@ -152,14 +122,13 @@ void cubeRender(Renderer *renderer)
 	glUniform3fv(glGetUniformLocation(renderer->primaryShader, "camPos"), 1, &renderer->cam.position[0]);
 
 	glm::mat4 model = glm::translate(glm::mat4(1.0f), renderer->mod.position);
-	glm::mat4 view = matrix_view(&renderer->cam);
+	glm::mat4 view = matrixView(&renderer->cam);
 
 	glUniformMatrix4fv(glGetUniformLocation(renderer->primaryShader, "model"), 1, GL_FALSE, &model[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(renderer->primaryShader, "view"), 1, GL_FALSE, &view[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(renderer->primaryShader, "projection"), 1, GL_FALSE, &renderer->projection[0][0]);
 
-	glBindVertexArray(renderer->boxes.vertexArray);
-	glDrawArrays(GL_TRIANGLES, 0, renderer->boxes.numberOfVertices);
+	meshRender(&renderer->meshStorage, &renderer->boxes);
 }
 
 void modelsRender(Model *models, int length)

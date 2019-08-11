@@ -5,6 +5,7 @@
     <ClInclude Include="code\game.h" />
     <ClInclude Include="code\font.h" />
     <ClInclude Include="code\memory.h" />
+    <ClInclude Include="code\mesh.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="code\renderer.cpp" />
@@ -12,5 +13,6 @@
     <ClCompile Include="code\game.cpp" />
     <ClCompile Include="code\font.cpp" />
     <ClCompile Include="code\memory.cpp" />
+    <ClCompile Include="code\mesh.cpp" />
   </ItemGroup>
 </Project>

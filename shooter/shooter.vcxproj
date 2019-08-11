@@ -141,6 +141,7 @@
     <ClInclude Include="code\font.h" />
     <ClInclude Include="code\game.h" />
     <ClInclude Include="code\memory.h" />
+    <ClInclude Include="code\mesh.h" />
     <ClInclude Include="code\renderer.h" />
   </ItemGroup>
   <ItemGroup>
@@ -148,6 +149,7 @@
     <ClCompile Include="code\game.cpp" />
     <ClCompile Include="code\main.cpp" />
     <ClCompile Include="code\memory.cpp" />
+    <ClCompile Include="code\mesh.cpp" />
     <ClCompile Include="code\renderer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
