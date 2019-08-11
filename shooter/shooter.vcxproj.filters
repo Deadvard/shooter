@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="code\renderer.h" />
+    <ClInclude Include="code\game.h" />
+    <ClInclude Include="code\font.h" />
+    <ClInclude Include="code\memory.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="code\renderer.cpp" />
+    <ClCompile Include="code\main.cpp" />
+    <ClCompile Include="code\game.cpp" />
+    <ClCompile Include="code\font.cpp" />
+    <ClCompile Include="code\memory.cpp" />
+  </ItemGroup>
+</Project>

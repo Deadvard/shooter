@@ -1,0 +1,151 @@
+#include "renderer.h"
+#include <stdio.h>
+#include <stdlib.h>
+
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
+
+#include <glad/glad.h>
+
+#include "memory.h"
+
+static unsigned int shaderCreate(char *shader_code, unsigned int shader_type, const char *shader_string)
+{
+	unsigned int shader = glCreateShader(shader_type);
+	glShaderSource(shader, 1, &shader_code, 0);
+	glCompileShader(shader);
+
+	int success;
+	char info_log[512];
+	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+	if (!success)
+	{
+		glGetShaderInfoLog(shader, 512, 0, info_log);
+
+		printf(
+			"ERROR::SHADER_COMPILATION_ERROR of type: %s\n%s\n\n",
+			shader_string, info_log);
+	}
+	return shader;
+}
+
+unsigned int shaderProgramCreate(const char *vertex_path, const char *fragment_path)
+{
+	char *vertexCode = readEntireFile(vertex_path);
+	char *fragmentCode = readEntireFile(fragment_path);
+
+	unsigned int vertex = shaderCreate(vertexCode, GL_VERTEX_SHADER, "VERTEX");
+	unsigned int fragment = shaderCreate(fragmentCode, GL_FRAGMENT_SHADER, "FRAGMENT");
+
+	unsigned int shader = glCreateProgram();
+	glAttachShader(shader, vertex);
+	glAttachShader(shader, fragment);
+	glLinkProgram(shader);
+
+	int success;
+	char info_log[512];
+	glGetProgramiv(shader, GL_LINK_STATUS, &success);
+	if (!success)
+	{
+		printf(
+			"ERROR::PROGRAM_LINKING_ERROR of type: PROGRAM\n%s\n\n",
+			info_log);
+	}
+
+	glDeleteShader(vertex);
+	glDeleteShader(fragment);
+
+	free(vertexCode);
+	free(fragmentCode);
+
+	return shader;
+}
+
+unsigned imageTextureCreate(const char *path)
+{
+	unsigned int texture;
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+	stbi_set_flip_vertically_on_load(true);
+
+	int width, height, num_components;
+
+	char *file_data = readEntireFile(path);
+
+	unsigned char* data = stbi_load(path, &width, &height, &num_components, 4);
+	if (data)
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width,
+			height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		stbi_image_free(data);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	}
+	else
+	{
+		printf("Could not load texture from path: %s\n", path);
+	}
+
+	return texture;
+}
+
+unsigned textTextureCreate(const char *path, const char *text)
+{
+	return 0;
+}
+
+void rendererInitialize(Renderer *renderer)
+{
+	
+	renderer->primaryShader = shaderProgramCreate("shaders/primary_shader.vert", "shaders/primary_shader.frag");
+	renderer->textShader = shaderProgramCreate("shaders/text.vert", "shaders/text.frag");
+
+	renderer->projection = glm::perspective(glm::radians(90.0f), 16.0f / 9.0f, 0.01f, 1000.0f);
+
+	glGenVertexArrays(1, &renderer->boxesVAO);
+	glBindVertexArray(renderer->boxesVAO);
+
+	glGenBuffers(1, &renderer->boxesVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, renderer->boxesVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(box), box, GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)0);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)(sizeof(float) * 3));
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)(sizeof(float) * 5));
+
+	renderer->mod.position = glm::vec3(0.0f, 0.0f, -3.0f);
+	renderer->cam.focus = &renderer->mod;
+	renderer->cam.position = glm::vec3(0.0f);
+
+	renderer->cam.yaw = 0.0f;
+	renderer->cam.pitch = 0.0f;
+}
+
+void cubeRender(Renderer *renderer)
+{
+	glUseProgram(renderer->primaryShader);
+	glUniform3fv(glGetUniformLocation(renderer->primaryShader, "camPos"), 1, &renderer->cam.position[0]);
+
+	glm::mat4 model = glm::translate(glm::mat4(1.0f), renderer->mod.position);
+	glm::mat4 view = matrix_view(&renderer->cam);
+
+	glUniformMatrix4fv(glGetUniformLocation(renderer->primaryShader, "model"), 1, GL_FALSE, &model[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(renderer->primaryShader, "view"), 1, GL_FALSE, &view[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(renderer->primaryShader, "projection"), 1, GL_FALSE, &renderer->projection[0][0]);
+
+	glBindVertexArray(renderer->boxesVAO);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+}
+
+void modelsRender(Model *models, int length)
+{
+
+}
