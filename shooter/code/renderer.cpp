@@ -9,30 +9,62 @@
 
 #include "memory.h"
 
-static unsigned int shaderCreate(char *shader_code, unsigned int shader_type, const char *shader_string)
+static Mesh meshCreate(char *meshData)
 {
-	unsigned int shader = glCreateShader(shader_type);
-	glShaderSource(shader, 1, &shader_code, 0);
+	int numberOfVertices = (int)*meshData;
+	void *data = meshData + sizeof(int);
+	
+	unsigned int vao;
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+
+	unsigned int vbo;
+	glGenBuffers(1, &vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * numberOfVertices, data, GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)0);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)(sizeof(float) * 3));
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)(sizeof(float) * 5));
+	
+	Mesh result;
+	result.numberOfVertices = numberOfVertices;
+	result.numberOfIndices = 0;
+	result.vertexArray = vao;
+	result.vertexBuffer = vbo;
+	result.indexBuffer = 0;
+	
+	return result;
+}
+
+static unsigned int shaderCreate(char *shaderCode, unsigned int shaderType, const char *shaderString)
+{
+	unsigned int shader = glCreateShader(shaderType);
+	glShaderSource(shader, 1, &shaderCode, 0);
 	glCompileShader(shader);
 
 	int success;
-	char info_log[512];
+	char infoLog[512];
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
 	if (!success)
 	{
-		glGetShaderInfoLog(shader, 512, 0, info_log);
+		glGetShaderInfoLog(shader, 512, 0, infoLog);
 
 		printf(
 			"ERROR::SHADER_COMPILATION_ERROR of type: %s\n%s\n\n",
-			shader_string, info_log);
+			shaderString, infoLog);
 	}
 	return shader;
 }
 
-unsigned int shaderProgramCreate(const char *vertex_path, const char *fragment_path)
+unsigned int shaderProgramCreate(const char *vertexPath, const char *fragmentPath)
 {
-	char *vertexCode = readEntireFile(vertex_path);
-	char *fragmentCode = readEntireFile(fragment_path);
+	char *vertexCode = readEntireFile(vertexPath);
+	char *fragmentCode = readEntireFile(fragmentPath);
 
 	unsigned int vertex = shaderCreate(vertexCode, GL_VERTEX_SHADER, "VERTEX");
 	unsigned int fragment = shaderCreate(fragmentCode, GL_FRAGMENT_SHADER, "FRAGMENT");
@@ -99,27 +131,12 @@ unsigned textTextureCreate(const char *path, const char *text)
 }
 
 void rendererInitialize(Renderer *renderer)
-{
-	
+{	
 	renderer->primaryShader = shaderProgramCreate("shaders/primary_shader.vert", "shaders/primary_shader.frag");
 	renderer->textShader = shaderProgramCreate("shaders/text.vert", "shaders/text.frag");
 
 	renderer->projection = glm::perspective(glm::radians(90.0f), 16.0f / 9.0f, 0.01f, 1000.0f);
-
-	glGenVertexArrays(1, &renderer->boxesVAO);
-	glBindVertexArray(renderer->boxesVAO);
-
-	glGenBuffers(1, &renderer->boxesVBO);
-	glBindBuffer(GL_ARRAY_BUFFER, renderer->boxesVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(box), box, GL_STATIC_DRAW);
-
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)(sizeof(float) * 3));
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)(sizeof(float) * 5));
+	renderer->boxes = meshCreate((char *)&box);
 
 	renderer->mod.position = glm::vec3(0.0f, 0.0f, -3.0f);
 	renderer->cam.focus = &renderer->mod;
@@ -141,8 +158,8 @@ void cubeRender(Renderer *renderer)
 	glUniformMatrix4fv(glGetUniformLocation(renderer->primaryShader, "view"), 1, GL_FALSE, &view[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(renderer->primaryShader, "projection"), 1, GL_FALSE, &renderer->projection[0][0]);
 
-	glBindVertexArray(renderer->boxesVAO);
-	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glBindVertexArray(renderer->boxes.vertexArray);
+	glDrawArrays(GL_TRIANGLES, 0, renderer->boxes.numberOfVertices);
 }
 
 void modelsRender(Model *models, int length)
