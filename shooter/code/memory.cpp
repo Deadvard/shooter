@@ -26,7 +26,7 @@ static void memoryBytesSet(void *destination, char source, int length)
 
 char * readEntireFile(const char *path)
 {
-	FILE *file = fopen(path, "r");
+	FILE *file = fopen(path, "rb");
 	fseek(file, 0, SEEK_END);
 	int size = ftell(file);
 	rewind(file);

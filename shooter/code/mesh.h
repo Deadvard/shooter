@@ -12,8 +12,11 @@ struct Vertex
 
 struct Mesh
 {
-	int first;
-	int size;
+	int firstVertex;
+	int sizeVertex;
+
+	int firstIndex;
+	int sizeIndex;
 };
 
 struct MeshStorage
@@ -25,10 +28,10 @@ struct MeshStorage
 	unsigned int vertexArray;
 };
 
-Vertex * verticesFromBuffer(char *data, int *size);
+Mesh meshFromBuffer(MeshStorage *storage, char *data);
 
 MeshStorage meshStorageCreate(int size);
-Mesh meshCreate(MeshStorage *storage, Vertex *vertices, int size);
+Mesh meshCreate(MeshStorage *storage, Vertex *vertices, int sizeVertices, unsigned int *indices, int sizeIndices);
 void meshRender(MeshStorage *storage, Mesh *mesh);
 
 #endif

@@ -94,7 +94,6 @@ void run()
 			}
 			}
 		}
-		//glDisable(GL_DEPTH_TEST);
 		glClearColor(135.0f / 255.0f, 206.0f / 255.0f, 235.0f / 255.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -116,7 +115,7 @@ void run()
 		forward.y = glm::sin(renderer.cam.pitch);
 		forward.z = glm::sin(renderer.cam.yaw) * glm::cos(renderer.cam.pitch);
 		
-		renderer.cam.position = renderer.cam.focus->position + forward * 2.0f;
+		renderer.cam.position = renderer.cam.focus->position + forward * 4.0f;
 
 		cubeRender(&renderer);
 		

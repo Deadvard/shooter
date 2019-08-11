@@ -114,7 +114,10 @@ void rendererInitialize(Renderer *renderer)
 	renderer->cam.pitch = 0.0f;
 
 	renderer->meshStorage = meshStorageCreate(1024 * 1024);
-	renderer->meshes[renderer->cube.meshIndex] = meshCreate(&renderer->meshStorage, (Vertex *)box, 36);
+
+	char *data = readEntireFile("result.bin");
+	renderer->meshes[renderer->cube.meshIndex] = meshFromBuffer(&renderer->meshStorage, data);
+	free(data);
 }
 
 void cubeRender(Renderer *renderer)
