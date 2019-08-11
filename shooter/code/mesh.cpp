@@ -3,6 +3,13 @@
 
 #include <stdio.h>
 
+Vertex * verticesFromBuffer(char *data, int *size)
+{
+	*size = (int)*data;
+	Vertex *result = (Vertex *)(data + (*size) * sizeof(int));
+	return result;
+}
+
 MeshStorage meshStorageCreate(int size)
 {
 	unsigned int vao;

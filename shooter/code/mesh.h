@@ -25,6 +25,8 @@ struct MeshStorage
 	unsigned int vertexArray;
 };
 
+Vertex * verticesFromBuffer(char *data, int *size);
+
 MeshStorage meshStorageCreate(int size);
 Mesh meshCreate(MeshStorage *storage, Vertex *vertices, int size);
 void meshRender(MeshStorage *storage, Mesh *mesh);

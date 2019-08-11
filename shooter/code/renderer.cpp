@@ -105,15 +105,16 @@ void rendererInitialize(Renderer *renderer)
 
 	renderer->projection = glm::perspective(glm::radians(90.0f), 16.0f / 9.0f, 0.01f, 1000.0f);
 
-	renderer->mod.position = glm::vec3(0.0f, 0.0f, -3.0f);
-	renderer->cam.focus = &renderer->mod;
+	renderer->cube.meshIndex = 0;
+	renderer->cube.position = glm::vec3(0.0f, 0.0f, -3.0f);
+	renderer->cam.focus = &renderer->cube;
 	renderer->cam.position = glm::vec3(0.0f);
 
 	renderer->cam.yaw = 0.0f;
 	renderer->cam.pitch = 0.0f;
 
 	renderer->meshStorage = meshStorageCreate(1024 * 1024);
-	renderer->boxes = meshCreate(&renderer->meshStorage, (Vertex *)box, 36);
+	renderer->meshes[renderer->cube.meshIndex] = meshCreate(&renderer->meshStorage, (Vertex *)box, 36);
 }
 
 void cubeRender(Renderer *renderer)
@@ -121,14 +122,14 @@ void cubeRender(Renderer *renderer)
 	glUseProgram(renderer->primaryShader);
 	glUniform3fv(glGetUniformLocation(renderer->primaryShader, "camPos"), 1, &renderer->cam.position[0]);
 
-	glm::mat4 model = glm::translate(glm::mat4(1.0f), renderer->mod.position);
+	glm::mat4 model = glm::translate(glm::mat4(1.0f), renderer->cube.position);
 	glm::mat4 view = matrixView(&renderer->cam);
 
 	glUniformMatrix4fv(glGetUniformLocation(renderer->primaryShader, "model"), 1, GL_FALSE, &model[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(renderer->primaryShader, "view"), 1, GL_FALSE, &view[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(renderer->primaryShader, "projection"), 1, GL_FALSE, &renderer->projection[0][0]);
 
-	meshRender(&renderer->meshStorage, &renderer->boxes);
+	meshRender(&renderer->meshStorage, &renderer->meshes[renderer->cube.meshIndex]);
 }
 
 void modelsRender(Model *models, int length)

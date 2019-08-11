@@ -55,11 +55,7 @@ struct Model
 {
 	glm::vec3 position;
 	glm::quat rotation;
-
-	glm::quat jointRotation[32];
-	unsigned int jointIndex[32];
-
-	unsigned int modelIndex;
+	unsigned int meshIndex;
 };
 
 struct Camera
@@ -79,12 +75,12 @@ struct Renderer
 
 	glm::mat4 projection;
 
-	Mesh boxes;
+	Mesh meshes[128];
 
 	MeshStorage meshStorage;
 
 	Camera cam;
-	Model mod;
+	Model cube;
 };
 
 void rendererInitialize(Renderer *renderer);
