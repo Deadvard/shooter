@@ -98,6 +98,20 @@ unsigned textTextureCreate(const char *path, const char *text)
 	return 0;
 }
 
+void toonTextureCreate(Lighting* lighting)
+{
+	glGenTextures(1, &lighting->toonTexture); //Generate texture
+	glBindTexture(GL_TEXTURE_1D, lighting->toonTexture); //Bind texture, a 1D texture
+	glTexStorage1D(GL_TEXTURE_1D, 1, GL_RGB8, sizeof(lighting->toonTexture) / 4);
+	glTexSubImage1D(GL_TEXTURE_1D, 0,
+		0, sizeof(toonTextureData) / 4,
+		GL_RGBA, GL_UNSIGNED_BYTE,
+		toonTextureData); //Pass the data
+	glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); //Conditions
+}
+
 void rendererInitialize(Renderer *renderer)
 {	
 	renderer->primaryShader = shaderProgramCreate("shaders/primary_shader.vert", "shaders/primary_shader.frag");
@@ -118,12 +132,18 @@ void rendererInitialize(Renderer *renderer)
 	char *data = readEntireFile("result.bin");
 	renderer->meshes[renderer->cube.meshIndex] = meshFromBuffer(&renderer->meshStorage, data);
 	free(data);
+
+	toonTextureCreate(&renderer->lighting);
 }
 
 void cubeRender(Renderer *renderer)
 {
 	glUseProgram(renderer->primaryShader);
 	glUniform3fv(glGetUniformLocation(renderer->primaryShader, "camPos"), 1, &renderer->cam.position[0]);
+
+	glUniform1i(glGetUniformLocation(renderer->primaryShader, "toonTexture"), 0);
+
+	glBindTexture(GL_TEXTURE_1D, renderer->lighting.toonTexture);
 
 	glm::mat4 model = glm::translate(glm::mat4(1.0f), renderer->cube.position);
 	glm::mat4 view = matrixView(&renderer->cam);

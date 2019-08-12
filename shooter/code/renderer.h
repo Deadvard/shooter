@@ -51,6 +51,19 @@ static const float box[]
 	-0.5f,  0.5f, -0.5f, 0.0f, 1.0f,  0.0f,  1.0f,  0.0f,
 };
 
+static unsigned char toonTextureData[] =
+{
+	0x44, 0x00, 0x00, 0x00,
+	0x88, 0x00, 0x00, 0x00,
+	0xCC, 0x00, 0x00, 0x00,
+	0xFF, 0x00, 0x00, 0x00
+};
+
+struct Lighting
+{
+	unsigned int toonTexture;
+};
+
 struct Model
 {
 	glm::vec3 position;
@@ -81,6 +94,8 @@ struct Renderer
 
 	Camera cam;
 	Model cube;
+
+	Lighting lighting;
 };
 
 void rendererInitialize(Renderer *renderer);
