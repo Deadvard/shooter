@@ -5,8 +5,8 @@
 
 Mesh meshFromBuffer(MeshStorage *storage, char *data)
 {
-	int sizeVertex = (int)*data;
-	int sizeIndex = (int)*(data + sizeof(int));
+	int sizeVertex = *((int *)data);
+	int sizeIndex = *((int *)(data + sizeof(int)));
 	Vertex *vertices = (Vertex *)(data + 2 * sizeof(int));
 	unsigned int *indices = (unsigned int *)(vertices + sizeVertex);
 
