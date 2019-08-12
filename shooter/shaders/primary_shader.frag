@@ -11,28 +11,17 @@ in VS_OUT
 uniform mat4 view;
 uniform vec3 camPos;
 
+uniform sampler1D toonTexture;
+
+uniform vec3 light_pos = vec3(0.0, 0.0, 5.0);
+
 void main()
 {	
-	vec3 color = vec3(1.0);
-	
-	vec3 diffuseColor = color;
-    vec3 ambient = color * 0.3;
-	
-	// diffuse 
-    vec3 norm = normalize(fs_in.normal);
-  
-    vec3 lightDir = normalize(vec3(-0.5,0.5,1));  
-    
-	float diff = max(dot(norm, lightDir), 0.0);
-    vec3 diffuse = diffuseColor * diff;  
-    
-    // specular
-    vec3 viewDir = normalize(camPos - fs_in.world_pos);
-    vec3 reflectDir = reflect(-lightDir, norm);  
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
-    vec3 specular = vec3(1) * spec;
-        
-    vec3 result = ambient + diffuse + specular;
+	// Calculate per-pixel normal and light vector
+    vec3 N = normalize(fs_in.normal);
+    vec3 L = normalize(light_pos - fs_in.world_pos);
+	// Simple N dot L diffuse lighting
+    float tc = pow(max(0.0, dot(N, L)), 5.0);
 
-	frag_color = vec4(result, 1.0);
+	frag_color = texture(toonTexture, tc) * (tc * 0.8 + 0.2);
 }

@@ -127,7 +127,7 @@ void run()
 		glm::quat qRotate = glm::normalize(qPitch * qYaw);
 
 		cameraFocus.rotation = qRotate;
-		
+		forward = glm::normalize(qRotate * glm::vec3(0, 0, -1));
 		const unsigned char *keys = SDL_GetKeyboardState(0);
 		float velocity = 0.1f;
 		if (keys[SDL_SCANCODE_W]) cameraFocus.position += forward * velocity;
