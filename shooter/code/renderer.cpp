@@ -142,7 +142,7 @@ void cubeRender(Renderer *renderer)
 	glUniform3fv(glGetUniformLocation(renderer->primaryShader, "camPos"), 1, &renderer->cam.position[0]);
 
 	glUniform1i(glGetUniformLocation(renderer->primaryShader, "toonTexture"), 0);
-
+	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_1D, renderer->lighting.toonTexture);
 
 	glm::mat4 model = glm::translate(glm::mat4(1.0f), renderer->cube.position);

@@ -123,16 +123,14 @@ void run()
 
 		cameraFocus.rotation = qRotate;
 
-		glm::vec3 forward = glm::normalize(qRotate * FORWARD);
-		glm::vec3 right = glm::normalize(qRotate * RIGHT);
-		
-		printf("(%.3f, %.3f, %.3f)\n", forward.x, forward.y, forward.z);
+		glm::vec3 forward = glm::normalize(glm::inverse(qRotate) * FORWARD);
+		glm::vec3 right = glm::normalize(glm::cross(forward, UP));
 
 		const unsigned char *keys = SDL_GetKeyboardState(0);
 		float velocity = 0.1f;
-		if (keys[SDL_SCANCODE_W]) cameraFocus.position -= forward * velocity;
+		if (keys[SDL_SCANCODE_W]) cameraFocus.position += forward * velocity;
 		if (keys[SDL_SCANCODE_A]) cameraFocus.position -= right * velocity;
-		if (keys[SDL_SCANCODE_S]) cameraFocus.position += forward * velocity;
+		if (keys[SDL_SCANCODE_S]) cameraFocus.position -= forward * velocity;
 		if (keys[SDL_SCANCODE_D]) cameraFocus.position += right * velocity;
 		renderer.cam.focus = &cameraFocus;
 
