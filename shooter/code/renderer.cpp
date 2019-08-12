@@ -100,6 +100,14 @@ unsigned textTextureCreate(const char *path, const char *text)
 
 void toonTextureCreate(Lighting* lighting)
 {
+	static const GLubyte toonTextureData[] =
+	{
+		0x44, 0x00, 0x00, 0xFF,
+		0x88, 0x00, 0x00, 0xFF,
+		0xCC, 0x00, 0x00, 0xFF,
+		0xFF, 0x00, 0x00, 0xFF
+	};
+
 	glGenTextures(1, &lighting->toonTexture); //Generate texture
 	glBindTexture(GL_TEXTURE_1D, lighting->toonTexture); //Bind texture, a 1D texture
 	glTexStorage1D(GL_TEXTURE_1D, 1, GL_RGB8, sizeof(lighting->toonTexture) / 4);
@@ -140,8 +148,6 @@ void cubeRender(Renderer *renderer)
 {
 	glUseProgram(renderer->primaryShader);
 	glUniform3fv(glGetUniformLocation(renderer->primaryShader, "camPos"), 1, &renderer->cam.position[0]);
-
-	glUniform1i(glGetUniformLocation(renderer->primaryShader, "toonTexture"), 0);
 
 	glBindTexture(GL_TEXTURE_1D, renderer->lighting.toonTexture);
 

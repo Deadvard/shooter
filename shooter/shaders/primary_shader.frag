@@ -11,9 +11,9 @@ in VS_OUT
 uniform mat4 view;
 uniform vec3 camPos;
 
-uniform sampler1D toonTexture;
+layout (binding = 0)uniform sampler1D toonTexture;
 
-uniform vec3 light_pos = vec3(0.0, 0.0, 5.0);
+uniform vec3 light_pos = vec3(3.0, 3.0, 5.0);
 
 void main()
 {	
