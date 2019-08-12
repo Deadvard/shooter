@@ -104,6 +104,10 @@ void run()
 		glUniformMatrix4fv(glGetUniformLocation(renderer.textShader, "projection"), 1, GL_FALSE, glm::value_ptr(renderer.projection));
 		textRender(&font, "HELLO", 10.0f, 10.0f, 1.0f);
 
+		static const glm::vec3 FORWARD = glm::vec3(0.0f, 0.0f, -1.0f);
+		static const glm::vec3 UP = glm::vec3(0.0f, 1.0f, 0.0f);
+		static const glm::vec3 RIGHT = glm::vec3(1.0f, 0.0f, 0.0f);
+
 		float sensitivity = 0.01f;
 		float max = pi32 * 0.4f;
 		float min = -max;
@@ -113,26 +117,22 @@ void run()
 		if (renderer.cam.pitch < min) renderer.cam.pitch = min;
 		if (renderer.cam.pitch > max) renderer.cam.pitch = max;
 
-		glm::vec3 forward;
-		forward.x = glm::cos(renderer.cam.yaw) * glm::cos(renderer.cam.pitch);
-		forward.y = glm::sin(renderer.cam.pitch);
-		forward.z = glm::sin(renderer.cam.yaw) * glm::cos(renderer.cam.pitch);
-		
-		renderer.cam.position = renderer.cam.focus->position + forward * 0.1f;
-
-		glm::vec3 right = glm::cross(forward, glm::vec3(0.0f, 1.0f, 0.0f));
-
 		glm::quat qPitch = glm::angleAxis(renderer.cam.pitch, glm::vec3(1, 0, 0));
 		glm::quat qYaw = glm::angleAxis(renderer.cam.yaw, glm::vec3(0, 1, 0));
 		glm::quat qRotate = glm::normalize(qPitch * qYaw);
 
 		cameraFocus.rotation = qRotate;
+
+		glm::vec3 forward = glm::normalize(qRotate * FORWARD);
+		glm::vec3 right = glm::normalize(qRotate * RIGHT);
 		
+		printf("(%.3f, %.3f, %.3f)\n", forward.x, forward.y, forward.z);
+
 		const unsigned char *keys = SDL_GetKeyboardState(0);
 		float velocity = 0.1f;
-		if (keys[SDL_SCANCODE_W]) cameraFocus.position += forward * velocity;
+		if (keys[SDL_SCANCODE_W]) cameraFocus.position -= forward * velocity;
 		if (keys[SDL_SCANCODE_A]) cameraFocus.position -= right * velocity;
-		if (keys[SDL_SCANCODE_S]) cameraFocus.position -= forward * velocity;
+		if (keys[SDL_SCANCODE_S]) cameraFocus.position += forward * velocity;
 		if (keys[SDL_SCANCODE_D]) cameraFocus.position += right * velocity;
 		renderer.cam.focus = &cameraFocus;
 
