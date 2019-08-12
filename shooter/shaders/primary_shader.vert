@@ -17,8 +17,8 @@ void main()
 {
 	vec4 mv_position = view * model * vec4(position,1.0);
 
-	vs_out.normal = mat3(view * model) * normal;
-	vs_out.world_pos = mv_position.xyz;
+	vs_out.normal = mat3(model) * normal;
+	vs_out.world_pos = mat3(model) * position;
 
 	gl_Position = projection * mv_position;
 }
