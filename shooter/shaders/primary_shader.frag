@@ -11,12 +11,12 @@ in VS_OUT
 uniform mat4 view;
 uniform vec3 camPos;
 
-layout (binding = 0)uniform sampler1D toonTexture;
+layout (binding = 0) uniform sampler1D toonTexture;
 
-uniform vec3 light_pos = vec3(3.0, 3.0, 5.0);
+uniform vec3 light_pos = vec3(50.0, 3.0, 5.0);
 
 void main()
-{	
+{
 	// Calculate per-pixel normal and light vector
     vec3 N = normalize(fs_in.normal);
     vec3 L = normalize(light_pos - fs_in.world_pos);

@@ -110,7 +110,7 @@ void toonTextureCreate(Lighting* lighting)
 
 	glGenTextures(1, &lighting->toonTexture); //Generate texture
 	glBindTexture(GL_TEXTURE_1D, lighting->toonTexture); //Bind texture, a 1D texture
-	glTexStorage1D(GL_TEXTURE_1D, 1, GL_RGB8, sizeof(lighting->toonTexture) / 4);
+	glTexStorage1D(GL_TEXTURE_1D, 1, GL_RGB8, sizeof(toonTextureData) / 4);
 	glTexSubImage1D(GL_TEXTURE_1D, 0,
 		0, sizeof(toonTextureData) / 4,
 		GL_RGBA, GL_UNSIGNED_BYTE,
