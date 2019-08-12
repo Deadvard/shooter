@@ -151,7 +151,10 @@ void cubeRender(Renderer *renderer)
 
 	glBindTexture(GL_TEXTURE_1D, renderer->lighting.toonTexture);
 
-	glm::mat4 model = glm::translate(glm::mat4(1.0f), renderer->cube.position);
+	glm::mat4 translate = glm::translate(glm::mat4(1.0f), renderer->cube.position);
+	glm::mat4 rotate = glm::mat4_cast(renderer->cube.rotation);
+
+	glm::mat4 model = rotate * translate;
 	glm::mat4 view = matrixView(&renderer->cam);
 
 	glUniformMatrix4fv(glGetUniformLocation(renderer->primaryShader, "model"), 1, GL_FALSE, &model[0][0]);

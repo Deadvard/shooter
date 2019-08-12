@@ -55,6 +55,7 @@ static void windowInitialize(Window *window, const char* title, int width, int h
 
 void run()
 {
+	float rot = 0.0f;
 	Model cameraFocus;
 	cameraFocus.position = glm::vec3(0.0f);
 	
@@ -107,6 +108,9 @@ void run()
 		static const glm::vec3 FORWARD = glm::vec3(0.0f, 0.0f, -1.0f);
 		static const glm::vec3 UP = glm::vec3(0.0f, 1.0f, 0.0f);
 		static const glm::vec3 RIGHT = glm::vec3(1.0f, 0.0f, 0.0f);
+
+		rot += pi32 * deltaTime;
+		renderer.cube.rotation = glm::angleAxis(rot, glm::vec3(0, 1, 0));
 
 		float sensitivity = 0.01f;
 		float max = pi32 * 0.4f;
