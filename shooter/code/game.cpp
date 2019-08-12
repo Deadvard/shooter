@@ -55,6 +55,9 @@ static void windowInitialize(Window *window, const char* title, int width, int h
 
 void run()
 {
+	Model cameraFocus;
+	cameraFocus.position = glm::vec3(0.0f);
+	
 	Window window;
 	windowInitialize(&window, "shooter", 1280, 720);
 
@@ -115,13 +118,29 @@ void run()
 		forward.y = glm::sin(renderer.cam.pitch);
 		forward.z = glm::sin(renderer.cam.yaw) * glm::cos(renderer.cam.pitch);
 		
-		renderer.cam.position = renderer.cam.focus->position + forward * 4.0f;
+		renderer.cam.position = renderer.cam.focus->position + forward * 0.1f;
+
+		glm::vec3 right = glm::cross(forward, glm::vec3(0.0f, 1.0f, 0.0f));
+
+		glm::quat qPitch = glm::angleAxis(renderer.cam.pitch, glm::vec3(1, 0, 0));
+		glm::quat qYaw = glm::angleAxis(renderer.cam.yaw, glm::vec3(0, 1, 0));
+		glm::quat qRotate = glm::normalize(qPitch * qYaw);
+
+		cameraFocus.rotation = qRotate;
+		
+		const unsigned char *keys = SDL_GetKeyboardState(0);
+		float velocity = 0.1f;
+		if (keys[SDL_SCANCODE_W]) cameraFocus.position += forward * velocity;
+		if (keys[SDL_SCANCODE_A]) cameraFocus.position -= right * velocity;
+		if (keys[SDL_SCANCODE_S]) cameraFocus.position -= forward * velocity;
+		if (keys[SDL_SCANCODE_D]) cameraFocus.position += right * velocity;
+		renderer.cam.focus = &cameraFocus;
+
 
 		cubeRender(&renderer);
 		
 		SDL_GL_SwapWindow(window.window);
 
-		const unsigned char *keys = SDL_GetKeyboardState(0);
 		running = running && !keys[SDL_SCANCODE_ESCAPE];
 	}
 }

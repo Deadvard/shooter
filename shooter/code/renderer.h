@@ -87,7 +87,11 @@ void rendererInitialize(Renderer *renderer);
 
 static glm::mat4 matrixView(Camera *c)
 {
-	return glm::lookAt(c->position, c->focus->position, glm::vec3(0.0f, 1.0f, 0.0f));
+	//return glm::lookAt(c->position, c->focus->position, glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::mat4 translate = glm::mat4(1.0f);
+	translate = glm::translate(translate, -c->focus->position);
+	glm::mat4 rotate = glm::mat4_cast(c->focus->rotation);
+	return rotate * translate;
 }
 
 unsigned int shaderProgramCreate(const char *vertexPath, const char *fragmentPath);
