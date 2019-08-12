@@ -9,6 +9,7 @@ Mesh meshFromBuffer(MeshStorage *storage, char *data)
 	int sizeIndex = (int)*(data + sizeof(int));
 	Vertex *vertices = (Vertex *)(data + 2 * sizeof(int));
 	unsigned int *indices = (unsigned int *)(vertices + sizeVertex);
+
 	return meshCreate(storage, vertices, sizeVertex, indices, sizeIndex);	
 }
 
@@ -67,10 +68,7 @@ Mesh meshCreate(MeshStorage *storage, Vertex *vertices, int sizeVertices, unsign
 
 void meshRender(MeshStorage *storage, Mesh *mesh)
 {
-	glBindVertexArray(storage->vertexArray);
 	//glDrawElements(GL_TRIANGLES, mesh->sizeIndex, GL_UNSIGNED_INT, (void *)(mesh->firstIndex * sizeof(unsigned int)));
 	glDrawElementsBaseVertex(GL_TRIANGLES, mesh->sizeIndex, GL_UNSIGNED_INT,
 		(void *)(mesh->firstIndex * sizeof(unsigned int)), mesh->firstVertex);
-
-	glBindVertexArray(0);
 }

@@ -138,7 +138,11 @@ void rendererInitialize(Renderer *renderer)
 	renderer->meshStorage = meshStorageCreate(1024 * 1024);
 
 	char *data = readEntireFile("result.bin");
-	renderer->meshes[renderer->cube.meshIndex] = meshFromBuffer(&renderer->meshStorage, data);
+	//renderer->meshes[renderer->cube.meshIndex] = meshFromBuffer(&renderer->meshStorage, data);
+	free(data);
+	
+	data = readEntireFile("gubbe.bin");
+	renderer->meshes[1] = meshFromBuffer(&renderer->meshStorage, data);
 	free(data);
 
 	toonTextureCreate(&renderer->lighting);
@@ -160,7 +164,10 @@ void cubeRender(Renderer *renderer)
 	glUniformMatrix4fv(glGetUniformLocation(renderer->primaryShader, "view"), 1, GL_FALSE, &view[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(renderer->primaryShader, "projection"), 1, GL_FALSE, &renderer->projection[0][0]);
 
-	meshRender(&renderer->meshStorage, &renderer->meshes[renderer->cube.meshIndex]);
+	glBindVertexArray(renderer->meshStorage.vertexArray);
+	//meshRender(&renderer->meshStorage, &renderer->meshes[renderer->cube.meshIndex]);
+	meshRender(&renderer->meshStorage, &renderer->meshes[1]);
+	glBindVertexArray(0);
 }
 
 void modelsRender(Model *models, int length)
