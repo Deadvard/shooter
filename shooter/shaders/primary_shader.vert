@@ -6,7 +6,7 @@ layout(location = 2) in vec3 normal;
 out VS_OUT
 {
 	vec3 normal;
-	vec3 world_pos;
+	vec3 worldPos;
 } vs_out;
 
 uniform mat4 model;
@@ -17,8 +17,8 @@ void main()
 {
 	vec4 mv_position = view * model * vec4(position,1.0);
 
-	vs_out.normal = mat3(model) * normal;
-	vs_out.world_pos = mat3(model) * position;
+	vs_out.normal = normal;
+	vs_out.worldPos = mat3(model) * position;
 
 	gl_Position = projection * mv_position;
 }
