@@ -86,9 +86,7 @@ struct Renderer
 	unsigned int numActiveModels;
 
 	MeshStorage meshStorage;
-
 	Camera cam;
-	Model cube;
 
 	Lighting lighting;
 };

@@ -110,7 +110,7 @@ void run()
 		static const glm::vec3 RIGHT = glm::vec3(1.0f, 0.0f, 0.0f);
 
 		rot += pi32 * deltaTime;
-		renderer.cube.rotation = glm::angleAxis(rot, glm::vec3(0, 0.1f, 0));
+		renderer.activeModels[1].rotation = glm::angleAxis(rot, glm::vec3(0, 1.f, 0));
 
 		float sensitivity = 0.01f;
 		float max = pi32 * 0.4f;
