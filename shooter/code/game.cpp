@@ -8,6 +8,7 @@
 
 #include "renderer.h"
 #include "font.h"
+#include "physics.h"
 
 #define pi32 3.14159265359f
 
@@ -58,6 +59,13 @@ void run()
 	float rot = 0.0f;
 	Model cameraFocus;
 	cameraFocus.position = glm::vec3(0.0f);
+
+	PhysicsData physicsData;
+	physicsData.position = glm::vec3(-50.0f);
+	for (int i = 0; i < 10000; ++i)
+	{
+		physicsData.heights[i] = 0.0f;
+	}
 	
 	Window window;
 	windowInitialize(&window, "shooter", 1280, 720);
@@ -69,6 +77,8 @@ void run()
 
 	double lastTime = (double)SDL_GetTicks() / 1000.0;
 	double deltaTime = 0.0;
+
+	int physicsOn = true;
 
 	int running = true;
 	while (running)
@@ -94,6 +104,14 @@ void run()
 			{
 				dx += e.motion.xrel;
 				dy += e.motion.yrel;
+				break;
+			}
+			case SDL_KEYUP:
+			{
+				if (e.key.keysym.scancode == SDL_SCANCODE_Q)
+				{
+					physicsOn = !physicsOn;
+				}
 				break;
 			}
 			}
@@ -132,13 +150,18 @@ void run()
 
 		const unsigned char *keys = SDL_GetKeyboardState(0);
 		float velocity = 0.1f;
+		if (keys[SDL_SCANCODE_LSHIFT]) velocity *= 2.0f;
 		if (keys[SDL_SCANCODE_W]) cameraFocus.position += forward * velocity;
 		if (keys[SDL_SCANCODE_A]) cameraFocus.position -= right * velocity;
 		if (keys[SDL_SCANCODE_S]) cameraFocus.position -= forward * velocity;
 		if (keys[SDL_SCANCODE_D]) cameraFocus.position += right * velocity;
 		renderer.cam.focus = &cameraFocus;
 
-
+		if (physicsOn)
+		{
+			physicsUpdate(&cameraFocus.position, &physicsData);
+		}
+		
 		renderScene(&renderer);
 		
 		SDL_GL_SwapWindow(window.window);

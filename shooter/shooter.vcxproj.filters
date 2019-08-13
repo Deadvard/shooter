@@ -17,5 +17,6 @@
     <ClCompile Include="code\memory.cpp" />
     <ClCompile Include="code\mesh.cpp" />
     <ClCompile Include="code\importer.cpp" />
+    <ClCompile Include="code\physics.cpp" />
   </ItemGroup>
 </Project>

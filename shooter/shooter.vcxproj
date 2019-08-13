@@ -155,6 +155,7 @@
     <ClCompile Include="code\main.cpp" />
     <ClCompile Include="code\memory.cpp" />
     <ClCompile Include="code\mesh.cpp" />
+    <ClCompile Include="code\physics.cpp" />
     <ClCompile Include="code\renderer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
