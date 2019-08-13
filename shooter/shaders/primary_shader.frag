@@ -15,13 +15,30 @@ layout (binding = 0) uniform sampler1D toonTexture;
 
 uniform vec3 lightPos = vec3(0.0, 10.0, 10.0);
 
+uniform vec3 dirLight = vec3(0.3, 10, 0);
+
 void main()
 {
-	// Calculate per-pixel normal and light vector
-    vec3 N = normalize(fs_in.normal);
+	float tc;
+	{
+		// Calculate per-pixel normal and light vector
+		 vec3 N = normalize(fs_in.normal);
     vec3 L = normalize(lightPos - fs_in.worldPos);
 	// Simple N dot L diffuse lighting
-    float tc = pow(max(0.0, dot(N, L)), 5.0);
+    tc = pow(max(0.0, dot(N, L)), 5.0);
+	}
 
-	frag_color = texture(toonTexture, tc) * (tc * 0.8 + 0.2);
+	float pc;
+	{
+		// Calculate per-pixel normal and light vector
+		vec3 N = normalize(fs_in.normal);
+    vec3 L = normalize(dirLight);
+	// Simple N dot L diffuse lighting
+    pc = pow(max(0.0, dot(N, L)), 5.0);
+	}
+
+	vec4 color = texture(toonTexture, tc) * (tc * 0.8 + 0.2);
+	color += vec4(0.7,0.7,0.7,1) * pc;
+
+	frag_color = color;
 }
