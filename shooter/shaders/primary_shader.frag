@@ -13,7 +13,7 @@ uniform vec3 camPos;
 
 layout (binding = 0) uniform sampler1D toonTexture;
 
-uniform vec3 lightPos = vec3(0.0, 100.0, 200.0);
+uniform vec3 lightPos = vec3(0.0, 10.0, 10.0);
 
 void main()
 {
