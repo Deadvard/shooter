@@ -29,6 +29,7 @@ struct MeshStorage
 };
 
 Mesh meshFromBuffer(MeshStorage *storage, char *data);
+Mesh importMesh(MeshStorage *storage, const char* path);
 
 MeshStorage meshStorageCreate(int size);
 Mesh meshCreate(MeshStorage *storage, Vertex *vertices, int sizeVertices, unsigned int *indices, int sizeIndices);

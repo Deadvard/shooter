@@ -8,6 +8,7 @@
 #include <glad/glad.h>
 
 #include "memory.h"
+#include "importer.h"
 
 static unsigned int shaderCreate(char *shaderCode, unsigned int shaderType, const char *shaderString)
 {
@@ -146,6 +147,8 @@ void rendererInitialize(Renderer *renderer)
 	free(data);
 
 	toonTextureCreate(&renderer->lighting);
+
+	renderer->meshes[2] = importMesh(&renderer->meshStorage, "test.obj");
 }
 
 void cubeRender(Renderer *renderer)
@@ -167,6 +170,7 @@ void cubeRender(Renderer *renderer)
 	glBindVertexArray(renderer->meshStorage.vertexArray);
 	meshRender(&renderer->meshStorage, &renderer->meshes[renderer->cube.meshIndex]);
 	meshRender(&renderer->meshStorage, &renderer->meshes[1]);
+	meshRender(&renderer->meshStorage, &renderer->meshes[2]);
 	glBindVertexArray(0);
 }
 

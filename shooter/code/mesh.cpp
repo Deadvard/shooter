@@ -1,6 +1,6 @@
 #include "mesh.h"
 #include <glad/glad.h>
-
+#include "importer.h"
 #include <stdio.h>
 
 Mesh meshFromBuffer(MeshStorage *storage, char *data)
@@ -43,6 +43,47 @@ MeshStorage meshStorageCreate(int size)
 	result.vertexArray = vao;
 	result.vertexBuffer = vbo;
 	result.indexBuffer = ebo;
+
+	return result;
+}
+
+Mesh importMesh(MeshStorage *storage, const char* path)
+{
+	std::vector<glm::vec3>vertices;
+	std::vector<glm::vec2>texCoords;
+	std::vector<glm::vec3>normals;
+	std::vector<unsigned int> indices;
+
+	loadObj(path, &vertices, &texCoords, &normals, &indices);
+
+	std::vector<float> data;
+	for (int i = 0; i < vertices.size(); ++i)
+	{
+		data.push_back(vertices[i].x);
+		data.push_back(vertices[i].y);
+		data.push_back(vertices[i].z);
+
+		data.push_back(texCoords[i].x);
+		data.push_back(texCoords[i].y);
+
+		data.push_back(normals[i].x);
+		data.push_back(normals[i].y);
+		data.push_back(normals[i].z);
+	}
+
+	Mesh result;
+	result.firstVertex = storage->numberOfVertices;
+	result.sizeVertex = sizeof(float) * data.size();
+	result.firstIndex = storage->numberOfIndices;
+	result.sizeIndex = sizeof(unsigned int) * indices.size();
+	storage->numberOfVertices += vertices.size();
+	storage->numberOfIndices += indices.size();
+
+	glBindBuffer(GL_ARRAY_BUFFER, storage->vertexBuffer);
+	glBufferSubData(GL_ARRAY_BUFFER, sizeof(Vertex) * result.firstVertex, sizeof(float) * data.size(), &data[0]);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, storage->indexBuffer);
+	glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * result.firstIndex, sizeof(unsigned int) * indices.size(), &indices[0]);
 
 	return result;
 }

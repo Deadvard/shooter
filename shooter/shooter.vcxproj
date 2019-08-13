@@ -97,6 +97,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)external\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TreatWarningAsError>false</TreatWarningAsError>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)external\lib</AdditionalLibraryDirectories>
@@ -128,6 +129,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)external\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TreatWarningAsError>false</TreatWarningAsError>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -140,6 +142,7 @@
   <ItemGroup>
     <ClInclude Include="code\font.h" />
     <ClInclude Include="code\game.h" />
+    <ClInclude Include="code\importer.h" />
     <ClInclude Include="code\memory.h" />
     <ClInclude Include="code\mesh.h" />
     <ClInclude Include="code\renderer.h" />
@@ -147,6 +150,7 @@
   <ItemGroup>
     <ClCompile Include="code\font.cpp" />
     <ClCompile Include="code\game.cpp" />
+    <ClCompile Include="code\importer.cpp" />
     <ClCompile Include="code\main.cpp" />
     <ClCompile Include="code\memory.cpp" />
     <ClCompile Include="code\mesh.cpp" />
