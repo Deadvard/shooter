@@ -73,9 +73,9 @@ Mesh importMesh(MeshStorage *storage, const char* path)
 
 	Mesh result;
 	result.firstVertex = storage->numberOfVertices;
-	result.sizeVertex = sizeof(float) * data.size();
+	result.sizeVertex = data.size();
 	result.firstIndex = storage->numberOfIndices;
-	result.sizeIndex = sizeof(unsigned int) * indices.size();
+	result.sizeIndex = indices.size();
 	storage->numberOfVertices += vertices.size();
 	storage->numberOfIndices += indices.size();
 
@@ -112,4 +112,5 @@ void meshRender(MeshStorage *storage, Mesh *mesh)
 	//glDrawElements(GL_TRIANGLES, mesh->sizeIndex, GL_UNSIGNED_INT, (void *)(mesh->firstIndex * sizeof(unsigned int)));
 	glDrawElementsBaseVertex(GL_TRIANGLES, mesh->sizeIndex, GL_UNSIGNED_INT,
 		(void *)(mesh->firstIndex * sizeof(unsigned int)), mesh->firstVertex);
+
 }

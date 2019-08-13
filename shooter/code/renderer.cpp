@@ -136,7 +136,7 @@ void rendererInitialize(Renderer *renderer)
 	renderer->cam.yaw = 0.0f;
 	renderer->cam.pitch = 0.0f;
 
-	renderer->meshStorage = meshStorageCreate(1024 * 1024);
+	renderer->meshStorage = meshStorageCreate(1024 * 1024 * 1024);
 
 	char *data = readEntireFile("result.bin");
 	renderer->meshes[renderer->cube.meshIndex] = meshFromBuffer(&renderer->meshStorage, data);
@@ -170,7 +170,10 @@ void cubeRender(Renderer *renderer)
 	glBindVertexArray(renderer->meshStorage.vertexArray);
 	meshRender(&renderer->meshStorage, &renderer->meshes[renderer->cube.meshIndex]);
 	meshRender(&renderer->meshStorage, &renderer->meshes[1]);
+	model = glm::translate(model, glm::vec3(5,0,5));
+	glUniformMatrix4fv(glGetUniformLocation(renderer->primaryShader, "model"), 1, GL_FALSE, &model[0][0]);
 	meshRender(&renderer->meshStorage, &renderer->meshes[2]);
+
 	glBindVertexArray(0);
 }
 
