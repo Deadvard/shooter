@@ -139,7 +139,7 @@ void run()
 		renderer.cam.focus = &cameraFocus;
 
 
-		cubeRender(&renderer);
+		renderScene(&renderer);
 		
 		SDL_GL_SwapWindow(window.window);
 

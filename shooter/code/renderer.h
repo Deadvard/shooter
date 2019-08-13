@@ -81,6 +81,9 @@ struct Renderer
 	glm::mat4 projection;
 
 	Mesh meshes[128];
+	unsigned int numMeshes;
+	Model activeModels[128];
+	unsigned int numActiveModels;
 
 	MeshStorage meshStorage;
 
@@ -105,6 +108,6 @@ unsigned int shaderProgramCreate(const char *vertexPath, const char *fragmentPat
 
 unsigned imageTextureCreate(const char *path);
 unsigned textTextureCreate(const char *path, const char *text);
-void cubeRender(Renderer *renderer);
+void renderScene(Renderer *renderer);
 
 #endif

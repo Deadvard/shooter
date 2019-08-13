@@ -121,6 +121,28 @@ void toonTextureCreate(Lighting* lighting)
 	glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); //Conditions
 }
 
+void loadMeshes(Renderer* renderer)
+{
+	char *data = readEntireFile("result.bin");
+	renderer->meshes[renderer->numMeshes++] = meshFromBuffer(&renderer->meshStorage, data);
+	free(data);
+
+	data = readEntireFile("gubbe.bin");
+	renderer->meshes[renderer->numMeshes++] = meshFromBuffer(&renderer->meshStorage, data);
+	free(data);
+
+	renderer->meshes[renderer->numMeshes++] = importMesh(&renderer->meshStorage, "monkey.tfs");
+	renderer->meshes[renderer->numMeshes++] = importMesh(&renderer->meshStorage, "floor.tfs");
+}
+
+void addModelToScene(Renderer* renderer, int meshIndex, glm::vec3 startingPos)
+{
+	renderer->activeModels[renderer->numActiveModels].position = startingPos;
+	renderer->activeModels[renderer->numActiveModels].rotation = glm::quat(glm::vec3(0));
+	renderer->activeModels[renderer->numActiveModels].meshIndex = meshIndex;
+	renderer->numActiveModels++;
+}
+
 void rendererInitialize(Renderer *renderer)
 {	
 	renderer->primaryShader = shaderProgramCreate("shaders/primary_shader.vert", "shaders/primary_shader.frag");
@@ -128,53 +150,48 @@ void rendererInitialize(Renderer *renderer)
 
 	renderer->projection = glm::perspective(glm::radians(90.0f), 16.0f / 9.0f, 0.01f, 1000.0f);
 
-	renderer->cube.meshIndex = 0;
-	renderer->cube.position = glm::vec3(0.0f, 0.0f, -3.0f);
-	renderer->cam.focus = &renderer->cube;
-	renderer->cam.position = glm::vec3(0.0f);
-
+	renderer->numActiveModels = 0;
+	renderer->numMeshes = 0;
 	renderer->cam.yaw = 0.0f;
 	renderer->cam.pitch = 0.0f;
 
-	renderer->meshStorage = meshStorageCreate(1024 * 1024 * 1024);
-
-	char *data = readEntireFile("result.bin");
-	renderer->meshes[renderer->cube.meshIndex] = meshFromBuffer(&renderer->meshStorage, data);
-	free(data);
-	
-	data = readEntireFile("gubbe.bin");
-	renderer->meshes[1] = meshFromBuffer(&renderer->meshStorage, data);
-	free(data);
+	renderer->meshStorage = meshStorageCreate(1024 * 1024);
 
 	toonTextureCreate(&renderer->lighting);
 
-	renderer->meshes[2] = importMesh(&renderer->meshStorage, "test.obj");
+	loadMeshes(renderer);
+
+	addModelToScene(renderer, 0, glm::vec3(0,0,0));
+	addModelToScene(renderer, 1, glm::vec3(0, 20, 0));
+	addModelToScene(renderer, 2, glm::vec3(5, 0, 0));
+	addModelToScene(renderer, 3, glm::vec3(0, -5, 0));
+
 }
 
-void cubeRender(Renderer *renderer)
+void renderScene(Renderer *renderer)
 {
 	glUseProgram(renderer->primaryShader);
 	glUniform3fv(glGetUniformLocation(renderer->primaryShader, "camPos"), 1, &renderer->cam.position[0]);
 
 	glBindTexture(GL_TEXTURE_1D, renderer->lighting.toonTexture);
 
-	glm::mat4 model = glm::mat4_cast(renderer->cube.rotation);
-	model[3] = glm::vec4(renderer->cube.position, 1.0f);
-
 	glm::mat4 view = matrixView(&renderer->cam);
 
-	glUniformMatrix4fv(glGetUniformLocation(renderer->primaryShader, "model"), 1, GL_FALSE, &model[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(renderer->primaryShader, "view"), 1, GL_FALSE, &view[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(renderer->primaryShader, "projection"), 1, GL_FALSE, &renderer->projection[0][0]);
 
 	glBindVertexArray(renderer->meshStorage.vertexArray);
-	meshRender(&renderer->meshStorage, &renderer->meshes[renderer->cube.meshIndex]);
-	meshRender(&renderer->meshStorage, &renderer->meshes[1]);
-	model = glm::translate(model, glm::vec3(5,0,5));
-	glUniformMatrix4fv(glGetUniformLocation(renderer->primaryShader, "model"), 1, GL_FALSE, &model[0][0]);
-	meshRender(&renderer->meshStorage, &renderer->meshes[2]);
 
+	for (int i = 0; i < renderer->numActiveModels; ++i)
+	{
+		glm::mat4 model = glm::mat4_cast(renderer->activeModels[i].rotation);
+		model[3] = glm::vec4(renderer->activeModels[i].position, 1.0f);
+		glUniformMatrix4fv(glGetUniformLocation(renderer->primaryShader, "model"), 1, GL_FALSE, &model[0][0]);
+
+		meshRender(&renderer->meshStorage, &renderer->meshes[renderer->activeModels[i].meshIndex]);
+	}
 	glBindVertexArray(0);
+
 }
 
 void modelsRender(Model *models, int length)
