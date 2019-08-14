@@ -32,6 +32,6 @@ void gameplayShoot(Gameplay* gameplay, Model* cameraFocus, Renderer* renderer)
 	unsigned int bullet = addActor(gameplay, renderer, 2, cameraFocus->position);
 	gameplay->actors[bullet].direction = forward;
 	gameplay->actors[bullet].speed = 0.5f;
-	renderer->activeModels[gameplay->actors[bullet].modelIndex].rotation = cameraFocus->rotation;
+	renderer->activeModels[gameplay->actors[bullet].modelIndex].rotation = glm::inverse(cameraFocus->rotation);
 
 }
