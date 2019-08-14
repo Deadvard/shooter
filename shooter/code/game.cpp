@@ -129,6 +129,14 @@ void run()
 				}
 				break;
 			}
+			case SDL_MOUSEBUTTONUP:
+			{
+				if (e.button.button == SDL_BUTTON_LEFT)
+				{
+					gameplayShoot(&cameraFocus, &renderer);
+				}
+				break;
+			}
 			}
 		}
 		glClearColor(135.0f / 255.0f, 206.0f / 255.0f, 235.0f / 255.0f, 1.0f);
@@ -159,8 +167,13 @@ void run()
 		glm::quat qRotate = glm::normalize(qPitch * qYaw);
 
 		cameraFocus.rotation = qRotate;
-
-		glm::vec3 forward = glm::normalize(glm::inverse(qRotate) * FORWARD);
+		glm::vec3 forward = glm::normalize(glm::inverse(qRotate) * FORWARD);;
+		
+		if (physicsOn)
+		{
+			glm::vec3 forward = glm::normalize(glm::inverse(qYaw) * FORWARD);
+		}
+		
 		glm::vec3 right = glm::normalize(glm::cross(forward, UP));
 
 		const unsigned char *keys = SDL_GetKeyboardState(0);
@@ -170,7 +183,6 @@ void run()
 		if (keys[SDL_SCANCODE_A]) cameraFocus.position -= right * velocity;
 		if (keys[SDL_SCANCODE_S]) cameraFocus.position -= forward * velocity;
 		if (keys[SDL_SCANCODE_D]) cameraFocus.position += right * velocity;
-		if (keys[SDL_SCANCODE_SPACE]) gameplayShoot(&cameraFocus, &renderer);
 		renderer.cam.focus = &cameraFocus;
 
 		if (physicsOn)
