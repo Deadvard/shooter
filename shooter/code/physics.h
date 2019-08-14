@@ -6,7 +6,7 @@
 struct PhysicsData
 {
 	glm::vec3 position;
-	float heights[10000];
+	float heights[1000000];
 };
 
 void physicsUpdate(glm::vec3 *player, PhysicsData *data);

@@ -60,16 +60,21 @@ void run()
 	Model cameraFocus;
 	cameraFocus.position = glm::vec3(0.0f);
 
-	PhysicsData physicsData;
-	physicsData.position = glm::vec3(-50.0f);
-	for (int i = 0; i < 10000; ++i)
+	PhysicsData *physicsData = (PhysicsData *)malloc(sizeof(PhysicsData));
+	physicsData->position = glm::vec3(-50.0f);
+	for (int i = 0; i < 1000000; ++i)
 	{
-		physicsData.heights[i] = 0.0f;
+		physicsData->heights[i] = 0.0f;
 	}
 
-	for (int i = 0; i < 1000; ++i)
+	float h = 10.0f;
+	for (int i = 0; i < 100; ++i)
 	{
-		physicsData.heights[i] = 2.0f;
+		h -= 0.1f;
+		for (int j = i * 1000; j < (i * 1000 + 1000); ++j)
+		{
+			physicsData->heights[j] = h;
+		}
 	}
 	
 	Window window;
@@ -164,7 +169,7 @@ void run()
 
 		if (physicsOn)
 		{
-			physicsUpdate(&cameraFocus.position, &physicsData);
+			physicsUpdate(&cameraFocus.position, physicsData);
 		}
 		
 		renderScene(&renderer);
