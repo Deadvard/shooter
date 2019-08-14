@@ -66,6 +66,11 @@ void run()
 	{
 		physicsData.heights[i] = 0.0f;
 	}
+
+	for (int i = 0; i < 1000; ++i)
+	{
+		physicsData.heights[i] = 2.0f;
+	}
 	
 	Window window;
 	windowInitialize(&window, "shooter", 1280, 720);

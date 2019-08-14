@@ -22,7 +22,14 @@ void physicsUpdate(glm::vec3 *player, PhysicsData *data)
 	glm::ivec3 pos = (*player) - data->position;
 	float y = 0.0f;
 
-	y = data->heights[pos.x * pos.z];
+	float ratioX = player->x - (int)player->x;
+	float ratioZ = player->z - (int)player->z;
+
+	float *h = data->heights;
+	y = (h[(pos.x - 1) * pos.z] * (1.0f - ratioX) +
+		 h[(pos.x + 1) * pos.z] * ratioX +
+		 h[pos.x * (pos.z - 1)] * (1.0f - ratioZ) +
+		 h[pos.x * (pos.z + 1)] * ratioZ);
 
 	collision(player, glm::vec3(0, 0, -10), 2.0f);
 	collision(player, glm::vec3(5, 0, 0), 2.0f);
