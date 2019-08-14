@@ -28,7 +28,7 @@ void gameplayUpdate(Gameplay* gameplay, Renderer* renderer)
 
 void gameplayShoot(Gameplay* gameplay, Model* cameraFocus, Renderer* renderer)
 {
-	glm::vec3 forward = glm::normalize(cameraFocus->rotation * glm::vec3(0,0,-1));
+	glm::vec3 forward = glm::normalize(glm::inverse(cameraFocus->rotation) * glm::vec3(0,0,-1));
 	unsigned int bullet = addActor(gameplay, renderer, 2, cameraFocus->position);
 	gameplay->actors[bullet].direction = forward;
 	gameplay->actors[bullet].speed = 0.5f;
