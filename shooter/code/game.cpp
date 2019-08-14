@@ -85,7 +85,7 @@ void run()
 	rendererInitialize(&renderer);
 
 	Gameplay gameplay;
-	gameplayInitialize(&renderer);
+	gameplayInitialize(&gameplay, &renderer);
 
 	Font font = fontCreate("font.ttf");
 
@@ -133,7 +133,7 @@ void run()
 			{
 				if (e.button.button == SDL_BUTTON_LEFT)
 				{
-					gameplayShoot(&cameraFocus, &renderer);
+					gameplayShoot(&gameplay, &cameraFocus, &renderer);
 				}
 				break;
 			}
@@ -184,6 +184,8 @@ void run()
 		if (keys[SDL_SCANCODE_S]) cameraFocus.position -= forward * velocity;
 		if (keys[SDL_SCANCODE_D]) cameraFocus.position += right * velocity;
 		renderer.cam.focus = &cameraFocus;
+
+		gameplayUpdate(&gameplay, &renderer);
 
 		if (physicsOn)
 		{

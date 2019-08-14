@@ -92,7 +92,7 @@ struct Renderer
 };
 
 void rendererInitialize(Renderer *renderer);
-unsigned int addModelToScene(Renderer* renderer, int meshIndex, glm::vec3 startingPos);
+unsigned int rendererAddModel(Renderer* renderer, int meshIndex, glm::vec3 startingPos);
 
 static glm::mat4 matrixView(Camera *c)
 {

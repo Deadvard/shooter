@@ -135,7 +135,7 @@ void loadMeshes(Renderer* renderer)
 	renderer->meshes[renderer->numMeshes++] = importMesh(&renderer->meshStorage, "floor.tfs");
 }
 
-unsigned int addModelToScene(Renderer* renderer, int meshIndex, glm::vec3 startingPos)
+unsigned int rendererAddModel(Renderer* renderer, int meshIndex, glm::vec3 startingPos)
 {
 	renderer->activeModels[renderer->numActiveModels].position = startingPos;
 	renderer->activeModels[renderer->numActiveModels].rotation = glm::quat(glm::vec3(0));
