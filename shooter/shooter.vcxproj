@@ -142,6 +142,7 @@
   <ItemGroup>
     <ClInclude Include="code\font.h" />
     <ClInclude Include="code\game.h" />
+    <ClInclude Include="code\gameplay.h" />
     <ClInclude Include="code\importer.h" />
     <ClInclude Include="code\memory.h" />
     <ClInclude Include="code\mesh.h" />
@@ -151,6 +152,7 @@
   <ItemGroup>
     <ClCompile Include="code\font.cpp" />
     <ClCompile Include="code\game.cpp" />
+    <ClCompile Include="code\gameplay.cpp" />
     <ClCompile Include="code\importer.cpp" />
     <ClCompile Include="code\main.cpp" />
     <ClCompile Include="code\memory.cpp" />

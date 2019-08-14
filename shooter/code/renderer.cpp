@@ -135,12 +135,12 @@ void loadMeshes(Renderer* renderer)
 	renderer->meshes[renderer->numMeshes++] = importMesh(&renderer->meshStorage, "floor.tfs");
 }
 
-void addModelToScene(Renderer* renderer, int meshIndex, glm::vec3 startingPos)
+unsigned int addModelToScene(Renderer* renderer, int meshIndex, glm::vec3 startingPos)
 {
 	renderer->activeModels[renderer->numActiveModels].position = startingPos;
 	renderer->activeModels[renderer->numActiveModels].rotation = glm::quat(glm::vec3(0));
 	renderer->activeModels[renderer->numActiveModels].meshIndex = meshIndex;
-	renderer->numActiveModels++;
+	return renderer->numActiveModels++;
 }
 
 void rendererInitialize(Renderer *renderer)
@@ -161,10 +161,7 @@ void rendererInitialize(Renderer *renderer)
 
 	loadMeshes(renderer);
 
-	addModelToScene(renderer, 0, glm::vec3(0,0,-10));
-	addModelToScene(renderer, 1, glm::vec3(0, 20, 0));
-	addModelToScene(renderer, 2, glm::vec3(5, 0, 0));
-	addModelToScene(renderer, 3, glm::vec3(0, -5, 0));
+
 
 }
 

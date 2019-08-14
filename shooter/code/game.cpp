@@ -9,6 +9,7 @@
 #include "renderer.h"
 #include "font.h"
 #include "physics.h"
+#include "gameplay.h"
 
 #define pi32 3.14159265359f
 
@@ -78,7 +79,11 @@ void run()
 	Renderer renderer;
 	rendererInitialize(&renderer);
 
+	Gameplay gameplay;
+	gameplayInitialize(&renderer);
+
 	Font font = fontCreate("font.ttf");
+
 
 	double lastTime = (double)SDL_GetTicks() / 1000.0;
 	double deltaTime = 0.0;
@@ -160,6 +165,7 @@ void run()
 		if (keys[SDL_SCANCODE_A]) cameraFocus.position -= right * velocity;
 		if (keys[SDL_SCANCODE_S]) cameraFocus.position -= forward * velocity;
 		if (keys[SDL_SCANCODE_D]) cameraFocus.position += right * velocity;
+		if (keys[SDL_SCANCODE_SPACE]) gameplayShoot(&cameraFocus, &renderer);
 		renderer.cam.focus = &cameraFocus;
 
 		if (physicsOn)
