@@ -10,9 +10,8 @@
 
 #include "memory.h"
 
-Font fontCreate(const char *path)
+void fontCreate(Font* font, const char *path)
 {
-	Font result;
 	stbtt_fontinfo stbfont;
 
 	//FILE* ff;
@@ -56,28 +55,26 @@ Font fontCreate(const char *path)
 
 		stbtt_FreeBitmap(bitmap, 0);
 
-		result.characters[c].texture_index = texture;
-		result.characters[c].advance = ch.advance;
-		result.characters[c].width = ch.width;
-		result.characters[c].height = ch.height;
-		result.characters[c].xoffset = ch.xoffset;
-		result.characters[c].yoffset = ch.yoffset;
+		font->characters[c].texture_index = texture;
+		font->characters[c].advance = ch.advance;
+		font->characters[c].width = ch.width;
+		font->characters[c].height = ch.height;
+		font->characters[c].xoffset = ch.xoffset;
+		font->characters[c].yoffset = ch.yoffset;
 	}
 
 	free(data);
 	//fclose(ff);
 
-	glGenVertexArrays(1, &result.vao);
-	glGenBuffers(1, &result.vbo);
-	glBindVertexArray(result.vao);
-	glBindBuffer(GL_ARRAY_BUFFER, result.vbo);
+	glGenVertexArrays(1, &font->vao);
+	glGenBuffers(1, &font->vbo);
+	glBindVertexArray(font->vao);
+	glBindBuffer(GL_ARRAY_BUFFER, font->vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4,
 		NULL, GL_DYNAMIC_DRAW);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	return result;
 }
 
 void textRender(Font *f, const char *text, float x, float y, float scale)

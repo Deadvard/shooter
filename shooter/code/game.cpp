@@ -87,7 +87,8 @@ void run()
 	Gameplay gameplay;
 	gameplayInitialize(&gameplay, &renderer);
 
-	Font font = fontCreate("font.ttf");
+	Font font;
+	fontCreate(&font, "font.ttf");
 
 
 	double lastTime = (double)SDL_GetTicks() / 1000.0;
@@ -142,9 +143,11 @@ void run()
 		glClearColor(135.0f / 255.0f, 206.0f / 255.0f, 235.0f / 255.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		glm::mat4 projection = glm::ortho(0.0f, 1280.f, 0.0f, 720.f);
+
 		glUseProgram(renderer.textShader);
-		glUniformMatrix4fv(glGetUniformLocation(renderer.textShader, "projection"), 1, GL_FALSE, glm::value_ptr(renderer.projection));
-		textRender(&font, "HELLO", 10.0f, 10.0f, 1.0f);
+		glUniformMatrix4fv(glGetUniformLocation(renderer.textShader, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+		textRender(&font, "hello", 10.0f, 10.0f, 1.0f);
 
 		static const glm::vec3 FORWARD = glm::vec3(0.0f, 0.0f, -1.0f);
 		static const glm::vec3 UP = glm::vec3(0.0f, 1.0f, 0.0f);

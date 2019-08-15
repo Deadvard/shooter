@@ -17,7 +17,7 @@ struct Font
 	Character characters[128];
 };
 
-Font fontCreate(const char *path);
+void fontCreate(Font* font, const char *path);
 void textRender(Font *f, const char *text, float x, float y, float scale);
 
 #endif
