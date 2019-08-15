@@ -144,7 +144,7 @@ void run()
 
 		glUseProgram(renderer.textShader);
 		glUniformMatrix4fv(glGetUniformLocation(renderer.textShader, "projection"), 1, GL_FALSE, glm::value_ptr(renderer.projection));
-		//textRender(&font, "HELLO", 10.0f, 10.0f, 1.0f);
+		textRender(&font, "HELLO", 10.0f, 10.0f, 1.0f);
 
 		static const glm::vec3 FORWARD = glm::vec3(0.0f, 0.0f, -1.0f);
 		static const glm::vec3 UP = glm::vec3(0.0f, 1.0f, 0.0f);

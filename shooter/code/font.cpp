@@ -85,9 +85,9 @@ void textRender(Font *f, const char *text, float x, float y, float scale)
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(f->vao);
 
-	for (int c = 0; c < 128; ++c)
+	while (*text)
 	{
-		Character *ch = &f->characters[c];
+		Character *ch = &f->characters[*text];
 
 		float xpos = x + ch->xoffset * scale;
 		float ypos = y - (ch->height - ch->yoffset) * scale;
@@ -115,5 +115,6 @@ void textRender(Font *f, const char *text, float x, float y, float scale)
 
 		// Bitshift by 6 to get value in pixels (2^6 = 64)
 		x += (ch->advance >> 6) * scale;
+		++text;
 	}
 }
