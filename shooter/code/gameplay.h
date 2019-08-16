@@ -20,5 +20,6 @@ void gameplayInitialize(Gameplay* gameplay, Renderer* renderer);
 void gameplayUpdate(Gameplay* gameplay, Renderer* renderer);
 
 void gameplayShoot(Gameplay* gameplay, Model* cameraFocus, Renderer* renderer);
+void gameplayLightning(Gameplay* gameplay, Model* cameraFocus, Renderer* renderer);
 
 #endif

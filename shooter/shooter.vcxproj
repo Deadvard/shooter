@@ -160,6 +160,12 @@
     <ClCompile Include="code\physics.cpp" />
     <ClCompile Include="code\renderer.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\lightning.frag" />
+    <None Include="shaders\lightning.vert" />
+    <None Include="shaders\quad.frag" />
+    <None Include="shaders\quad.vert" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

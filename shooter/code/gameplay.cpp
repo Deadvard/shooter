@@ -33,5 +33,20 @@ void gameplayShoot(Gameplay* gameplay, Model* cameraFocus, Renderer* renderer)
 	gameplay->actors[bullet].direction = forward;
 	gameplay->actors[bullet].speed = 0.5f;
 	renderer->activeModels[gameplay->actors[bullet].modelIndex].rotation = glm::inverse(cameraFocus->rotation);
+}
+
+void gameplayLightning(Gameplay* gameplay, Model* cameraFocus, Renderer* renderer)
+{
+	glm::vec3 forward = glm::normalize(glm::inverse(cameraFocus->rotation) * glm::vec3(0, 0, -1));
+	glm::vec3 start = cameraFocus->position;
+	glm::vec3 end = cameraFocus->position + forward * 20.f;
+
+	glm::vec3 middle = (end-start) * 0.5f;
+	glm::vec3 offset = glm::normalize(glm::cross(end, start));
+	middle *= offset;
+
+	//renderer->lightning[0] = start;
+	//renderer->lightning[1] = middle;
+	//renderer->lightning[2] = end;
 
 }

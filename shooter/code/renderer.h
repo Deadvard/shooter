@@ -63,6 +63,28 @@ struct Model
 	unsigned int meshIndex;
 };
 
+struct QuadMesh
+{
+	unsigned int vao;
+	unsigned int vbo;
+	unsigned int ebo;
+};
+
+struct Gui
+{
+	QuadMesh quadMesh;
+	unsigned int activeElements;
+	glm::vec2 positions[128];
+};
+
+struct ThunderEffect
+{
+	unsigned int lightningVao;
+	unsigned int lightningVbo;
+
+	glm::vec3 lightning[3];
+};
+
 struct Camera
 {
 	float yaw;
@@ -76,6 +98,8 @@ struct Renderer
 {
 	unsigned int primaryShader;
 	unsigned int textShader;
+	unsigned int lightningShader;
+	unsigned int quadShader;
 	unsigned int matrixBuffer;
 
 	glm::mat4 projection;
@@ -85,14 +109,20 @@ struct Renderer
 	Model activeModels[128];
 	unsigned int numActiveModels;
 
+	Gui gui;
+
 	MeshStorage meshStorage;
 	Camera cam;
 
 	Lighting lighting;
 };
 
-void rendererInitialize(Renderer *renderer);
 unsigned int rendererAddModel(Renderer* renderer, int meshIndex, glm::vec3 startingPos);
+void rendererInitialize(Renderer *renderer);
+void rendererUpdate(Renderer* renderer);
+void rendererAddGuiElement(Renderer* renderer, glm::vec2* position);
+void rendererRefreshLightning(Renderer* renderer);
+
 
 static glm::mat4 matrixView(Camera *c)
 {

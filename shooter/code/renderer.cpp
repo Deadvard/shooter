@@ -121,6 +121,76 @@ void toonTextureCreate(Lighting* lighting)
 	glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); //Conditions
 }
 
+void initializeGui(Renderer* renderer)
+{
+	static const float quad[]
+	{
+		0.0f, 0.0f,
+		1.0f, 0.0f,
+		0.0f, 1.0f,
+		1.0f, 1.0f,
+	};
+
+	static const unsigned int quad_indices[]
+	{
+		0, 1, 2,
+		3, 2, 1
+	};
+
+	glGenVertexArrays(1, &renderer->gui.quadMesh.vao);
+	glBindVertexArray(renderer->gui.quadMesh.vao);
+
+	glGenBuffers(1, &renderer->gui.quadMesh.vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, renderer->gui.quadMesh.vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(quad), quad, GL_STATIC_DRAW);
+
+	glGenBuffers(1, &renderer->gui.quadMesh.ebo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, renderer->gui.quadMesh.ebo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(quad_indices), quad_indices, GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
+
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	renderer->gui.activeElements = 0;
+}
+
+void rendererAddGuiElement(Renderer* renderer, glm::vec2* position)
+{
+	renderer->gui.positions[renderer->gui.activeElements++] = *position;
+}
+
+void initializeLightning(Renderer* renderer)
+{
+	//glGenVertexArrays(1, &renderer->lightningVao);
+	//glBindVertexArray(renderer->lightningVao);
+	//glGenBuffers(1, &renderer->lightningVbo);
+	//glBindBuffer(GL_ARRAY_BUFFER, renderer->lightningVbo);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * 3, &renderer->lightning[0], GL_STATIC_DRAW);
+	//glEnableVertexAttribArray(0);
+	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
+	//
+	//if (renderer->lightning) // Temp
+	//{
+	//	glBindVertexArray(renderer->lightningVao);
+	//
+	//	glUseProgram(renderer->lightningShader);
+	//	glUniformMatrix4fv(glGetUniformLocation(renderer->lightningShader, "view"), 1, GL_FALSE, &view[0][0]);
+	//	glUniformMatrix4fv(glGetUniformLocation(renderer->lightningShader, "projection"), 1, GL_FALSE, &renderer->projection[0][0]);
+	//	glDrawArrays(GL_LINES, 0, 3);
+	//
+	//	glBindVertexArray(0);
+	//
+	//}
+}
+
+void rendererRefreshLightning(Renderer* renderer)
+{
+
+}
+
 void loadMeshes(Renderer* renderer)
 {
 	char *data = readEntireFile("result.bin");
@@ -147,6 +217,8 @@ void rendererInitialize(Renderer *renderer)
 {	
 	renderer->primaryShader = shaderProgramCreate("shaders/primary_shader.vert", "shaders/primary_shader.frag");
 	renderer->textShader = shaderProgramCreate("shaders/text.vert", "shaders/text.frag");
+	renderer->lightningShader = shaderProgramCreate("shaders/lightning.vert", "shaders/lightning.frag");
+	renderer->quadShader = shaderProgramCreate("shaders/quad.vert", "shaders/quad.frag");
 
 	renderer->projection = glm::perspective(glm::radians(90.0f), 16.0f / 9.0f, 0.01f, 1000.0f);
 
@@ -160,8 +232,14 @@ void rendererInitialize(Renderer *renderer)
 	toonTextureCreate(&renderer->lighting);
 
 	loadMeshes(renderer);
+	initializeGui(renderer);
+	initializeLightning(renderer);
 
+	rendererAddGuiElement(renderer, &glm::vec2(0,0));
+}
 
+void rendererUpdate(Renderer* renderer)
+{
 
 }
 
@@ -187,11 +265,19 @@ void renderScene(Renderer *renderer)
 
 		meshRender(&renderer->meshStorage, &renderer->meshes[renderer->activeModels[i].meshIndex]);
 	}
+
 	glBindVertexArray(0);
 
-}
-
-void modelsRender(Model *models, int length)
-{
-
+	glUseProgram(renderer->quadShader);
+	glUniformMatrix4fv(glGetUniformLocation(renderer->quadShader, "view"), 1, GL_FALSE, &view[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(renderer->quadShader, "projection"), 1, GL_FALSE, &renderer->projection[0][0]);
+	glBindVertexArray(renderer->gui.quadMesh.vao);
+	for (int i = 0; i < renderer->gui.activeElements; ++i)
+	{
+		glm::mat4 model(1.f);
+		model = glm::translate(model, glm::vec3(renderer->gui.positions[i].x, renderer->gui.positions[i].y, 0));
+		glUniformMatrix4fv(glGetUniformLocation(renderer->quadShader, "model"), 1, GL_FALSE, &model[0][0]);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	}
+	glBindVertexArray(0);
 }

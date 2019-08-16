@@ -136,6 +136,10 @@ void run()
 				{
 					gameplayShoot(&gameplay, &cameraFocus, &renderer);
 				}
+				else if (e.button.button == SDL_BUTTON_RIGHT)
+				{
+					gameplayLightning(&gameplay, &cameraFocus, &renderer);
+				}
 				break;
 			}
 			}
@@ -147,7 +151,7 @@ void run()
 
 		glUseProgram(renderer.textShader);
 		glUniformMatrix4fv(glGetUniformLocation(renderer.textShader, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-		textRender(&font, "HELLO", 100.0f, 100.0f, 1.0f);
+		textRender(&font, "hello", 10.0f, 10.0f, 1.0f);
 
 		static const glm::vec3 FORWARD = glm::vec3(0.0f, 0.0f, -1.0f);
 		static const glm::vec3 UP = glm::vec3(0.0f, 1.0f, 0.0f);

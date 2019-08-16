@@ -10,7 +10,7 @@ Mesh meshFromBuffer(MeshStorage *storage, char *data)
 	Vertex *vertices = (Vertex *)(data + 2 * sizeof(int));
 	unsigned int *indices = (unsigned int *)(vertices + sizeVertex);
 
-	return meshCreate(storage, vertices, sizeVertex, indices, sizeIndex);	
+	return meshCreate(storage, vertices, sizeVertex, indices, sizeIndex);
 }
 
 MeshStorage meshStorageCreate(int size)

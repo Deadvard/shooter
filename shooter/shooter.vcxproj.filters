@@ -21,4 +21,10 @@
     <ClCompile Include="code\physics.cpp" />
     <ClCompile Include="code\gameplay.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\lightning.frag" />
+    <None Include="shaders\lightning.vert" />
+    <None Include="shaders\quad.vert" />
+    <None Include="shaders\quad.frag" />
+  </ItemGroup>
 </Project>
