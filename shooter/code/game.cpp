@@ -13,11 +13,34 @@
 
 #define pi32 3.14159265359f
 
+enum ButtonState
+{
+	stateNone,
+	stateHover,
+	statePressed
+};
+
+struct Button
+{
+	float x;
+	float y;
+	float w;
+	float h;
+	ButtonState state;
+};
+
+struct MenuState
+{
+	Button buttons[10];
+};
+
 struct Window
 {
 	SDL_Window* window;
 	SDL_GLContext glContext;
 };
+
+void updateMenu(MenuState *menuState, glm::vec2 mousePosition, int lmbPressed);
 
 static void windowInitialize(Window *window, const char* title, int width, int height)
 {
@@ -90,6 +113,18 @@ void run()
 	Font font;
 	fontCreate(&font, "font.ttf");
 
+	MenuState menuState;
+	for (int i = 0; i < 10; ++i)
+	{
+		menuState.buttons[i].x = 10.0f;
+		menuState.buttons[i].y = 10.0f;
+		menuState.buttons[i].w = 10.0f;
+		menuState.buttons[i].h = 10.0f;
+		menuState.buttons[i].state = stateNone;
+	}
+	glm::vec2 mousePosition = glm::vec2(0.0f);
+	int menuVisible = false;
+	int lmbPressed = false;
 
 	double lastTime = (double)SDL_GetTicks() / 1000.0;
 	double deltaTime = 0.0;
@@ -120,6 +155,8 @@ void run()
 			{
 				dx += e.motion.xrel;
 				dy += e.motion.yrel;
+				mousePosition.x = e.motion.x;
+				mousePosition.y = e.motion.y;
 				break;
 			}
 			case SDL_KEYUP:
@@ -128,6 +165,19 @@ void run()
 				{
 					physicsOn = !physicsOn;
 				}
+				if (e.key.keysym.scancode == SDL_SCANCODE_I)
+				{
+					menuVisible = !menuVisible;
+					SDL_SetRelativeMouseMode((SDL_bool)(!menuVisible));
+				}
+				break;
+			}
+			case SDL_MOUSEBUTTONDOWN:
+			{
+				if (e.button.button == SDL_BUTTON_LEFT)
+				{
+					lmbPressed = true;
+				}
 				break;
 			}
 			case SDL_MOUSEBUTTONUP:
@@ -135,11 +185,18 @@ void run()
 				if (e.button.button == SDL_BUTTON_LEFT)
 				{
 					gameplayShoot(&gameplay, &cameraFocus, &renderer);
+					lmbPressed = false;
 				}
 				break;
 			}
 			}
 		}
+
+		if (menuVisible)
+		{
+			updateMenu(&menuState, mousePosition, lmbPressed);
+		}		
+
 		glClearColor(135.0f / 255.0f, 206.0f / 255.0f, 235.0f / 255.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -201,4 +258,31 @@ void run()
 
 		running = running && !keys[SDL_SCANCODE_ESCAPE];
 	}
+}
+
+int pointInRectangle(float x, float y, float w, float h, float px, float py)
+{
+	if (x > px) return false;
+	if (y > py) return false;
+	if (w < px) return false;
+	if (h < py) return false;
+	return true;
+}
+
+void updateMenu(MenuState *menuState, glm::vec2 mousePosition, int lmbPressed)
+{
+	for (int i = 0; i < 10; ++i)
+	{	
+		Button *b = &menuState->buttons[i];
+		b->state = stateNone;
+		if (pointInRectangle(b->x, b->y, b->w, b->h, mousePosition.x, mousePosition.y))
+		{
+			b->state = stateHover;
+			if (lmbPressed)
+			{
+				b->state = statePressed;
+			}
+		}
+	}
+	printf("%.3f\n", mousePosition.x);
 }
