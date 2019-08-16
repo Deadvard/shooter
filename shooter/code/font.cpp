@@ -14,13 +14,7 @@ void fontCreate(Font* font, const char *path)
 {
 	stbtt_fontinfo stbfont;
 
-	//FILE* ff;
-	//fopen_s(&ff, "font.ttf", "rb");
-
 	char *data = readEntireFile("font.ttf");
-
-	//fread(ttf_buffer, 1, 1 << 25, ff);
-	//stbtt_InitFont(&font, ttf_buffer, stbtt_GetFontOffsetForIndex(ttf_buffer, 0));
 	stbtt_InitFont(&stbfont, (unsigned char *)data, stbtt_GetFontOffsetForIndex((unsigned char *)data, 0));
 
 	for (int c = 0; c < 128; ++c)
@@ -64,7 +58,6 @@ void fontCreate(Font* font, const char *path)
 	}
 
 	free(data);
-	//fclose(ff);
 
 	glGenVertexArrays(1, &font->vao);
 	glGenBuffers(1, &font->vbo);

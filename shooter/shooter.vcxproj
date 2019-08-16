@@ -146,6 +146,7 @@
     <ClInclude Include="code\importer.h" />
     <ClInclude Include="code\memory.h" />
     <ClInclude Include="code\mesh.h" />
+    <ClInclude Include="code\particle.h" />
     <ClInclude Include="code\physics.h" />
     <ClInclude Include="code\renderer.h" />
   </ItemGroup>
@@ -157,6 +158,7 @@
     <ClCompile Include="code\main.cpp" />
     <ClCompile Include="code\memory.cpp" />
     <ClCompile Include="code\mesh.cpp" />
+    <ClCompile Include="code\particle.cpp" />
     <ClCompile Include="code\physics.cpp" />
     <ClCompile Include="code\renderer.cpp" />
   </ItemGroup>
