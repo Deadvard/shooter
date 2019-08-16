@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include "mesh.h"
+#include "font.h"
 
 static const float box[]
 {
@@ -108,6 +109,8 @@ struct Renderer
 	unsigned int numMeshes;
 	Model activeModels[128];
 	unsigned int numActiveModels;
+
+	Font font;
 
 	Gui gui;
 

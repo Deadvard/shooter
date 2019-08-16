@@ -1,6 +1,7 @@
 #include "renderer.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <glm/gtc/type_ptr.hpp>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
@@ -151,9 +152,6 @@ void initializeGui(Renderer* renderer)
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
 
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
 	renderer->gui.activeElements = 0;
 }
 
@@ -234,8 +232,9 @@ void rendererInitialize(Renderer *renderer)
 	loadMeshes(renderer);
 	initializeGui(renderer);
 	initializeLightning(renderer);
+	fontCreate(&renderer->font, "font.ttf");
 
-	rendererAddGuiElement(renderer, &glm::vec2(0,0));
+	rendererAddGuiElement(renderer, &glm::vec2(-1,-1));
 }
 
 void rendererUpdate(Renderer* renderer)
@@ -268,16 +267,21 @@ void renderScene(Renderer *renderer)
 
 	glBindVertexArray(0);
 
+	glm::mat4 projection = glm::ortho(0.0f, 1280.f, 0.0f, 720.f);
+
+	glUseProgram(renderer->textShader);
+	glUniformMatrix4fv(glGetUniformLocation(renderer->textShader, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+	textRender(&renderer->font, "hello", 10.0f, 10.0f, 1.0f);
+
 	glUseProgram(renderer->quadShader);
-	glUniformMatrix4fv(glGetUniformLocation(renderer->quadShader, "view"), 1, GL_FALSE, &view[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(renderer->quadShader, "projection"), 1, GL_FALSE, &renderer->projection[0][0]);
 	glBindVertexArray(renderer->gui.quadMesh.vao);
 	for (int i = 0; i < renderer->gui.activeElements; ++i)
 	{
 		glm::mat4 model(1.f);
 		model = glm::translate(model, glm::vec3(renderer->gui.positions[i].x, renderer->gui.positions[i].y, 0));
+		model = glm::scale(model, glm::vec3(0.3, 0.3, 0.3));
 		glUniformMatrix4fv(glGetUniformLocation(renderer->quadShader, "model"), 1, GL_FALSE, &model[0][0]);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 	}
 	glBindVertexArray(0);
 }
