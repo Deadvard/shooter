@@ -43,10 +43,27 @@ void gameplayLightning(Gameplay* gameplay, Model* cameraFocus, Renderer* rendere
 
 	glm::vec3 middle = (end-start) * 0.5f;
 	glm::vec3 offset = glm::normalize(glm::cross(end, start));
-	middle *= offset;
+	middle += offset;
 
-	//renderer->lightning[0] = start;
-	//renderer->lightning[1] = middle;
-	//renderer->lightning[2] = end;
+	renderer->thunderEffect.positions[0] = start;
+	renderer->thunderEffect.positions[32] = middle;
+	renderer->thunderEffect.positions[64] = end;
 
+	float interpolationOffset = 0.05f;
+	glm::vec3 temp = glm::mix(start, middle, interpolationOffset);
+	for (int i = 1; i < 32; ++i)
+	{
+		renderer->thunderEffect.positions[i] = temp;
+		temp = glm::mix(temp, middle, interpolationOffset);
+	}
+
+	temp = glm::mix(middle, end, interpolationOffset);
+	for (int i = 33; i < 64; ++i)
+	{
+		renderer->thunderEffect.positions[i] = temp;
+		temp = glm::mix(temp, end, interpolationOffset);
+	}
+
+	rendererRefreshThunder(renderer);
+	renderer->thunderEffect.isActive = true;
 }

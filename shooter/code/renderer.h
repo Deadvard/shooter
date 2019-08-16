@@ -80,10 +80,12 @@ struct Gui
 
 struct ThunderEffect
 {
-	unsigned int lightningVao;
-	unsigned int lightningVbo;
+	bool isActive;
+	unsigned int thunderVao;
+	unsigned int thunderVbo;
 
-	glm::vec3 lightning[3];
+	glm::vec3 positions[65];
+	float strength[65];
 };
 
 struct Camera
@@ -99,7 +101,7 @@ struct Renderer
 {
 	unsigned int primaryShader;
 	unsigned int textShader;
-	unsigned int lightningShader;
+	unsigned int thunderShader;
 	unsigned int quadShader;
 	unsigned int matrixBuffer;
 
@@ -110,8 +112,9 @@ struct Renderer
 	Model activeModels[128];
 	unsigned int numActiveModels;
 
-	Font font;
+	ThunderEffect thunderEffect;
 
+	Font font;
 	Gui gui;
 
 	MeshStorage meshStorage;
@@ -124,7 +127,7 @@ unsigned int rendererAddModel(Renderer* renderer, int meshIndex, glm::vec3 start
 void rendererInitialize(Renderer *renderer);
 void rendererUpdate(Renderer* renderer);
 void rendererAddGuiElement(Renderer* renderer, glm::vec2* position);
-void rendererRefreshLightning(Renderer* renderer);
+void rendererRefreshThunder(Renderer* renderer);
 
 
 static glm::mat4 matrixView(Camera *c)

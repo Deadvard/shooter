@@ -160,33 +160,22 @@ void rendererAddGuiElement(Renderer* renderer, glm::vec2* position)
 	renderer->gui.positions[renderer->gui.activeElements++] = *position;
 }
 
-void initializeLightning(Renderer* renderer)
+void initializeThunder(Renderer* renderer)
 {
-	//glGenVertexArrays(1, &renderer->lightningVao);
-	//glBindVertexArray(renderer->lightningVao);
-	//glGenBuffers(1, &renderer->lightningVbo);
-	//glBindBuffer(GL_ARRAY_BUFFER, renderer->lightningVbo);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * 3, &renderer->lightning[0], GL_STATIC_DRAW);
-	//glEnableVertexAttribArray(0);
-	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
-	//
-	//if (renderer->lightning) // Temp
-	//{
-	//	glBindVertexArray(renderer->lightningVao);
-	//
-	//	glUseProgram(renderer->lightningShader);
-	//	glUniformMatrix4fv(glGetUniformLocation(renderer->lightningShader, "view"), 1, GL_FALSE, &view[0][0]);
-	//	glUniformMatrix4fv(glGetUniformLocation(renderer->lightningShader, "projection"), 1, GL_FALSE, &renderer->projection[0][0]);
-	//	glDrawArrays(GL_LINES, 0, 3);
-	//
-	//	glBindVertexArray(0);
-	//
-	//}
+	glGenVertexArrays(1, &renderer->thunderEffect.thunderVao);
+	glBindVertexArray(renderer->thunderEffect.thunderVao);
+	glGenBuffers(1, &renderer->thunderEffect.thunderVbo);
+	glBindBuffer(GL_ARRAY_BUFFER, renderer->thunderEffect.thunderVbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * 65, &renderer->thunderEffect.positions[0], GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
+	renderer->thunderEffect.isActive = false;
 }
 
-void rendererRefreshLightning(Renderer* renderer)
+void rendererRefreshThunder(Renderer* renderer)
 {
-
+	glBindBuffer(GL_ARRAY_BUFFER, renderer->thunderEffect.thunderVbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * 65, &renderer->thunderEffect.positions[0], GL_STATIC_DRAW);
 }
 
 void loadMeshes(Renderer* renderer)
@@ -215,7 +204,7 @@ void rendererInitialize(Renderer *renderer)
 {	
 	renderer->primaryShader = shaderProgramCreate("shaders/primary_shader.vert", "shaders/primary_shader.frag");
 	renderer->textShader = shaderProgramCreate("shaders/text.vert", "shaders/text.frag");
-	renderer->lightningShader = shaderProgramCreate("shaders/lightning.vert", "shaders/lightning.frag");
+	renderer->thunderShader = shaderProgramCreate("shaders/lightning.vert", "shaders/lightning.frag");
 	renderer->quadShader = shaderProgramCreate("shaders/quad.vert", "shaders/quad.frag");
 
 	renderer->projection = glm::perspective(glm::radians(90.0f), 16.0f / 9.0f, 0.01f, 1000.0f);
@@ -231,7 +220,7 @@ void rendererInitialize(Renderer *renderer)
 
 	loadMeshes(renderer);
 	initializeGui(renderer);
-	initializeLightning(renderer);
+	initializeThunder(renderer);
 	fontCreate(&renderer->font, "font.ttf");
 
 	rendererAddGuiElement(renderer, &glm::vec2(-1,-1));
@@ -284,4 +273,16 @@ void renderScene(Renderer *renderer)
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 	}
 	glBindVertexArray(0);
+
+	if (renderer->thunderEffect.isActive) // Temp
+	{
+		glUseProgram(renderer->thunderShader);
+
+		glBindVertexArray(renderer->thunderEffect.thunderVao);
+		glUniformMatrix4fv(glGetUniformLocation(renderer->thunderShader, "view"), 1, GL_FALSE, &view[0][0]);
+		glUniformMatrix4fv(glGetUniformLocation(renderer->thunderShader, "projection"), 1, GL_FALSE, &renderer->projection[0][0]);
+		glLineWidth(5.f);
+		glDrawArrays(GL_LINES, 0, 64);
+		glBindVertexArray(0);
+	}
 }
