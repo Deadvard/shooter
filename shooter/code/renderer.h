@@ -5,6 +5,7 @@
 #include <glm/gtc/quaternion.hpp>
 #include "mesh.h"
 #include "font.h"
+#include "ui.h"
 
 static const float box[]
 {
@@ -121,6 +122,10 @@ struct Renderer
 	Camera cam;
 
 	Lighting lighting;
+
+	unsigned int uiVAO;
+	unsigned int uiVBO;
+	ImmidiateMode im;
 };
 
 unsigned int rendererAddModel(Renderer* renderer, int meshIndex, glm::vec3 startingPos);
@@ -144,5 +149,6 @@ unsigned int shaderProgramCreate(const char *vertexPath, const char *fragmentPat
 unsigned imageTextureCreate(const char *path);
 unsigned textTextureCreate(const char *path, const char *text);
 void renderScene(Renderer *renderer);
+void renderUI(Renderer *renderer, UserInterface *ui);
 
 #endif

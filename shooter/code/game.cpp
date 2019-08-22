@@ -7,8 +7,11 @@
 #include "renderer.h"
 #include "physics.h"
 #include "gameplay.h"
+#include "ui.h"
 
 #define pi32 3.14159265359f
+
+int pointInRectangle(float x, float y, float w, float h, float px, float py);
 
 enum ButtonState
 {
@@ -97,6 +100,9 @@ void run()
 			physicsData->heights[j] = h;
 		}
 	}
+
+	UserInterface ui;
+	ui.nrOfElements = 0;
 	
 	Window window;
 	windowInitialize(&window, "shooter", 1280, 720);
@@ -124,6 +130,14 @@ void run()
 	double deltaTime = 0.0;
 
 	int physicsOn = true;
+
+	float wx = 10.0f;
+	float wy = 10.0f;
+	float ww = 100.0f;
+	float wh = 100.0f;
+	int windowSelected = false;
+	int resizeX = false;
+	int resizeY = false;
 
 	int running = true;
 	while (running)
@@ -190,9 +204,47 @@ void run()
 			}
 		}
 
+		clear(&ui);
 		if (menuVisible)
 		{
-			updateMenu(&menuState, mousePosition, lmbPressed);
+			if (lmbPressed)
+			{
+				if (pointInRectangle(wx + ww * 0.9f, wy, ww, wh, mousePosition.x, mousePosition.y))
+				{
+					resizeX = true;
+				}
+				if (pointInRectangle(wx, wy + wh * 0.9f, ww, wh, mousePosition.x, mousePosition.y))
+				{
+					resizeY = true;
+				}
+
+				if (pointInRectangle(wx, wy, ww * 0.9f, wh * 0.9f, mousePosition.x, mousePosition.y))
+				{
+					windowSelected = true;
+				}
+			}
+			else if (!lmbPressed)
+			{
+				resizeX = false;
+				resizeY = false;
+				windowSelected = false;			
+			}
+
+			if (windowSelected && !resizeX && !resizeY)
+			{
+				wx += dx;
+				wy += dy;
+			}
+			if (resizeX && (ww + dx) > 10)
+			{
+				ww += dx;
+			}
+			if (resizeY && (wh + dy) > 10)
+			{
+				wh += dy;
+			}
+			
+			uiwindow(&ui, "text", wx, wy, ww, wh);
 		}		
 
 		glClearColor(135.0f / 255.0f, 206.0f / 255.0f, 235.0f / 255.0f, 1.0f);
@@ -205,21 +257,24 @@ void run()
 		rot += pi32 * deltaTime;
 		renderer.activeModels[1].rotation = glm::angleAxis(rot, glm::vec3(0, 1.f, 0));
 
-		float sensitivity = 0.01f;
-		float max = pi32 * 0.4f;
-		float min = -max;
+		if (!menuVisible)
+		{
+			float sensitivity = 0.01f;
+			float max = pi32 * 0.4f;
+			float min = -max;
 
-		renderer.cam.yaw += (float)dx * sensitivity;
-		renderer.cam.pitch += (float)dy * sensitivity;
-		if (renderer.cam.pitch < min) renderer.cam.pitch = min;
-		if (renderer.cam.pitch > max) renderer.cam.pitch = max;
+			renderer.cam.yaw += (float)dx * sensitivity;
+			renderer.cam.pitch += (float)dy * sensitivity;
+			if (renderer.cam.pitch < min) renderer.cam.pitch = min;
+			if (renderer.cam.pitch > max) renderer.cam.pitch = max;
+		}
 
 		glm::quat qPitch = glm::angleAxis(renderer.cam.pitch, glm::vec3(1, 0, 0));
 		glm::quat qYaw = glm::angleAxis(renderer.cam.yaw, glm::vec3(0, 1, 0));
 		glm::quat qRotate = glm::normalize(qPitch * qYaw);
 
 		cameraFocus.rotation = qRotate;
-		glm::vec3 forward = glm::normalize(glm::inverse(qRotate) * FORWARD);;
+		glm::vec3 forward = glm::normalize(glm::inverse(qRotate) * FORWARD);
 		
 		if (physicsOn)
 		{
@@ -245,6 +300,7 @@ void run()
 		}
 		
 		renderScene(&renderer);
+		renderUI(&renderer, &ui);
 		
 		SDL_GL_SwapWindow(window.window);
 
@@ -256,8 +312,8 @@ int pointInRectangle(float x, float y, float w, float h, float px, float py)
 {
 	if (x > px) return false;
 	if (y > py) return false;
-	if (w < px) return false;
-	if (h < py) return false;
+	if ((x + w) < px) return false;
+	if ((y + h) < py) return false;
 	return true;
 }
 

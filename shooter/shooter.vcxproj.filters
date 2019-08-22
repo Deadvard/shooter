@@ -10,6 +10,7 @@
     <ClInclude Include="code\physics.h" />
     <ClInclude Include="code\gameplay.h" />
     <ClInclude Include="code\particle.h" />
+    <ClInclude Include="code\ui.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="code\renderer.cpp" />
@@ -22,6 +23,7 @@
     <ClCompile Include="code\physics.cpp" />
     <ClCompile Include="code\gameplay.cpp" />
     <ClCompile Include="code\particle.cpp" />
+    <ClCompile Include="code\ui.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\lightning.frag" />

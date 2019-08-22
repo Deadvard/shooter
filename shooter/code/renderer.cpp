@@ -153,6 +153,18 @@ void initializeGui(Renderer* renderer)
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
 
 	renderer->gui.activeElements = 0;
+
+	glGenVertexArrays(1, &renderer->uiVAO);
+	glBindVertexArray(renderer->uiVAO);
+
+	glGenBuffers(1, &renderer->uiVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, renderer->uiVBO);
+	glBufferData(GL_ARRAY_BUFFER, 1024, 0, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
+
+	renderer->im.shader = renderer->quadShader;
+	immidiateModeInitialize(&renderer->im);
 }
 
 void rendererAddGuiElement(Renderer* renderer, glm::vec2* position)
@@ -262,7 +274,7 @@ void renderScene(Renderer *renderer)
 	glUniformMatrix4fv(glGetUniformLocation(renderer->textShader, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 	textRender(&renderer->font, "hello", 10.0f, 10.0f, 1.0f);
 
-	glUseProgram(renderer->quadShader);
+	/*glUseProgram(renderer->quadShader);
 	glBindVertexArray(renderer->gui.quadMesh.vao);
 	for (int i = 0; i < renderer->gui.activeElements; ++i)
 	{
@@ -272,7 +284,7 @@ void renderScene(Renderer *renderer)
 		glUniformMatrix4fv(glGetUniformLocation(renderer->quadShader, "model"), 1, GL_FALSE, &model[0][0]);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 	}
-	glBindVertexArray(0);
+	glBindVertexArray(0);*/
 
 	if (renderer->thunderEffect.isActive) // Temp
 	{
@@ -285,4 +297,25 @@ void renderScene(Renderer *renderer)
 		glDrawArrays(GL_LINES, 0, 64);
 		glBindVertexArray(0);
 	}
+}
+
+void renderUI(Renderer *renderer, UserInterface *ui)
+{
+	for (int i = 0; i < ui->nrOfElements; ++i)
+	{
+		Element *e = &ui->elements[i];
+		if (e->type == typeWindow)
+		{			
+			//uiColor(&renderer->im, 8.0f, 0.8f, 0.0f, 1.0f);
+			//uiSlider(&renderer->im, "text", 0.5f, e->x, e->y, e->w, e->h);
+			
+			uiColor(&renderer->im, 0.0f, 0.8f, 0.8f, 1.0f);
+			uiWindow(&renderer->im, "text", e->x, e->y, e->w, e->h);		
+		}	
+	}
+	
+
+	glm::mat4 projection = glm::ortho(0.0f, 1280.f, 720.0f, 0.f);
+	glUniformMatrix4fv(0, 1, GL_FALSE, &projection[0][0]);
+	immidiateModeDraw(&renderer->im);
 }
