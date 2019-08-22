@@ -301,21 +301,23 @@ void renderScene(Renderer *renderer)
 
 void renderUI(Renderer *renderer, UserInterface *ui)
 {
+	immidiateModeBegin(&renderer->im);
+	
+	glm::mat4 projection = glm::ortho(0.0f, 1280.f, 720.0f, 0.f);
+	glUniformMatrix4fv(0, 1, GL_FALSE, &projection[0][0]);
+	
 	for (int i = 0; i < ui->nrOfElements; ++i)
 	{
 		Element *e = &ui->elements[i];
 		if (e->type == typeWindow)
 		{			
-			//uiColor(&renderer->im, 8.0f, 0.8f, 0.0f, 1.0f);
-			//uiSlider(&renderer->im, "text", 0.5f, e->x, e->y, e->w, e->h);
-			
 			uiColor(&renderer->im, 0.0f, 0.8f, 0.8f, 1.0f);
-			uiWindow(&renderer->im, "text", e->x, e->y, e->w, e->h);		
+			uiWindow(&renderer->im, "text", e->x, e->y, e->w, e->h);
+
+			uiColor(&renderer->im, 8.0f, 0.8f, 0.0f, 1.0f);
+			uiSlider(&renderer->im, "text", 0.5f, e->x, e->y, e->w, e->h);
 		}	
 	}
-	
 
-	glm::mat4 projection = glm::ortho(0.0f, 1280.f, 720.0f, 0.f);
-	glUniformMatrix4fv(0, 1, GL_FALSE, &projection[0][0]);
-	immidiateModeDraw(&renderer->im);
+	immidiateModeEnd(&renderer->im);
 }

@@ -60,10 +60,6 @@ typedef struct
 	unsigned int vbo;
 
 	float color[4];
-
-	uiVertex *vertices;
-	unsigned int numVertices;
-	unsigned int maxVertices;
 } ImmidiateMode;
 
 typedef unsigned int WindowHandle;
@@ -71,13 +67,15 @@ typedef unsigned int WindowHandle;
 void immidiateModeInitialize(ImmidiateMode *im);
 void immidiateModeTerminate(ImmidiateMode *im);
 
-void immidiateModeVertex(ImmidiateMode *im, uiVertex *vertices, unsigned int size);
-void immidiateModeDraw(ImmidiateMode *im);
+void immidiateModeBegin(ImmidiateMode *im);
+void immidiateModeEnd(ImmidiateMode *im);
 
 void uiColor(ImmidiateMode *im, float r, float g, float b, float a);
 void uiWindow(ImmidiateMode *im, const char *text, float x, float y, float w, float h);
 void uiButton(ImmidiateMode *im, const char *text, int pressed);
 void uiSlider(ImmidiateMode *im, const char *text, float value, float x, float y, float w, float h);
+
+void uiQuad(ImmidiateMode *im, float x, float y, float w, float h);
 
 
 #endif
