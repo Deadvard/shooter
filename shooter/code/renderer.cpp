@@ -304,38 +304,28 @@ void renderScene(Renderer *renderer)
 
 void renderUI(Renderer *renderer, UserInterface *ui)
 {
-	immidiateModeBegin(&renderer->im);
+	Primitives *prim = &renderer->prim;
+	glUseProgram(prim->shader);
+	glBindVertexArray(prim->vao);
 	
 	glm::mat4 projection = glm::ortho(0.0f, 1280.f, 720.0f, 0.f);
-	glUniformMatrix4fv(0, 1, GL_FALSE, &projection[0][0]);
-	
+	glm::mat4 m = glm::mat4(1.0f);
+
 	for (int i = 0; i < ui->nrOfElements; ++i)
 	{
 		Element *e = &ui->elements[i];
 		if (e->type == typeWindow)
 		{			
-			uiColor(&renderer->im, 0.0f, 0.8f, 0.8f, 1.0f);
-			uiWindow(&renderer->im, "text", e->x, e->y, e->w, e->h);
+			m[0][0] = e->w;
+			m[1][1] = e->h;
+			m[3] = glm::vec4(e->x, e->y, 0.0f, 1.0f);
+			float color1[] = { 0.0f, 0.5f, 0.0f, 1.0f };
+			drawRectangle(&(projection * m)[0][0], color1);
 
-			uiColor(&renderer->im, 8.0f, 0.8f, 0.0f, 1.0f);
-			uiSlider(&renderer->im, "text", 0.5f, e->x, e->y, e->w, e->h);
+			m[0][0] += 10.0f;
+			m[1][1] += 10.0f;
+			float color2[] = { 0.0f, 0.5f, 0.5f, 1.0f };
+			drawRectangle(&(projection * m)[0][0], color2);
 		}	
-	}
-
-	immidiateModeEnd(&renderer->im);
-
-	if (ui->nrOfElements > 0)
-	{
-		float color[] = { 0.0f, 0.5f, 0.0f, 1.0f };
-
-		Primitives *prim = &renderer->prim;
-		glUseProgram(prim->shader);
-		glBindVertexArray(prim->vao);
-		glm::mat4 m = glm::mat4(1.0f);
-		drawTriangle(&m[0][0], color);
-		color[0] = 0.5f;
-		drawCircle(&m[0][0], color);
-		color[2] = 0.5f;
-		drawRectangle(&m[0][0], color);
 	}
 }

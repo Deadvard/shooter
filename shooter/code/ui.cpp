@@ -166,7 +166,7 @@ void init(Primitives *im)
 	glBindVertexArray(im->vao);
 	glBindBuffer(GL_ARRAY_BUFFER, im->vbo);
 
-	float rectangle[][3]
+	float vertices[][3]
 	{
 		//circle
 		{ 0.0f, 0.0f, 0.0f },
@@ -305,7 +305,7 @@ void init(Primitives *im)
 		{  0.0f,  0.5f, 0.0f }
 	};
 
-	glBufferData(GL_ARRAY_BUFFER, sizeof(rectangle), rectangle, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);

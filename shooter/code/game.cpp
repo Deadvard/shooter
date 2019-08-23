@@ -131,8 +131,8 @@ void run()
 
 	int physicsOn = true;
 
-	float wx = 10.0f;
-	float wy = 10.0f;
+	float wx = 100.0f;
+	float wy = 100.0f;
 	float ww = 100.0f;
 	float wh = 100.0f;
 	int windowSelected = false;
@@ -209,16 +209,19 @@ void run()
 		{
 			if (lmbPressed)
 			{
-				if (pointInRectangle(wx + ww * 0.9f, wy, ww, wh, mousePosition.x, mousePosition.y))
+				float halfW = ww * 0.5f;
+				float halfH = wh * 0.5f;
+
+				if (pointInRectangle(wx + ww * 0.9f, wy, halfW, halfH, mousePosition.x, mousePosition.y))
 				{
 					resizeX = true;
 				}
-				if (pointInRectangle(wx, wy + wh * 0.9f, ww, wh, mousePosition.x, mousePosition.y))
+				if (pointInRectangle(wx, wy + wh * 0.9f, halfW, halfH, mousePosition.x, mousePosition.y))
 				{
 					resizeY = true;
 				}
 
-				if (pointInRectangle(wx, wy, ww * 0.9f, wh * 0.9f, mousePosition.x, mousePosition.y))
+				if (pointInRectangle(wx, wy, halfW * 0.9f, halfH * 0.9f, mousePosition.x, mousePosition.y))
 				{
 					windowSelected = true;
 				}
@@ -237,10 +240,12 @@ void run()
 			}
 			if (resizeX && (ww + dx) > 10)
 			{
+				wx += dx * 0.5f;
 				ww += dx;
 			}
 			if (resizeY && (wh + dy) > 10)
 			{
+				wy += dy * 0.5f;
 				wh += dy;
 			}
 			
@@ -310,10 +315,11 @@ void run()
 
 int pointInRectangle(float x, float y, float w, float h, float px, float py)
 {
-	if (x > px) return false;
-	if (y > py) return false;
+	if ((x - w) > px) return false;
+	if ((y - h) > py) return false;
 	if ((x + w) < px) return false;
 	if ((y + h) < py) return false;
+
 	return true;
 }
 
