@@ -148,3 +148,187 @@ void uiQuad(ImmidiateMode *im, float x, float y, float w, float h)
 	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 }
+
+typedef struct
+{
+	unsigned int first;
+	unsigned int count;
+} Primitive;
+
+static const Primitive circle = { 0, 90 };
+static const Primitive rectangle = { 90, 6 };
+static const Primitive triangle = { 96, 3 };
+
+void init(Primitives *im)
+{
+	glGenVertexArrays(1, &im->vao);
+	glGenBuffers(1, &im->vbo);
+	glBindVertexArray(im->vao);
+	glBindBuffer(GL_ARRAY_BUFFER, im->vbo);
+
+	float rectangle[][3]
+	{
+		//circle
+		{ 0.0f, 0.0f, 0.0f },
+		{ 0.489f, 0.104f, 0.0f },
+		{ 0.500f, 0.000f, 0.0f },
+		
+		{ 0.0f, 0.0f, 0.0f },
+		{ 0.457f, 0.203f, 0.0f },
+		{ 0.489f, 0.104f, 0.0f },
+		
+		{ 0.0f, 0.0f, 0.0f },
+		{ 0.405f, 0.294f, 0.0f },
+		{ 0.457f, 0.203f, 0.0f },
+		
+		{ 0.0f, 0.0f, 0.0f },
+		{ 0.335f, 0.372f, 0.0f },
+		{ 0.405f, 0.294f, 0.0f },
+		
+		{ 0.0f, 0.0f, 0.0f },
+		{ 0.250f, 0.433f, 0.0f },
+		{ 0.335f, 0.372f, 0.0f },
+		
+		{ 0.0f, 0.0f, 0.0f },
+		{ 0.155f, 0.476f, 0.0f },
+		{ 0.250f, 0.433f, 0.0f },
+		
+		{ 0.0f, 0.0f, 0.0f },
+		{ 0.052f, 0.497f, 0.0f },
+		{ 0.155f, 0.476f, 0.0f },
+		
+		{ 0.0f, 0.0f, 0.0f },
+		{ -0.052f, 0.497f, 0.0f },
+		{ 0.052f, 0.497f, 0.0f },
+		
+		{ 0.0f, 0.0f, 0.0f },
+		{ -0.155f, 0.476f, 0.0f },
+		{ -0.052f, 0.497f, 0.0f },
+		
+		{ 0.0f, 0.0f, 0.0f },
+		{ -0.250f, 0.433f, 0.0f },
+		{ -0.155f, 0.476f, 0.0f },
+		
+		{ 0.0f, 0.0f, 0.0f },
+		{ -0.335f, 0.372f, 0.0f },
+		{ -0.250f, 0.433f, 0.0f },
+		
+		{ 0.0f, 0.0f, 0.0f },
+		{ -0.405f, 0.294f, 0.0f },
+		{ -0.335f, 0.372f, 0.0f },
+		
+		{ 0.0f, 0.0f, 0.0f },
+		{ -0.457f, 0.203f, 0.0f },
+		{ -0.405f, 0.294f, 0.0f },
+		
+		{ 0.0f, 0.0f, 0.0f },
+		{ -0.489f, 0.104f, 0.0f },
+		{ -0.457f, 0.203f, 0.0f },
+		
+		{ 0.0f, 0.0f, 0.0f },
+		{ -0.500f, -0.000f, 0.0f },
+		{ -0.489f, 0.104f, 0.0f },
+		
+		{ 0.0f, 0.0f, 0.0f },
+		{ -0.489f, -0.104f, 0.0f },
+		{ -0.500f, -0.000f, 0.0f },
+		
+		{ 0.0f, 0.0f, 0.0f },
+		{ -0.457f, -0.203f, 0.0f },
+		{ -0.489f, -0.104f, 0.0f },
+		
+		{ 0.0f, 0.0f, 0.0f },
+		{ -0.405f, -0.294f, 0.0f },
+		{ -0.457f, -0.203f, 0.0f },
+		
+		{ 0.0f, 0.0f, 0.0f },
+		{ -0.335f, -0.372f, 0.0f },
+		{ -0.405f, -0.294f, 0.0f },
+		
+		{ 0.0f, 0.0f, 0.0f },
+		{ -0.250f, -0.433f, 0.0f },
+		{ -0.335f, -0.372f, 0.0f },
+		
+		{ 0.0f, 0.0f, 0.0f },
+		{ -0.155f, -0.476f, 0.0f },
+		{ -0.250f, -0.433f, 0.0f },
+		
+		{ 0.0f, 0.0f, 0.0f },
+		{ -0.052f, -0.497f, 0.0f },
+		{ -0.155f, -0.476f, 0.0f },
+		
+		{ 0.0f, 0.0f, 0.0f },
+		{ 0.052f, -0.497f, 0.0f },
+		{ -0.052f, -0.497f, 0.0f },
+		
+		{ 0.0f, 0.0f, 0.0f },
+		{ 0.155f, -0.476f, 0.0f },
+		{ 0.052f, -0.497f, 0.0f },
+		
+		{ 0.0f, 0.0f, 0.0f },
+		{ 0.250f, -0.433f, 0.0f },
+		{ 0.155f, -0.476f, 0.0f },
+		
+		{ 0.0f, 0.0f, 0.0f },
+		{ 0.335f, -0.372f, 0.0f },
+		{ 0.250f, -0.433f, 0.0f },
+		
+		{ 0.0f, 0.0f, 0.0f },
+		{ 0.405f, -0.294f, 0.0f },
+		{ 0.335f, -0.372f, 0.0f },
+		
+		{ 0.0f, 0.0f, 0.0f },
+		{ 0.457f, -0.203f, 0.0f },
+		{ 0.405f, -0.294f, 0.0f },
+		
+		{ 0.0f, 0.0f, 0.0f },
+		{ 0.489f, -0.104f, 0.0f },
+		{ 0.457f, -0.203f, 0.0f },
+		
+		{ 0.0f, 0.0f, 0.0f },
+		{ 0.500f, 0.000f, 0.0f },
+		{ 0.489f, -0.104f, 0.0f },
+		
+		
+		//rectangle
+		{ -0.5f, -0.5f, 0.0f },
+		{  0.5f, -0.5f, 0.0f },
+		{  0.5f,  0.5f, 0.0f },
+
+		{ -0.5f, -0.5f, 0.0f },
+		{  0.5f,  0.5f, 0.0f },
+		{ -0.5f,  0.5f, 0.0f },
+
+		//triangle
+		{ -0.5f, -0.5f, 0.0f },
+		{  0.5f, -0.5f, 0.0f },
+		{  0.0f,  0.5f, 0.0f }
+	};
+
+	glBufferData(GL_ARRAY_BUFFER, sizeof(rectangle), rectangle, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void drawPrimitive(float *transform, float *rgba, unsigned int first, unsigned int count)
+{
+	glUniformMatrix4fv(0, 1, GL_FALSE, transform);
+	glUniform4fv(1, 1, rgba);
+	glDrawArrays(GL_TRIANGLES, first, count);
+}
+
+void drawCircle(float *transform, float *rgba)
+{
+	drawPrimitive(transform, rgba, circle.first, circle.count);
+}
+
+void drawRectangle(float *transform, float *rgba)
+{
+	drawPrimitive(transform, rgba, rectangle.first, rectangle.count);
+}
+
+void drawTriangle(float *transform, float *rgba)
+{
+	drawPrimitive(transform, rgba, triangle.first, triangle.count);
+}

@@ -77,6 +77,20 @@ void uiSlider(ImmidiateMode *im, const char *text, float value, float x, float y
 
 void uiQuad(ImmidiateMode *im, float x, float y, float w, float h);
 
+typedef struct
+{
+	unsigned int shader;
+	unsigned int vao;
+	unsigned int vbo;
+} Primitives;
+
+void init(Primitives *im);
+
+void drawPrimitive(float *transform, float *rgba, unsigned int first, unsigned int count);
+void drawCircle(float *transform, float *rgba);
+void drawRectangle(float *transform, float *rgba);
+void drawTriangle(float *transform, float *rgba);
+
 
 #endif
 

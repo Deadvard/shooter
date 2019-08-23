@@ -126,6 +126,8 @@ struct Renderer
 	unsigned int uiVAO;
 	unsigned int uiVBO;
 	ImmidiateMode im;
+
+	Primitives prim;
 };
 
 unsigned int rendererAddModel(Renderer* renderer, int meshIndex, glm::vec3 startingPos);

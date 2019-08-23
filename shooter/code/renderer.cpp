@@ -218,6 +218,7 @@ void rendererInitialize(Renderer *renderer)
 	renderer->textShader = shaderProgramCreate("shaders/text.vert", "shaders/text.frag");
 	renderer->thunderShader = shaderProgramCreate("shaders/lightning.vert", "shaders/lightning.frag");
 	renderer->quadShader = shaderProgramCreate("shaders/quad.vert", "shaders/quad.frag");
+	renderer->prim.shader = shaderProgramCreate("shaders/primitive.vert", "shaders/primitive.frag");
 
 	renderer->projection = glm::perspective(glm::radians(90.0f), 16.0f / 9.0f, 0.01f, 1000.0f);
 
@@ -236,6 +237,8 @@ void rendererInitialize(Renderer *renderer)
 	fontCreate(&renderer->font, "font.ttf");
 
 	rendererAddGuiElement(renderer, &glm::vec2(-1,-1));
+
+	init(&renderer->prim);
 }
 
 void rendererUpdate(Renderer* renderer)
@@ -320,4 +323,19 @@ void renderUI(Renderer *renderer, UserInterface *ui)
 	}
 
 	immidiateModeEnd(&renderer->im);
+
+	if (ui->nrOfElements > 0)
+	{
+		float color[] = { 0.0f, 0.5f, 0.0f, 1.0f };
+
+		Primitives *prim = &renderer->prim;
+		glUseProgram(prim->shader);
+		glBindVertexArray(prim->vao);
+		glm::mat4 m = glm::mat4(1.0f);
+		drawTriangle(&m[0][0], color);
+		color[0] = 0.5f;
+		drawCircle(&m[0][0], color);
+		color[2] = 0.5f;
+		drawRectangle(&m[0][0], color);
+	}
 }
