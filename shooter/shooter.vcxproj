@@ -140,6 +140,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="code\cube.h" />
     <ClInclude Include="code\font.h" />
     <ClInclude Include="code\game.h" />
     <ClInclude Include="code\gameplay.h" />
@@ -165,10 +166,18 @@
     <ClCompile Include="code\ui.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="shaders\cube.frag" />
+    <None Include="shaders\cube.vert" />
     <None Include="shaders\lightning.frag" />
     <None Include="shaders\lightning.vert" />
+    <None Include="shaders\primary_shader.frag" />
+    <None Include="shaders\primary_shader.vert" />
+    <None Include="shaders\primitive.frag" />
+    <None Include="shaders\primitive.vert" />
     <None Include="shaders\quad.frag" />
     <None Include="shaders\quad.vert" />
+    <None Include="shaders\text.frag" />
+    <None Include="shaders\text.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

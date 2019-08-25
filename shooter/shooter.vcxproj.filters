@@ -11,6 +11,7 @@
     <ClInclude Include="code\gameplay.h" />
     <ClInclude Include="code\particle.h" />
     <ClInclude Include="code\ui.h" />
+    <ClInclude Include="code\cube.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="code\renderer.cpp" />
@@ -30,5 +31,13 @@
     <None Include="shaders\lightning.vert" />
     <None Include="shaders\quad.vert" />
     <None Include="shaders\quad.frag" />
+    <None Include="shaders\cube.frag" />
+    <None Include="shaders\cube.vert" />
+    <None Include="shaders\primary_shader.frag" />
+    <None Include="shaders\primary_shader.vert" />
+    <None Include="shaders\primitive.vert" />
+    <None Include="shaders\primitive.frag" />
+    <None Include="shaders\text.vert" />
+    <None Include="shaders\text.frag" />
   </ItemGroup>
 </Project>

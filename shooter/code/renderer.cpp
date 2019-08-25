@@ -154,15 +154,6 @@ void initializeGui(Renderer* renderer)
 
 	renderer->gui.activeElements = 0;
 
-	glGenVertexArrays(1, &renderer->uiVAO);
-	glBindVertexArray(renderer->uiVAO);
-
-	glGenBuffers(1, &renderer->uiVBO);
-	glBindBuffer(GL_ARRAY_BUFFER, renderer->uiVBO);
-	glBufferData(GL_ARRAY_BUFFER, 1024, 0, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
-
 	renderer->im.shader = renderer->quadShader;
 	immidiateModeInitialize(&renderer->im);
 }
@@ -220,6 +211,9 @@ void rendererInitialize(Renderer *renderer)
 	renderer->quadShader = shaderProgramCreate("shaders/quad.vert", "shaders/quad.frag");
 	renderer->prim.shader = shaderProgramCreate("shaders/primitive.vert", "shaders/primitive.frag");
 
+	renderer->cubeShader = shaderProgramCreate("shaders/cube.vert", "shaders/cube.frag");
+	glGenVertexArrays(1, &renderer->cubeVAO);
+
 	renderer->projection = glm::perspective(glm::radians(90.0f), 16.0f / 9.0f, 0.01f, 1000.0f);
 
 	renderer->numActiveModels = 0;
@@ -239,6 +233,9 @@ void rendererInitialize(Renderer *renderer)
 	rendererAddGuiElement(renderer, &glm::vec2(-1,-1));
 
 	init(&renderer->prim);
+
+	renderer->chunk = chunkCreate();
+	renderer->chunk->block[0][0][0] = 1;
 }
 
 void rendererUpdate(Renderer* renderer)
@@ -300,6 +297,13 @@ void renderScene(Renderer *renderer)
 		glDrawArrays(GL_LINES, 0, 64);
 		glBindVertexArray(0);
 	}
+
+	glm::mat4 mvp = renderer->projection * view;
+
+	glUseProgram(renderer->cubeShader);
+	glBindVertexArray(renderer->cubeVAO);
+	glUniformMatrix4fv(0, 1, GL_FALSE, &mvp[0][0]);
+	chunkRender(renderer->chunk);
 }
 
 void renderUI(Renderer *renderer, UserInterface *ui)

@@ -6,6 +6,7 @@
 #include "mesh.h"
 #include "font.h"
 #include "ui.h"
+#include "cube.h"
 
 static const float box[]
 {
@@ -123,10 +124,11 @@ struct Renderer
 
 	Lighting lighting;
 
-	unsigned int uiVAO;
-	unsigned int uiVBO;
+	unsigned int cubeShader;
+	unsigned int cubeVAO;
+	Chunk *chunk;
+	
 	ImmidiateMode im;
-
 	Primitives prim;
 };
 
