@@ -302,7 +302,7 @@ void renderScene(Renderer *renderer)
 		glBindVertexArray(0);
 	}
 
-	glm::mat4 mvp = renderer->projection * view;
+	glm::mat4 mvp = renderer->projection * view * glm::translate(glm::mat4(1.0f), glm::vec3(10.0f, 0.0f, -10.0f));
 
 	glUseProgram(renderer->cubeShader);
 	glBindVertexArray(renderer->cubeVAO);
