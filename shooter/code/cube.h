@@ -122,7 +122,8 @@ static void chunkRender(Chunk *chunk)
 		glEnable(GL_DEPTH_TEST);
 
 		glBindBuffer(GL_ARRAY_BUFFER, chunk->vbo);
-		glVertexAttribPointer(0, 4, GL_BYTE, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 4, GL_BYTE, GL_FALSE, sizeof(CubeVertex), 0);
 		glDrawArrays(GL_TRIANGLES, 0, chunk->elements);
 	}
 }

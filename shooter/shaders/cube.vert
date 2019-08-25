@@ -10,5 +10,5 @@ void main()
 {
 	texcoord = coord;
 	
-	gl_Position = /*mvp */ vec4(coord.xyz, 1.0);
+	gl_Position = mvp * vec4(coord.xyz, 1.0);
 }

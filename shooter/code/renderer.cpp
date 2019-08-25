@@ -235,7 +235,11 @@ void rendererInitialize(Renderer *renderer)
 	init(&renderer->prim);
 
 	renderer->chunk = chunkCreate();
-	renderer->chunk->block[0][0][0] = 1;
+	for (int i = 0; i < CHUNK_SIZE; ++i)
+	{
+		renderer->chunk->block[i][0][0] = 100;
+	}
+	
 }
 
 void rendererUpdate(Renderer* renderer)
