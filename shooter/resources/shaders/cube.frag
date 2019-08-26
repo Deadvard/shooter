@@ -3,7 +3,9 @@
 in vec4 texcoord;
 out vec4 frag;
 
+layout(location = 1) uniform sampler2D cubeTexture;
+
 void main()
 {
-	frag = vec4(texcoord.w / 128.0, texcoord.w / 256.0, texcoord.w / 512.0, 1.0);
+	frag = vec4(texture(cubeTexture, vec2((texcoord.x + texcoord.w) / 6.0, texcoord.y)).xyz, 1.0);
 }

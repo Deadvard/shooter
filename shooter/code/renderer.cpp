@@ -45,13 +45,15 @@ unsigned int shaderProgramCreate(const char *vertexPath, const char *fragmentPat
 	glLinkProgram(shader);
 
 	int success;
-	char info_log[512];
+	char infoLog[512];
 	glGetProgramiv(shader, GL_LINK_STATUS, &success);
 	if (!success)
 	{
+		glGetProgramInfoLog(shader, 512, 0, infoLog);
+		
 		printf(
 			"ERROR::PROGRAM_LINKING_ERROR of type: PROGRAM\n%s\n\n",
-			info_log);
+			infoLog);
 	}
 
 	glDeleteShader(vertex);
@@ -331,7 +333,7 @@ void rendererInitialize(Renderer *renderer)
 		renderer->chunk->block[i][0][0] = 100;
 	}
 
-	renderer->cubeTexture = imageTextureCreate("cube.png");
+	renderer->cubeTexture = imageTextureCreate("resources/textures/cube.png");
 }
 
 void rendererUpdate(Renderer* renderer)
@@ -397,7 +399,10 @@ void renderScene(Renderer *renderer)
 
 	glUseProgram(renderer->cubeShader);
 	glBindVertexArray(renderer->cubeVAO);
-	glUniformMatrix4fv(0, 1, GL_FALSE, &mvp[0][0]);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, renderer->cubeTexture);
+	glUniformMatrix4fv(1, 1, GL_FALSE, &mvp[0][0]);
+	glUniform1i(1, 0);	
 	chunkRender(renderer->chunk);
 
 	glDepthFunc(GL_LEQUAL);
