@@ -10,7 +10,10 @@
 
 struct Skybox
 {
+	unsigned int shader;
 	unsigned int textureID;
+	unsigned int vao;
+	unsigned int vbo;
 };
 
 struct Lighting
@@ -23,20 +26,6 @@ struct Model
 	glm::vec3 position;
 	glm::quat rotation;
 	unsigned int meshIndex;
-};
-
-struct QuadMesh
-{
-	unsigned int vao;
-	unsigned int vbo;
-	unsigned int ebo;
-};
-
-struct Gui
-{
-	QuadMesh quadMesh;
-	unsigned int activeElements;
-	glm::vec2 positions[128];
 };
 
 struct ThunderEffect
@@ -65,6 +54,7 @@ struct Renderer
 	unsigned int thunderShader;
 	unsigned int quadShader;
 	unsigned int matrixBuffer;
+	unsigned int skyboxShader;
 
 	glm::mat4 projection;
 
@@ -74,9 +64,9 @@ struct Renderer
 	unsigned int numActiveModels;
 
 	ThunderEffect thunderEffect;
+	Skybox skybox;
 
 	Font font;
-	Gui gui;
 
 	MeshStorage meshStorage;
 	Camera cam;
@@ -95,7 +85,6 @@ struct Renderer
 unsigned int rendererAddModel(Renderer* renderer, int meshIndex, glm::vec3 startingPos);
 void rendererInitialize(Renderer *renderer);
 void rendererUpdate(Renderer* renderer);
-void rendererAddGuiElement(Renderer* renderer, glm::vec2* position);
 void rendererRefreshThunder(Renderer* renderer);
 
 static glm::mat4 matrixView(Camera *c)

@@ -39,5 +39,7 @@
     <None Include="shaders\primitive.frag" />
     <None Include="shaders\text.vert" />
     <None Include="shaders\text.frag" />
+    <None Include="resources\shaders\cubemap.vert" />
+    <None Include="resources\shaders\cubemap.frag" />
   </ItemGroup>
 </Project>

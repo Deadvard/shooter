@@ -166,6 +166,8 @@
     <ClCompile Include="code\ui.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="resources\shaders\cubemap.frag" />
+    <None Include="resources\shaders\cubemap.vert" />
     <None Include="shaders\cube.frag" />
     <None Include="shaders\cube.vert" />
     <None Include="shaders\lightning.frag" />

@@ -124,20 +124,19 @@ void toonTextureCreate(Lighting* lighting)
 	glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); //Conditions
 }
 
-void initializeSkybox(Renderer* renderer)
+void initializeSkyboxTextures(Renderer* renderer)
 {
-	unsigned int textureID;
-	glGenTextures(1, &textureID);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+	glGenTextures(1, &renderer->skybox.textureID);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, renderer->skybox.textureID);
 
 	const char* paths[] = 
 	{
-		"",
-		"",
-		"",
-		"",
-		"",
-		""
+		"resources/cubemaps/right.jpg",
+		"resources/cubemaps/left.jpg",
+		"resources/cubemaps/top.jpg",
+		"resources/cubemaps/bottom.jpg",
+		"resources/cubemaps/front.jpg",
+		"resources/cubemaps/back.jpg"
 	};
 
 	int width, height, nrChannels;
@@ -158,45 +157,62 @@ void initializeSkybox(Renderer* renderer)
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 }
 
-void initializeGui(Renderer* renderer)
+void initializeSkyboxMesh(Renderer* renderer)
 {
-	static const float quad[]
+	static const float skyboxVertices[] =
 	{
-		0.0f, 0.0f,
-		1.0f, 0.0f,
-		0.0f, 1.0f,
-		1.0f, 1.0f,
+		-1.0f,  1.0f, -1.0f,
+		-1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+		 1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+
+		-1.0f, -1.0f,  1.0f,
+		-1.0f, -1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f,  1.0f,
+		-1.0f, -1.0f,  1.0f,
+
+		 1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+
+		-1.0f, -1.0f,  1.0f,
+		-1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f, -1.0f,  1.0f,
+		-1.0f, -1.0f,  1.0f,
+
+		-1.0f,  1.0f, -1.0f,
+		 1.0f,  1.0f, -1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		-1.0f,  1.0f,  1.0f,
+		-1.0f,  1.0f, -1.0f,
+
+		-1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f,  1.0f,
+		 1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f,  1.0f,
+		 1.0f, -1.0f,  1.0f
 	};
 
-	static const unsigned int quad_indices[]
-	{
-		0, 1, 2,
-		3, 2, 1
-	};
+	glGenVertexArrays(1, &renderer->skybox.vao);
+	glBindVertexArray(renderer->skybox.vao);
 
-	glGenVertexArrays(1, &renderer->gui.quadMesh.vao);
-	glBindVertexArray(renderer->gui.quadMesh.vao);
-
-	glGenBuffers(1, &renderer->gui.quadMesh.vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, renderer->gui.quadMesh.vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(quad), quad, GL_STATIC_DRAW);
-
-	glGenBuffers(1, &renderer->gui.quadMesh.ebo);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, renderer->gui.quadMesh.ebo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(quad_indices), quad_indices, GL_STATIC_DRAW);
+	glGenBuffers(1, &renderer->skybox.vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, renderer->skybox.vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices[0], GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
-
-	renderer->gui.activeElements = 0;
-
-	renderer->im.shader = renderer->quadShader;
-	immidiateModeInitialize(&renderer->im);
-}
-
-void rendererAddGuiElement(Renderer* renderer, glm::vec2* position)
-{
-	renderer->gui.positions[renderer->gui.activeElements++] = *position;
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
 }
 
 void initializeThunder(Renderer* renderer)
@@ -246,7 +262,7 @@ void rendererInitialize(Renderer *renderer)
 	renderer->thunderShader = shaderProgramCreate("resources/shaders/lightning.vert", "resources/shaders/lightning.frag");
 	renderer->quadShader = shaderProgramCreate("resources/shaders/quad.vert", "resources/shaders/quad.frag");
 	renderer->prim.shader = shaderProgramCreate("resources/shaders/primitive.vert", "resources/shaders/primitive.frag");
-
+	renderer->skybox.shader = shaderProgramCreate("resources/shaders/cubemap.vert", "resources/shaders/cubemap.frag");
 	renderer->cubeShader = shaderProgramCreate("resources/shaders/cube.vert", "resources/shaders/cube.frag");
 	glGenVertexArrays(1, &renderer->cubeVAO);
 
@@ -262,8 +278,9 @@ void rendererInitialize(Renderer *renderer)
 	toonTextureCreate(&renderer->lighting);
 
 	loadMeshes(renderer);
-	initializeGui(renderer);
 	initializeThunder(renderer);
+	initializeSkyboxTextures(renderer);
+	initializeSkyboxMesh(renderer);
 	fontCreate(&renderer->font, "resources/fonts/font.ttf");
 
 	init(&renderer->prim);
@@ -288,7 +305,6 @@ void renderScene(Renderer *renderer)
 	glUniform3fv(glGetUniformLocation(renderer->primaryShader, "camPos"), 1, &renderer->cam.position[0]);
 
 	glBindTexture(GL_TEXTURE_1D, renderer->lighting.toonTexture);
-
 	glm::mat4 view = matrixView(&renderer->cam);
 
 	glUniformMatrix4fv(glGetUniformLocation(renderer->primaryShader, "view"), 1, GL_FALSE, &view[0][0]);
@@ -313,18 +329,6 @@ void renderScene(Renderer *renderer)
 	glUniformMatrix4fv(glGetUniformLocation(renderer->textShader, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 	textRender(&renderer->font, "hello", 10.0f, 10.0f, 1.0f);
 
-	/*glUseProgram(renderer->quadShader);
-	glBindVertexArray(renderer->gui.quadMesh.vao);
-	for (int i = 0; i < renderer->gui.activeElements; ++i)
-	{
-		glm::mat4 model(1.f);
-		model = glm::translate(model, glm::vec3(renderer->gui.positions[i].x, renderer->gui.positions[i].y, 0));
-		model = glm::scale(model, glm::vec3(0.3, 0.3, 0.3));
-		glUniformMatrix4fv(glGetUniformLocation(renderer->quadShader, "model"), 1, GL_FALSE, &model[0][0]);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
-	}
-	glBindVertexArray(0);*/
-
 	if (renderer->thunderEffect.isActive) // Temp
 	{
 		glUseProgram(renderer->thunderShader);
@@ -346,6 +350,17 @@ void renderScene(Renderer *renderer)
 	glUniformMatrix4fv(0, 1, GL_FALSE, &mvp[0][0]);
 	glUniform1i(1, 0);	
 	chunkRender(renderer->chunk);
+
+	glDepthFunc(GL_LEQUAL);
+	glUseProgram(renderer->skybox.shader);
+	// ... set view and projection matrix
+	glm::mat4 skyView = glm::mat4(glm::mat3(matrixView(&renderer->cam)));
+	glUniformMatrix4fv(glGetUniformLocation(renderer->skybox.shader, "view"), 1, GL_FALSE, &skyView[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(renderer->skybox.shader, "projection"), 1, GL_FALSE, &renderer->projection[0][0]);
+	glBindVertexArray(renderer->skybox.vao);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, renderer->skybox.textureID);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glDepthFunc(GL_LESS);
 }
 
 void renderUI(Renderer *renderer, UserInterface *ui)
