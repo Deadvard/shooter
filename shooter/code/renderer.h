@@ -85,6 +85,7 @@ struct Renderer
 
 	unsigned int cubeShader;
 	unsigned int cubeVAO;
+	unsigned int cubeTexture;
 	Chunk *chunk;
 	
 	ImmidiateMode im;
