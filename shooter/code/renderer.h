@@ -10,7 +10,10 @@
 
 struct Skybox
 {
+	unsigned int shader;
 	unsigned int textureID;
+	unsigned int vao;
+	unsigned int vbo;
 };
 
 struct Lighting
@@ -65,6 +68,7 @@ struct Renderer
 	unsigned int thunderShader;
 	unsigned int quadShader;
 	unsigned int matrixBuffer;
+	unsigned int skyboxShader;
 
 	glm::mat4 projection;
 
@@ -74,6 +78,7 @@ struct Renderer
 	unsigned int numActiveModels;
 
 	ThunderEffect thunderEffect;
+	Skybox skybox;
 
 	Font font;
 	Gui gui;
