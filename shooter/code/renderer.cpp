@@ -323,10 +323,8 @@ void renderScene(Renderer *renderer)
 
 	glBindVertexArray(0);
 
-	glm::mat4 projection = glm::ortho(0.0f, 1280.f, 0.0f, 720.f);
-
 	glUseProgram(renderer->textShader);
-	glUniformMatrix4fv(glGetUniformLocation(renderer->textShader, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+	glUniformMatrix4fv(glGetUniformLocation(renderer->textShader, "projection"), 1, GL_FALSE, glm::value_ptr(glm::ortho(0.0f, 1280.f, 0.0f, 720.f)));
 	textRender(&renderer->font, "hello", 10.0f, 10.0f, 1.0f);
 
 	if (renderer->thunderEffect.isActive) // Temp
