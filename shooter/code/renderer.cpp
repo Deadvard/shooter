@@ -272,7 +272,7 @@ void rendererInitialize(Renderer *renderer)
 	renderer->numMeshes = 0;
 	renderer->cam.yaw = 0.0f;
 	renderer->cam.pitch = 0.0f;
-	renderer->weather.sunDirection = glm::vec3(0,-1,0);
+	renderer->weather.sunDirection = glm::vec3(0,0,0);
 
 	renderer->meshStorage = meshStorageCreate(1024 * 1024);
 
@@ -298,8 +298,9 @@ void rendererInitialize(Renderer *renderer)
 void rendererUpdate(Renderer* renderer, float deltaTime)
 {
 	static float timer = 0.f;
-	timer += deltaTime;
+	timer += deltaTime * 0.5f;
 	renderer->weather.sunDirection.y = glm::cos(timer);
+	renderer->weather.sunDirection.x = glm::cos(timer);
 }
 
 void renderScene(Renderer *renderer)

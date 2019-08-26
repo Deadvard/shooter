@@ -34,13 +34,15 @@ void main()
 	{
 	// Calculate per-pixel normal and light vector
 	vec3 N = normalize(fs_in.normal);
-    vec3 L = normalize(sunDirection);
+    vec3 L = normalize(-sunDirection);
 	// Simple N dot L diffuse lighting
-    pc = pow(max(0.0, dot(N, L)), 5.0);
+	
+    pc = max(dot(N, L), 0.0);
+    //pc = pow(max(0.0, dot(N, L)), 10.0);
 	}
 
-	vec4 color = texture(toonTexture, tc) * (tc * 0.8 + 0.2);
-	color += vec4(0.7,0.7,0.7,1) * pc;
+	//vec4 color = texture(toonTexture, tc) * (tc * 0.8 + 0.2);
+	vec4 color = texture(toonTexture, pc) * (pc * 0.8 + 0.2);
 
 	frag_color = color;
 }
