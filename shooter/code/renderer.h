@@ -28,6 +28,11 @@ struct Model
 	unsigned int meshIndex;
 };
 
+struct WeatherEffects
+{
+	glm::vec3 sunDirection;
+};
+
 struct ThunderEffect
 {
 	bool isActive;
@@ -65,6 +70,7 @@ struct Renderer
 
 	ThunderEffect thunderEffect;
 	Skybox skybox;
+	WeatherEffects weather;
 
 	Font font;
 
@@ -84,7 +90,7 @@ struct Renderer
 
 unsigned int rendererAddModel(Renderer* renderer, int meshIndex, glm::vec3 startingPos);
 void rendererInitialize(Renderer *renderer);
-void rendererUpdate(Renderer* renderer);
+void rendererUpdate(Renderer* renderer, float deltaTime);
 void rendererRefreshThunder(Renderer* renderer);
 
 static glm::mat4 matrixView(Camera *c)

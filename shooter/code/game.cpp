@@ -298,6 +298,7 @@ void run()
 		renderer.cam.focus = &cameraFocus;
 
 		gameplayUpdate(&gameplay, &renderer);
+		rendererUpdate(&renderer, (float)deltaTime);
 
 		if (physicsOn)
 		{

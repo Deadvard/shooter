@@ -17,6 +17,8 @@ uniform vec3 lightPos = vec3(0.0, 10.0, 10.0);
 
 uniform vec3 dirLight = vec3(0.3, 10, 0);
 
+uniform vec3 sunDirection;
+
 void main()
 {
 	float tc;
@@ -30,9 +32,9 @@ void main()
 
 	float pc;
 	{
-		// Calculate per-pixel normal and light vector
-		vec3 N = normalize(fs_in.normal);
-    vec3 L = normalize(dirLight);
+	// Calculate per-pixel normal and light vector
+	vec3 N = normalize(fs_in.normal);
+    vec3 L = normalize(sunDirection);
 	// Simple N dot L diffuse lighting
     pc = pow(max(0.0, dot(N, L)), 5.0);
 	}

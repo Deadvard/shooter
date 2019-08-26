@@ -272,6 +272,7 @@ void rendererInitialize(Renderer *renderer)
 	renderer->numMeshes = 0;
 	renderer->cam.yaw = 0.0f;
 	renderer->cam.pitch = 0.0f;
+	renderer->weather.sunDirection = glm::vec3(0,-1,0);
 
 	renderer->meshStorage = meshStorageCreate(1024 * 1024);
 
@@ -293,10 +294,12 @@ void rendererInitialize(Renderer *renderer)
 
 	renderer->cubeTexture = imageTextureCreate("resources/textures/cube.png");
 }
-
-void rendererUpdate(Renderer* renderer)
+#include <iostream>
+void rendererUpdate(Renderer* renderer, float deltaTime)
 {
-
+	static float timer = 0.f;
+	timer += deltaTime;
+	renderer->weather.sunDirection.y = glm::cos(timer);
 }
 
 void renderScene(Renderer *renderer)
@@ -317,7 +320,7 @@ void renderScene(Renderer *renderer)
 		glm::mat4 model = glm::mat4_cast(renderer->activeModels[i].rotation);
 		model[3] = glm::vec4(renderer->activeModels[i].position, 1.0f);
 		glUniformMatrix4fv(glGetUniformLocation(renderer->primaryShader, "model"), 1, GL_FALSE, &model[0][0]);
-
+		glUniform3fv(glGetUniformLocation(renderer->primaryShader, "sun"), 1, &renderer->weather.sunDirection[0]);
 		meshRender(&renderer->meshStorage, &renderer->meshes[renderer->activeModels[i].meshIndex]);
 	}
 
