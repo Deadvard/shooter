@@ -59,8 +59,79 @@ static void chunkUpdate(Chunk *chunk)
 
 		if (type != 0)
 		{
-			//pos, uv, normal
-			vertices[i++] = cubeVert(x    , y    , z    , type);
+			int neighbor = 0;
+			if (x > 0) neighbor = chunk->block[x-1][y][z];
+			if (neighbor == 0)
+			{
+				vertices[i++] = cubeVert(x    , y + 1, z + 1, type);
+				vertices[i++] = cubeVert(x    , y + 1, z    , type);
+				vertices[i++] = cubeVert(x    , y    , z    , type);
+				vertices[i++] = cubeVert(x    , y    , z    , type);
+				vertices[i++] = cubeVert(x    , y    , z + 1, type);
+				vertices[i++] = cubeVert(x    , y + 1, z + 1, type);
+			}
+
+			neighbor = 0;
+			if (x < CHUNK_SIZE - 1) neighbor = chunk->block[x+1][y][z];
+			if (neighbor == 0)
+			{
+				vertices[i++] = cubeVert(x + 1, y + 1, z + 1, type);
+				vertices[i++] = cubeVert(x + 1, y    , z + 1, type);
+				vertices[i++] = cubeVert(x + 1, y    , z    , type);
+				vertices[i++] = cubeVert(x + 1, y    , z    , type);
+				vertices[i++] = cubeVert(x + 1, y + 1, z    , type);
+				vertices[i++] = cubeVert(x + 1, y + 1, z + 1, type);
+			}
+
+			neighbor = 0;
+			if (y > 0) neighbor = chunk->block[x][y-1][z];
+			if (neighbor == 0)
+			{
+				vertices[i++] = cubeVert(x    , y    , z    , -type);
+				vertices[i++] = cubeVert(x + 1, y    , z    , -type);
+				vertices[i++] = cubeVert(x + 1, y    , z + 1, -type);
+				vertices[i++] = cubeVert(x + 1, y    , z + 1, -type);
+				vertices[i++] = cubeVert(x    , y    , z + 1, -type);
+				vertices[i++] = cubeVert(x    , y    , z    , -type);
+			}
+
+			neighbor = 0;
+			if (y < CHUNK_SIZE - 1) neighbor = chunk->block[x][y+1][z];
+			if (neighbor == 0)
+			{
+				vertices[i++] = cubeVert(x    , y + 1, z    , -type);
+				vertices[i++] = cubeVert(x    , y + 1, z + 1, -type);
+				vertices[i++] = cubeVert(x + 1, y + 1, z + 1, -type);
+				vertices[i++] = cubeVert(x + 1, y + 1, z + 1, -type);
+				vertices[i++] = cubeVert(x + 1, y + 1, z    , -type);
+				vertices[i++] = cubeVert(x    , y + 1, z    , -type);
+			}
+
+			neighbor = 0;
+			if (z > 0) neighbor = chunk->block[x][y][z-1];
+			if (neighbor == 0)
+			{
+				vertices[i++] = cubeVert(x    , y    , z    , type);
+				vertices[i++] = cubeVert(x    , y + 1, z    , type);
+				vertices[i++] = cubeVert(x + 1, y + 1, z    , type);
+				vertices[i++] = cubeVert(x + 1, y + 1, z    , type);
+				vertices[i++] = cubeVert(x + 1, y    , z    , type);
+				vertices[i++] = cubeVert(x    , y    , z    , type);
+			}
+
+			neighbor = 0;
+			if (z < CHUNK_SIZE - 1) neighbor = chunk->block[x][y][z+1];
+			if (neighbor == 0)
+			{
+				vertices[i++] = cubeVert(x    , y    , z + 1, type);
+				vertices[i++] = cubeVert(x + 1, y    , z + 1, type);
+				vertices[i++] = cubeVert(x + 1, y + 1, z + 1, type);
+				vertices[i++] = cubeVert(x + 1, y + 1, z + 1, type);
+				vertices[i++] = cubeVert(x    , y + 1, z + 1, type);
+				vertices[i++] = cubeVert(x    , y    , z + 1, type);
+			}
+			
+			/*vertices[i++] = cubeVert(x    , y    , z    , type);
 			vertices[i++] = cubeVert(x    , y + 1, z    , type);
 			vertices[i++] = cubeVert(x + 1, y + 1, z    , type);
 			vertices[i++] = cubeVert(x + 1, y + 1, z    , type);
@@ -100,7 +171,7 @@ static void chunkUpdate(Chunk *chunk)
 			vertices[i++] = cubeVert(x + 1, y + 1, z + 1, -type);
 			vertices[i++] = cubeVert(x + 1, y + 1, z + 1, -type);
 			vertices[i++] = cubeVert(x + 1, y + 1, z    , -type);
-			vertices[i++] = cubeVert(x    , y + 1, z    , -type);
+			vertices[i++] = cubeVert(x    , y + 1, z    , -type);*/
 		}
 	}
 

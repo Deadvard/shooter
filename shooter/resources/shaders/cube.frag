@@ -13,7 +13,7 @@ void main()
 	}
 	else
 	{
-		frag = vec4(texture(cubeTexture, vec2((fract(texcoord.x + texcoord.z) + texcoord.w) / 6.0, texcoord.y)).xyz, 1.0);
+		frag = vec4(texture(cubeTexture, vec2((fract(texcoord.x + texcoord.z) + texcoord.w) / 6.0, texcoord.y)).xyz, 1.0) * 0.85;
 	}
 	
 }
