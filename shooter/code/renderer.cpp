@@ -73,7 +73,7 @@ unsigned imageTextureCreate(const char *path)
 
 	int width, height, num_components;
 
-	char *file_data = readEntireFile(path);
+	//char *file_data = readEntireFile(path);
 
 	unsigned char* data = stbi_load(path, &width, &height, &num_components, 4);
 	if (data)
@@ -230,8 +230,6 @@ void rendererInitialize(Renderer *renderer)
 	initializeThunder(renderer);
 	fontCreate(&renderer->font, "font.ttf");
 
-	rendererAddGuiElement(renderer, &glm::vec2(-1,-1));
-
 	init(&renderer->prim);
 
 	renderer->chunk = chunkCreate();
@@ -239,7 +237,8 @@ void rendererInitialize(Renderer *renderer)
 	{
 		renderer->chunk->block[i][0][0] = 100;
 	}
-	
+
+	renderer->cubeTexture = imageTextureCreate("cube.png");
 }
 
 void rendererUpdate(Renderer* renderer)
