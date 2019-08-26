@@ -4,23 +4,24 @@
 #include <stdlib.h>
 #include <glad/glad.h>
 
+#include "memory.h"
+
 #define CHUNK_SIZE 64
-typedef unsigned char uint8;
 
 struct CubeVertex
 {
-	uint8 x;
-	uint8 y;
-	uint8 z;
-	uint8 w;
+	int8 x;
+	int8 y;
+	int8 z;
+	int8 w;
 };
 
 struct Chunk
 {
-	uint8 block[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
+	int8 block[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
 	unsigned int vbo;
 	int elements;
-	uint8 changed;
+	int8 changed;
 };
 
 static Chunk * chunkCreate()
@@ -38,7 +39,7 @@ static Chunk * chunkCreate()
 	return chunk;
 }
 
-static CubeVertex cVert(uint8 x, uint8 y, uint8 z, uint8 w)
+static CubeVertex cubeVert(int8 x, int8 y, int8 z, int8 w)
 {
 	return { x, y, z, w };
 }
@@ -54,52 +55,52 @@ static void chunkUpdate(Chunk *chunk)
 	for (int y = 0; y < CHUNK_SIZE; ++y)
 	for (int x = 0; x < CHUNK_SIZE; ++x)
 	{
-		uint8 type = chunk->block[x][y][z];
+		int8 type = chunk->block[x][y][z];
 
 		if (type != 0)
 		{
 			//pos, uv, normal
-			vertices[i++] = cVert(x    , y    , z    , type);
-			vertices[i++] = cVert(x    , y + 1, z    , type);
-			vertices[i++] = cVert(x + 1, y + 1, z    , type);
-			vertices[i++] = cVert(x + 1, y + 1, z    , type);
-			vertices[i++] = cVert(x + 1, y    , z    , type);
-			vertices[i++] = cVert(x    , y    , z    , type);
+			vertices[i++] = cubeVert(x    , y    , z    , type);
+			vertices[i++] = cubeVert(x    , y + 1, z    , type);
+			vertices[i++] = cubeVert(x + 1, y + 1, z    , type);
+			vertices[i++] = cubeVert(x + 1, y + 1, z    , type);
+			vertices[i++] = cubeVert(x + 1, y    , z    , type);
+			vertices[i++] = cubeVert(x    , y    , z    , type);
 
-			vertices[i++] = cVert(x    , y    , z + 1, type);
-			vertices[i++] = cVert(x + 1, y    , z + 1, type);
-			vertices[i++] = cVert(x + 1, y + 1, z + 1, type);
-			vertices[i++] = cVert(x + 1, y + 1, z + 1, type);
-			vertices[i++] = cVert(x    , y + 1, z + 1, type);
-			vertices[i++] = cVert(x    , y    , z + 1, type);
+			vertices[i++] = cubeVert(x    , y    , z + 1, type);
+			vertices[i++] = cubeVert(x + 1, y    , z + 1, type);
+			vertices[i++] = cubeVert(x + 1, y + 1, z + 1, type);
+			vertices[i++] = cubeVert(x + 1, y + 1, z + 1, type);
+			vertices[i++] = cubeVert(x    , y + 1, z + 1, type);
+			vertices[i++] = cubeVert(x    , y    , z + 1, type);
 
-			vertices[i++] = cVert(x    , y + 1, z + 1, type);
-			vertices[i++] = cVert(x    , y + 1, z    , type);
-			vertices[i++] = cVert(x    , y    , z    , type);
-			vertices[i++] = cVert(x    , y    , z    , type);
-			vertices[i++] = cVert(x    , y    , z + 1, type);
-			vertices[i++] = cVert(x    , y + 1, z + 1, type);
+			vertices[i++] = cubeVert(x    , y + 1, z + 1, type);
+			vertices[i++] = cubeVert(x    , y + 1, z    , type);
+			vertices[i++] = cubeVert(x    , y    , z    , type);
+			vertices[i++] = cubeVert(x    , y    , z    , type);
+			vertices[i++] = cubeVert(x    , y    , z + 1, type);
+			vertices[i++] = cubeVert(x    , y + 1, z + 1, type);
 
-			vertices[i++] = cVert(x + 1, y + 1, z + 1, type);
-			vertices[i++] = cVert(x + 1, y    , z + 1, type);
-			vertices[i++] = cVert(x + 1, y    , z    , type);
-			vertices[i++] = cVert(x + 1, y    , z    , type);
-			vertices[i++] = cVert(x + 1, y + 1, z    , type);
-			vertices[i++] = cVert(x + 1, y + 1, z + 1, type);
+			vertices[i++] = cubeVert(x + 1, y + 1, z + 1, type);
+			vertices[i++] = cubeVert(x + 1, y    , z + 1, type);
+			vertices[i++] = cubeVert(x + 1, y    , z    , type);
+			vertices[i++] = cubeVert(x + 1, y    , z    , type);
+			vertices[i++] = cubeVert(x + 1, y + 1, z    , type);
+			vertices[i++] = cubeVert(x + 1, y + 1, z + 1, type);
 
-			vertices[i++] = cVert(x    , y    , z    , type);
-			vertices[i++] = cVert(x + 1, y    , z    , type);
-			vertices[i++] = cVert(x + 1, y    , z + 1, type);
-			vertices[i++] = cVert(x + 1, y    , z + 1, type);
-			vertices[i++] = cVert(x    , y    , z + 1, type);
-			vertices[i++] = cVert(x    , y    , z    , type);
+			vertices[i++] = cubeVert(x    , y    , z    , -type);
+			vertices[i++] = cubeVert(x + 1, y    , z    , -type);
+			vertices[i++] = cubeVert(x + 1, y    , z + 1, -type);
+			vertices[i++] = cubeVert(x + 1, y    , z + 1, -type);
+			vertices[i++] = cubeVert(x    , y    , z + 1, -type);
+			vertices[i++] = cubeVert(x    , y    , z    , -type);
 
-			vertices[i++] = cVert(x    , y + 1, z    , type);
-			vertices[i++] = cVert(x    , y + 1, z + 1, type);
-			vertices[i++] = cVert(x + 1, y + 1, z + 1, type);
-			vertices[i++] = cVert(x + 1, y + 1, z + 1, type);
-			vertices[i++] = cVert(x + 1, y + 1, z    , type);
-			vertices[i++] = cVert(x    , y + 1, z    , type);
+			vertices[i++] = cubeVert(x    , y + 1, z    , -type);
+			vertices[i++] = cubeVert(x    , y + 1, z + 1, -type);
+			vertices[i++] = cubeVert(x + 1, y + 1, z + 1, -type);
+			vertices[i++] = cubeVert(x + 1, y + 1, z + 1, -type);
+			vertices[i++] = cubeVert(x + 1, y + 1, z    , -type);
+			vertices[i++] = cubeVert(x    , y + 1, z    , -type);
 		}
 	}
 

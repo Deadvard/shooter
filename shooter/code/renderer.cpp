@@ -271,7 +271,7 @@ void rendererInitialize(Renderer *renderer)
 	renderer->chunk = chunkCreate();
 	for (int i = 0; i < CHUNK_SIZE; ++i)
 	{
-		renderer->chunk->block[i][0][0] = 100;
+		renderer->chunk->block[i][0][0] = (rand() % 5) + 1;
 	}
 
 	renderer->cubeTexture = imageTextureCreate("resources/textures/cube.png");
@@ -343,7 +343,7 @@ void renderScene(Renderer *renderer)
 	glBindVertexArray(renderer->cubeVAO);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, renderer->cubeTexture);
-	glUniformMatrix4fv(1, 1, GL_FALSE, &mvp[0][0]);
+	glUniformMatrix4fv(0, 1, GL_FALSE, &mvp[0][0]);
 	glUniform1i(1, 0);	
 	chunkRender(renderer->chunk);
 }
