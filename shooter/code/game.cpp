@@ -163,8 +163,8 @@ void run()
 			{
 				dx += e.motion.xrel;
 				dy += e.motion.yrel;
-				mousePosition.x = e.motion.x;
-				mousePosition.y = e.motion.y;
+				mousePosition.x = (float)e.motion.x;
+				mousePosition.y = (float)e.motion.y;
 				break;
 			}
 			case SDL_KEYUP:
@@ -259,7 +259,7 @@ void run()
 		static const glm::vec3 UP = glm::vec3(0.0f, 1.0f, 0.0f);
 		static const glm::vec3 RIGHT = glm::vec3(1.0f, 0.0f, 0.0f);
 
-		rot += pi32 * deltaTime;
+		rot += pi32 * (float)deltaTime;
 		renderer.activeModels[1].rotation = glm::angleAxis(rot, glm::vec3(0, 1.f, 0));
 
 		if (!menuVisible)

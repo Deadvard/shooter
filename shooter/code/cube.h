@@ -190,7 +190,7 @@ static void chunkRender(Chunk *chunk)
 
 	if (chunk->elements > 0)
 	{
-		glDisable(GL_CULL_FACE);
+		glEnable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
 
 		glBindBuffer(GL_ARRAY_BUFFER, chunk->vbo);

@@ -20,7 +20,7 @@ void gameplayInitialize(Gameplay* gameplay, Renderer* renderer)
 
 void gameplayUpdate(Gameplay* gameplay, Renderer* renderer, float deltaTime)
 {
-	for (int i = 0; i < gameplay->numActors; ++i)
+	for (unsigned int i = 0; i < gameplay->numActors; ++i)
 	{
 		renderer->activeModels[gameplay->actors[i].modelIndex].position += gameplay->actors[i].direction * gameplay->actors[i].speed;
 	}

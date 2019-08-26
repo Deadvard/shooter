@@ -320,7 +320,7 @@ void renderScene(Renderer *renderer)
 
 	glBindVertexArray(renderer->meshStorage.vertexArray);
 
-	for (int i = 0; i < renderer->numActiveModels; ++i)
+	for (unsigned int i = 0; i < renderer->numActiveModels; ++i)
 	{
 		glm::mat4 model = glm::mat4_cast(renderer->activeModels[i].rotation);
 		model[3] = glm::vec4(renderer->activeModels[i].position, 1.0f);
