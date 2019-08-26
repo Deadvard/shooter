@@ -294,7 +294,7 @@ void rendererInitialize(Renderer *renderer)
 
 	renderer->cubeTexture = imageTextureCreate("resources/textures/cube.png");
 }
-#include <iostream>
+
 void rendererUpdate(Renderer* renderer, float deltaTime)
 {
 	static float timer = 0.f;
@@ -320,7 +320,7 @@ void renderScene(Renderer *renderer)
 		glm::mat4 model = glm::mat4_cast(renderer->activeModels[i].rotation);
 		model[3] = glm::vec4(renderer->activeModels[i].position, 1.0f);
 		glUniformMatrix4fv(glGetUniformLocation(renderer->primaryShader, "model"), 1, GL_FALSE, &model[0][0]);
-		glUniform3fv(glGetUniformLocation(renderer->primaryShader, "sun"), 1, &renderer->weather.sunDirection[0]);
+		glUniform3fv(glGetUniformLocation(renderer->primaryShader, "sunDirection"), 1, &renderer->weather.sunDirection[0]);
 		meshRender(&renderer->meshStorage, &renderer->meshes[renderer->activeModels[i].meshIndex]);
 	}
 
