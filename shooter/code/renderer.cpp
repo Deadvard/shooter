@@ -299,7 +299,7 @@ void rendererUpdate(Renderer* renderer, float deltaTime)
 {
 	static float timer = 0.f;
 	timer += deltaTime * 0.5f;
-	renderer->weather.sunDirection.y = glm::cos(timer);
+	renderer->weather.sunDirection.y = glm::sin(timer);
 	renderer->weather.sunDirection.x = glm::cos(timer);
 }
 
