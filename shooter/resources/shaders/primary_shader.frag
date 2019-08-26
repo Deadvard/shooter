@@ -6,16 +6,14 @@ in VS_OUT
 {
 	vec3 normal;
 	vec3 worldPos;
+	vec2 texCoords;
 } fs_in;
 
 uniform mat4 view;
 uniform vec3 camPos;
 
 layout (binding = 0) uniform sampler1D toonTexture;
-
-uniform vec3 lightPos = vec3(0.0, 10.0, 10.0);
-
-uniform vec3 dirLight = vec3(0.3, 10, 0);
+layout (binding = 1) uniform sampler2D tex;
 
 uniform vec3 sunDirection;
 
@@ -26,7 +24,11 @@ void main()
 
 	float pc = pow(max(0.0, dot(N, L)), 5.0);
 
-	vec4 color = texture(toonTexture, pc) * (pc * 0.8 + 0.2);
+	vec4 tempAmbient = texture(tex, fs_in.texCoords) * 0.3;
+
+	vec4 color = texture(tex, fs_in.texCoords) * texture(toonTexture, pc) * (pc * 0.8 + 0.2);
+
+	color += tempAmbient;
 
 	frag_color = color;
 }

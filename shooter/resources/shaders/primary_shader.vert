@@ -7,6 +7,8 @@ out VS_OUT
 {
 	vec3 normal;
 	vec3 worldPos;
+	vec2 texCoords;
+
 } vs_out;
 
 uniform mat4 model;
@@ -17,6 +19,7 @@ void main()
 {
 	vec4 mv_position = view * model * vec4(position,1.0);
 
+	vs_out.texCoords = uv;
 	vs_out.normal = mat3(model) * normal;
 	vs_out.worldPos = mat3(model) * position;
 

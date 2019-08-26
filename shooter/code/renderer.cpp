@@ -308,6 +308,10 @@ void renderScene(Renderer *renderer)
 	glUseProgram(renderer->primaryShader);
 	glUniform3fv(glGetUniformLocation(renderer->primaryShader, "camPos"), 1, &renderer->cam.position[0]);
 
+	glActiveTexture(GL_TEXTURE0);
+	glActiveTexture(GL_TEXTURE1);
+
+
 	glBindTexture(GL_TEXTURE_1D, renderer->lighting.toonTexture);
 	glm::mat4 view = matrixView(&renderer->cam);
 
@@ -322,6 +326,7 @@ void renderScene(Renderer *renderer)
 		model[3] = glm::vec4(renderer->activeModels[i].position, 1.0f);
 		glUniformMatrix4fv(glGetUniformLocation(renderer->primaryShader, "model"), 1, GL_FALSE, &model[0][0]);
 		glUniform3fv(glGetUniformLocation(renderer->primaryShader, "sunDirection"), 1, &renderer->weather.sunDirection[0]);
+		glBindTexture(GL_TEXTURE_2D, renderer->cubeTexture);
 		meshRender(&renderer->meshStorage, &renderer->meshes[renderer->activeModels[i].meshIndex]);
 	}
 
