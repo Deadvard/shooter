@@ -28,20 +28,6 @@ struct Model
 	unsigned int meshIndex;
 };
 
-struct QuadMesh
-{
-	unsigned int vao;
-	unsigned int vbo;
-	unsigned int ebo;
-};
-
-struct Gui
-{
-	QuadMesh quadMesh;
-	unsigned int activeElements;
-	glm::vec2 positions[128];
-};
-
 struct ThunderEffect
 {
 	bool isActive;
@@ -81,7 +67,6 @@ struct Renderer
 	Skybox skybox;
 
 	Font font;
-	Gui gui;
 
 	MeshStorage meshStorage;
 	Camera cam;
@@ -100,7 +85,6 @@ struct Renderer
 unsigned int rendererAddModel(Renderer* renderer, int meshIndex, glm::vec3 startingPos);
 void rendererInitialize(Renderer *renderer);
 void rendererUpdate(Renderer* renderer);
-void rendererAddGuiElement(Renderer* renderer, glm::vec2* position);
 void rendererRefreshThunder(Renderer* renderer);
 
 static glm::mat4 matrixView(Camera *c)

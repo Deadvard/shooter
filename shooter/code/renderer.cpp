@@ -215,47 +215,6 @@ void initializeSkyboxMesh(Renderer* renderer)
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
 }
 
-void initializeGui(Renderer* renderer)
-{
-	static const float quad[]
-	{
-		0.0f, 0.0f,
-		1.0f, 0.0f,
-		0.0f, 1.0f,
-		1.0f, 1.0f,
-	};
-
-	static const unsigned int quad_indices[]
-	{
-		0, 1, 2,
-		3, 2, 1
-	};
-
-	glGenVertexArrays(1, &renderer->gui.quadMesh.vao);
-	glBindVertexArray(renderer->gui.quadMesh.vao);
-
-	glGenBuffers(1, &renderer->gui.quadMesh.vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, renderer->gui.quadMesh.vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(quad), quad, GL_STATIC_DRAW);
-
-	glGenBuffers(1, &renderer->gui.quadMesh.ebo);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, renderer->gui.quadMesh.ebo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(quad_indices), quad_indices, GL_STATIC_DRAW);
-
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
-
-	renderer->gui.activeElements = 0;
-
-	renderer->im.shader = renderer->quadShader;
-	immidiateModeInitialize(&renderer->im);
-}
-
-void rendererAddGuiElement(Renderer* renderer, glm::vec2* position)
-{
-	renderer->gui.positions[renderer->gui.activeElements++] = *position;
-}
-
 void initializeThunder(Renderer* renderer)
 {
 	glGenVertexArrays(1, &renderer->thunderEffect.thunderVao);
@@ -319,7 +278,6 @@ void rendererInitialize(Renderer *renderer)
 	toonTextureCreate(&renderer->lighting);
 
 	loadMeshes(renderer);
-	initializeGui(renderer);
 	initializeThunder(renderer);
 	initializeSkyboxTextures(renderer);
 	initializeSkyboxMesh(renderer);
@@ -370,18 +328,6 @@ void renderScene(Renderer *renderer)
 	glUseProgram(renderer->textShader);
 	glUniformMatrix4fv(glGetUniformLocation(renderer->textShader, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 	textRender(&renderer->font, "hello", 10.0f, 10.0f, 1.0f);
-
-	/*glUseProgram(renderer->quadShader);
-	glBindVertexArray(renderer->gui.quadMesh.vao);
-	for (int i = 0; i < renderer->gui.activeElements; ++i)
-	{
-		glm::mat4 model(1.f);
-		model = glm::translate(model, glm::vec3(renderer->gui.positions[i].x, renderer->gui.positions[i].y, 0));
-		model = glm::scale(model, glm::vec3(0.3, 0.3, 0.3));
-		glUniformMatrix4fv(glGetUniformLocation(renderer->quadShader, "model"), 1, GL_FALSE, &model[0][0]);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
-	}
-	glBindVertexArray(0);*/
 
 	if (renderer->thunderEffect.isActive) // Temp
 	{
