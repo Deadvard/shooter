@@ -18,11 +18,27 @@ void gameplayInitialize(Gameplay* gameplay, Renderer* renderer)
 	addActor(gameplay, renderer, 3, glm::vec3(0, -5, 0));
 }
 
-void gameplayUpdate(Gameplay* gameplay, Renderer* renderer)
+void gameplayUpdate(Gameplay* gameplay, Renderer* renderer, float deltaTime)
 {
 	for (int i = 0; i < gameplay->numActors; ++i)
 	{
 		renderer->activeModels[gameplay->actors[i].modelIndex].position += gameplay->actors[i].direction * gameplay->actors[i].speed;
+	}
+
+	if (renderer->thunderEffect.isActive)
+	{
+		static float timer = 10.0f;
+
+		if (timer > deltaTime)
+		{
+
+			rendererRefreshThunder(renderer);
+
+			timer = 0.0f;
+		}
+		else
+			timer+= deltaTime;
+
 	}
 }
 
@@ -35,35 +51,34 @@ void gameplayShoot(Gameplay* gameplay, Model* cameraFocus, Renderer* renderer)
 	renderer->activeModels[gameplay->actors[bullet].modelIndex].rotation = glm::inverse(cameraFocus->rotation);
 }
 
-void gameplayLightning(Gameplay* gameplay, Model* cameraFocus, Renderer* renderer)
+void gameplayActivateThunder(Gameplay* gameplay, Model* cameraFocus, Renderer* renderer)
 {
-	glm::vec3 forward = glm::normalize(glm::inverse(cameraFocus->rotation) * glm::vec3(0, 0, -1));
-	glm::vec3 start = cameraFocus->position;
-	glm::vec3 end = cameraFocus->position + forward * 20.f;
+	renderer->thunderEffect.isActive = true;
 
-	glm::vec3 middle = (end-start) * 0.5f;
-	glm::vec3 offset = glm::normalize(glm::cross(end, start));
+	glm::vec3 forward = glm::normalize(glm::inverse(cameraFocus->rotation) * glm::vec3(0, 0, -1));
+	gameplay->thunderGameplay.start = cameraFocus->position;
+	gameplay->thunderGameplay.end = cameraFocus->position + forward * 20.f;
+
+	glm::vec3 middle = (gameplay->thunderGameplay.end - gameplay->thunderGameplay.start) * 0.5f;
+	glm::vec3 offset = glm::normalize(glm::cross(gameplay->thunderGameplay.end, gameplay->thunderGameplay.start));
 	middle += offset;
 
-	renderer->thunderEffect.positions[0] = start;
+	renderer->thunderEffect.positions[0] = gameplay->thunderGameplay.start;
 	renderer->thunderEffect.positions[32] = middle;
-	renderer->thunderEffect.positions[64] = end;
+	renderer->thunderEffect.positions[64] = gameplay->thunderGameplay.end;
 
 	float interpolationOffset = 0.05f;
-	glm::vec3 temp = glm::mix(start, middle, interpolationOffset);
+	glm::vec3 temp = glm::mix(gameplay->thunderGameplay.start, middle, interpolationOffset);
 	for (int i = 1; i < 32; ++i)
 	{
 		renderer->thunderEffect.positions[i] = temp;
 		temp = glm::mix(temp, middle, interpolationOffset);
 	}
 
-	temp = glm::mix(middle, end, interpolationOffset);
+	temp = glm::mix(middle, gameplay->thunderGameplay.end, interpolationOffset);
 	for (int i = 33; i < 64; ++i)
 	{
 		renderer->thunderEffect.positions[i] = temp;
-		temp = glm::mix(temp, end, interpolationOffset);
+		temp = glm::mix(temp, gameplay->thunderGameplay.end, interpolationOffset);
 	}
-
-	rendererRefreshThunder(renderer);
-	renderer->thunderEffect.isActive = true;
 }

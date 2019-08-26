@@ -259,7 +259,7 @@ void rendererInitialize(Renderer *renderer)
 {	
 	renderer->primaryShader = shaderProgramCreate("resources/shaders/primary_shader.vert", "resources/shaders/primary_shader.frag");
 	renderer->textShader = shaderProgramCreate("resources/shaders/text.vert", "resources/shaders/text.frag");
-	renderer->thunderShader = shaderProgramCreate("resources/shaders/lightning.vert", "resources/shaders/lightning.frag");
+	renderer->thunderShader = shaderProgramCreate("resources/shaders/thunder.vert", "resources/shaders/thunder.frag");
 	renderer->quadShader = shaderProgramCreate("resources/shaders/quad.vert", "resources/shaders/quad.frag");
 	renderer->prim.shader = shaderProgramCreate("resources/shaders/primitive.vert", "resources/shaders/primitive.frag");
 	renderer->skybox.shader = shaderProgramCreate("resources/shaders/cubemap.vert", "resources/shaders/cubemap.frag");

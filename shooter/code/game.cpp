@@ -197,7 +197,7 @@ void run()
 				}
 				else if (e.button.button == SDL_BUTTON_RIGHT)
 				{
-					gameplayLightning(&gameplay, &cameraFocus, &renderer);
+					gameplayActivateThunder(&gameplay, &cameraFocus, &renderer);
 				}
 				break;
 			}
@@ -297,7 +297,7 @@ void run()
 		if (keys[SDL_SCANCODE_D]) cameraFocus.position += right * velocity;
 		renderer.cam.focus = &cameraFocus;
 
-		gameplayUpdate(&gameplay, &renderer);
+		gameplayUpdate(&gameplay, &renderer, (float)deltaTime);
 		rendererUpdate(&renderer, (float)deltaTime);
 
 		if (physicsOn)
