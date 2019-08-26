@@ -14,7 +14,7 @@ void fontCreate(Font* font, const char *path)
 {
 	stbtt_fontinfo stbfont;
 
-	char *data = readEntireFile("font.ttf");
+	char *data = readEntireFile("resources/fonts/font.ttf");
 	stbtt_InitFont(&stbfont, (unsigned char *)data, stbtt_GetFontOffsetForIndex((unsigned char *)data, 0));
 
 	for (int c = 0; c < 128; ++c)

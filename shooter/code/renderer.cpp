@@ -122,6 +122,40 @@ void toonTextureCreate(Lighting* lighting)
 	glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); //Conditions
 }
 
+void initializeSkybox(Renderer* renderer)
+{
+	unsigned int textureID;
+	glGenTextures(1, &textureID);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+
+	const char* paths[] = 
+	{
+		"",
+		"",
+		"",
+		"",
+		"",
+		""
+	};
+
+	int width, height, nrChannels;
+	unsigned char *data;
+	for (GLuint i = 0; i < 6; i++)
+	{
+		data = stbi_load(paths[i], &width, &height, &nrChannels, 0);
+		glTexImage2D(
+			GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+			0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data
+		);
+	}
+
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+}
+
 void initializeGui(Renderer* renderer)
 {
 	static const float quad[]
@@ -183,16 +217,16 @@ void rendererRefreshThunder(Renderer* renderer)
 
 void loadMeshes(Renderer* renderer)
 {
-	char *data = readEntireFile("result.bin");
+	char *data = readEntireFile("resources/assets/result.bin");
 	renderer->meshes[renderer->numMeshes++] = meshFromBuffer(&renderer->meshStorage, data);
 	free(data);
 
-	data = readEntireFile("gubbe.bin");
+	data = readEntireFile("resources/assets/gubbe.bin");
 	renderer->meshes[renderer->numMeshes++] = meshFromBuffer(&renderer->meshStorage, data);
 	free(data);
 
-	renderer->meshes[renderer->numMeshes++] = importMesh(&renderer->meshStorage, "monkey.tfs");
-	renderer->meshes[renderer->numMeshes++] = importMesh(&renderer->meshStorage, "floor.tfs");
+	renderer->meshes[renderer->numMeshes++] = importMesh(&renderer->meshStorage, "resources/assets/monkey.tfs");
+	renderer->meshes[renderer->numMeshes++] = importMesh(&renderer->meshStorage, "resources/assets/floor.tfs");
 }
 
 unsigned int rendererAddModel(Renderer* renderer, int meshIndex, glm::vec3 startingPos)
@@ -205,13 +239,13 @@ unsigned int rendererAddModel(Renderer* renderer, int meshIndex, glm::vec3 start
 
 void rendererInitialize(Renderer *renderer)
 {	
-	renderer->primaryShader = shaderProgramCreate("shaders/primary_shader.vert", "shaders/primary_shader.frag");
-	renderer->textShader = shaderProgramCreate("shaders/text.vert", "shaders/text.frag");
-	renderer->thunderShader = shaderProgramCreate("shaders/lightning.vert", "shaders/lightning.frag");
-	renderer->quadShader = shaderProgramCreate("shaders/quad.vert", "shaders/quad.frag");
-	renderer->prim.shader = shaderProgramCreate("shaders/primitive.vert", "shaders/primitive.frag");
+	renderer->primaryShader = shaderProgramCreate("resources/shaders/primary_shader.vert", "resources/shaders/primary_shader.frag");
+	renderer->textShader = shaderProgramCreate("resources/shaders/text.vert", "resources/shaders/text.frag");
+	renderer->thunderShader = shaderProgramCreate("resources/shaders/lightning.vert", "resources/shaders/lightning.frag");
+	renderer->quadShader = shaderProgramCreate("resources/shaders/quad.vert", "resources/shaders/quad.frag");
+	renderer->prim.shader = shaderProgramCreate("resources/shaders/primitive.vert", "resources/shaders/primitive.frag");
 
-	renderer->cubeShader = shaderProgramCreate("shaders/cube.vert", "shaders/cube.frag");
+	renderer->cubeShader = shaderProgramCreate("resources/shaders/cube.vert", "resources/shaders/cube.frag");
 	glGenVertexArrays(1, &renderer->cubeVAO);
 
 	renderer->projection = glm::perspective(glm::radians(90.0f), 16.0f / 9.0f, 0.01f, 1000.0f);
@@ -228,7 +262,7 @@ void rendererInitialize(Renderer *renderer)
 	loadMeshes(renderer);
 	initializeGui(renderer);
 	initializeThunder(renderer);
-	fontCreate(&renderer->font, "font.ttf");
+	fontCreate(&renderer->font, "resources/fonts/font.ttf");
 
 	rendererAddGuiElement(renderer, &glm::vec2(-1,-1));
 
