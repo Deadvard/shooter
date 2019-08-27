@@ -9,7 +9,7 @@ void main()
 {
 	if (texcoord.w < 0)
 	{
-		frag = vec4(texture(cubeTexture, vec2((fract(texcoord.x) + texcoord.w) / 6.0, texcoord.z)).xyz, 1.0);
+		frag = vec4(texture(cubeTexture, vec2((fract(texcoord.x)  - texcoord.w) / 6.0, texcoord.z)).xyz, 1.0);
 	}
 	else
 	{
