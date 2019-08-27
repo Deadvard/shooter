@@ -392,8 +392,8 @@ void renderUI(Renderer *renderer, UserInterface *ui)
 			drawRectangle(&(projection * m)[0][0], color2);
 		}	
 	}
-
+	projection = glm::ortho(0.0f, 1280.f, 0.0f, 720.f);
 	glUseProgram(renderer->textShader);
 	glUniformMatrix4fv(glGetUniformLocation(renderer->textShader, "projection"), 1, GL_FALSE, &projection[0][0]);
-	textRender(&renderer->font, "HELLO", 10.0f, 10.0f, 1.0f);
+	textRender(&renderer->font, "hello", 100.0f, 100.0f, 1.0f);
 }
