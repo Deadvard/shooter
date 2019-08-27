@@ -24,11 +24,11 @@ void main()
 
 	float pc = pow(max(0.0, dot(N, L)), 5.0);
 
-	vec4 tempAmbient = texture(tex, fs_in.texCoords) * 0.3;
+	vec3 tempAmbient = texture(tex, fs_in.texCoords).xyz * 0.3;
 
-	vec4 color = texture(tex, fs_in.texCoords) * texture(toonTexture, pc) * (pc * 0.8 + 0.2);
+	vec3 color = texture(tex, fs_in.texCoords).xyz * texture(toonTexture, pc).xyz * (pc * 0.8 + 0.2);
 
 	color += tempAmbient;
 
-	frag_color = color;
+	frag_color = vec4(color, 1.0);
 }
