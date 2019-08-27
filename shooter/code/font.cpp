@@ -25,6 +25,8 @@ void fontCreate(Font* font, const char *path)
 			stbtt_ScaleForPixelHeight(&stbfont, 32.0f), c, &ch.width, &ch.height, &ch.xoffset, &ch.yoffset);
 
 		stbtt_GetCodepointHMetrics(&stbfont, c, &ch.advance, 0);
+			
+		stbtt_GetFontVMetrics(&stbfont, &ch.ascent, &ch.descent, 0);
 
 		// Generate texture
 		GLuint texture;
@@ -55,7 +57,11 @@ void fontCreate(Font* font, const char *path)
 		font->characters[c].height = ch.height;
 		font->characters[c].xoffset = ch.xoffset;
 		font->characters[c].yoffset = ch.yoffset;
+		font->characters[c].ascent = ch.ascent;
+		font->characters[c].descent = ch.descent;
 	}
+
+	font->fontScale = stbtt_ScaleForPixelHeight(&stbfont, 32.0f);
 
 	free(data);
 
@@ -80,7 +86,7 @@ void textRender(Font *f, const char *text, float x, float y, float scale)
 		Character *ch = &f->characters[*text];
 
 		float xpos = x + ch->xoffset * scale;
-		float ypos = y - (ch->height - ch->yoffset) * scale;
+		float ypos = y - (ch->height - ch->yoffset) * scale + f->fontScale * ch->ascent;
 
 		float w = ch->width * scale;
 		float h = ch->height * scale;
@@ -102,8 +108,7 @@ void textRender(Font *f, const char *text, float x, float y, float scale)
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 
-		// Bitshift by 6 to get value in pixels (2^6 = 64)
-		x += (ch->advance >> 6) * scale;
+		x += ch->advance * scale * f->fontScale;
 		++text;
 	}
 }

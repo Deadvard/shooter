@@ -9,10 +9,13 @@ struct Character
 	int height;
 	int xoffset;
 	int yoffset;
+	int ascent;
+	int descent;
 };
 
 struct Font
 {
+	float fontScale;
 	unsigned int vao,vbo;
 	Character characters[128];
 };
