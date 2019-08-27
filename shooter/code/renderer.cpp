@@ -287,9 +287,11 @@ void rendererInitialize(Renderer *renderer)
 	init(&renderer->prim);
 
 	renderer->chunk = chunkCreate();
-	for (int i = 0; i < CHUNK_SIZE; ++i)
+	for (int z = 0; z < CHUNK_SIZE; ++z)
+	for (int y = 0; y < CHUNK_SIZE; ++y)
+	for (int x = 0; x < CHUNK_SIZE; ++x)
 	{
-		renderer->chunk->block[i][0][0] = (rand() % 5) + 1;
+		renderer->chunk->block[x][y][z] = (rand() % 6);
 	}
 
 	renderer->cubeTexture = imageTextureCreate("resources/textures/cube.png");

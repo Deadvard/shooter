@@ -153,6 +153,7 @@
     <ClInclude Include="code\ui.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="code\cube.cpp" />
     <ClCompile Include="code\font.cpp" />
     <ClCompile Include="code\game.cpp" />
     <ClCompile Include="code\gameplay.cpp" />

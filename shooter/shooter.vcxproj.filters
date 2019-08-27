@@ -25,6 +25,7 @@
     <ClCompile Include="code\gameplay.cpp" />
     <ClCompile Include="code\particle.cpp" />
     <ClCompile Include="code\ui.cpp" />
+    <ClCompile Include="code\cube.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\lightning.frag" />
