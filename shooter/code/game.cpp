@@ -76,6 +76,7 @@ static void windowInitialize(Window *window, const char* title, int width, int h
 		printf("Failed to initialize GLAD");
 	}
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
 }
 
 void run()

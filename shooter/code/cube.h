@@ -190,9 +190,6 @@ static void chunkRender(Chunk *chunk)
 
 	if (chunk->elements > 0)
 	{
-		glEnable(GL_CULL_FACE);
-		glEnable(GL_DEPTH_TEST);
-
 		glBindBuffer(GL_ARRAY_BUFFER, chunk->vbo);
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 4, GL_BYTE, GL_FALSE, sizeof(CubeVertex), 0);

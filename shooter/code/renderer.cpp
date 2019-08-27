@@ -332,10 +332,6 @@ void renderScene(Renderer *renderer)
 
 	glBindVertexArray(0);
 
-	glUseProgram(renderer->textShader);
-	glUniformMatrix4fv(glGetUniformLocation(renderer->textShader, "projection"), 1, GL_FALSE, glm::value_ptr(glm::ortho(0.0f, 1280.f, 0.0f, 720.f)));
-	textRender(&renderer->font, "hello", 10.0f, 10.0f, 1.0f);
-
 	if (renderer->thunderEffect.isActive) // Temp
 	{
 		glUseProgram(renderer->thunderShader);
@@ -371,7 +367,7 @@ void renderScene(Renderer *renderer)
 }
 
 void renderUI(Renderer *renderer, UserInterface *ui)
-{
+{		
 	Primitives *prim = &renderer->prim;
 	glUseProgram(prim->shader);
 	glBindVertexArray(prim->vao);
@@ -396,4 +392,8 @@ void renderUI(Renderer *renderer, UserInterface *ui)
 			drawRectangle(&(projection * m)[0][0], color2);
 		}	
 	}
+
+	glUseProgram(renderer->textShader);
+	glUniformMatrix4fv(glGetUniformLocation(renderer->textShader, "projection"), 1, GL_FALSE, &projection[0][0]);
+	textRender(&renderer->font, "HELLO", 10.0f, 10.0f, 1.0f);
 }
