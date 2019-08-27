@@ -9,5 +9,5 @@ layout (location = 1) uniform vec4 textColor;
 
 void main()
 {
-    color = vec4(texture(text, tex_coord).r) * textColor;
+	color = vec4(texture(text, tex_coord).r) * textColor;
 } 

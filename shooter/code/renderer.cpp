@@ -392,6 +392,7 @@ void renderUI(Renderer *renderer, UserInterface *ui)
 			drawRectangle(&(projection * m)[0][0], color2);
 		}	
 	}
+
 	projection = glm::ortho(0.0f, 1280.f, 0.0f, 720.f);
 	glUseProgram(renderer->textShader);
 	float color[] = { 1.0f, 1.0f, 1.0f, 1.0f };
