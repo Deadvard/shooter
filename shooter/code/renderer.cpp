@@ -394,6 +394,8 @@ void renderUI(Renderer *renderer, UserInterface *ui)
 	}
 	projection = glm::ortho(0.0f, 1280.f, 0.0f, 720.f);
 	glUseProgram(renderer->textShader);
-	glUniformMatrix4fv(glGetUniformLocation(renderer->textShader, "projection"), 1, GL_FALSE, &projection[0][0]);
+	float color[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	glUniform4fv(1, 1, color);
+	glUniformMatrix4fv(0, 1, GL_FALSE, &projection[0][0]);
 	textRender(&renderer->font, "hello", 100.0f, 100.0f, 1.0f);
 }

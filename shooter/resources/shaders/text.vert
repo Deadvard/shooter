@@ -3,7 +3,7 @@ layout (location = 0) in vec4 position; // <vec2 pos and vec2 tex>
 
 out vec2 tex_coord;
 
-uniform mat4 projection;
+layout (location = 0) uniform mat4 projection;
 
 void main()
 {

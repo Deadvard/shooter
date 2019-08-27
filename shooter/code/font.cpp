@@ -86,7 +86,7 @@ void textRender(Font *f, const char *text, float x, float y, float scale)
 		Character *ch = &f->characters[*text];
 
 		float xpos = x + ch->xoffset * scale;
-		float ypos = y - (ch->height - ch->yoffset) * scale + f->fontScale * ch->ascent;
+		float ypos = y + f->fontScale * (ch->ascent - ch->descent);
 
 		float w = ch->width * scale;
 		float h = ch->height * scale;
