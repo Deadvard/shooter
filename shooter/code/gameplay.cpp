@@ -84,3 +84,10 @@ void gameplayActivateThunder(Gameplay* gameplay, Model* cameraFocus, Renderer* r
 		temp = glm::mix(temp, gameplay->thunderGameplay.end, interpolationOffset);
 	}
 }
+
+void gameplayAddBlock(Model* cameraFocus, glm::vec2* mousePos, Chunk* relevantChunk)
+{
+	glm::ivec3 correctPos = cameraFocus->position;
+	relevantChunk->block[0][0][0] = 1;
+	relevantChunk->changed = true;
+}

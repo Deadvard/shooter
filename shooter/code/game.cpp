@@ -192,6 +192,12 @@ void run()
 					menuVisible = !menuVisible;
 					SDL_SetRelativeMouseMode((SDL_bool)(!menuVisible));
 				}
+				if (e.key.keysym.scancode == SDL_SCANCODE_M)
+				{
+					int x,y;
+					SDL_GetMouseState(&x, &y);
+					gameplayAddBlock(&cameraFocus, &glm::vec2(x,y), chunks.chunks[0]);
+				}
 				break;
 			}
 			case SDL_MOUSEBUTTONDOWN:

@@ -3,6 +3,7 @@
 #include "game.h"
 #include "renderer.h"
 #include <queue>
+#include "cube.h"
 
 struct ThunderGameplay
 {
@@ -31,5 +32,7 @@ void gameplayUpdate(Gameplay* gameplay, Renderer* renderer, float deltaTime);
 void gameplayShoot(Gameplay* gameplay, Model* cameraFocus, Renderer* renderer);
 
 void gameplayActivateThunder(Gameplay* gameplay, Model* cameraFocus, Renderer* renderer);
+
+void gameplayAddBlock(Model* cameraFocus, glm::vec2* mousePos, Chunk* relevantChunk);
 
 #endif
