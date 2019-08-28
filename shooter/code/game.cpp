@@ -67,10 +67,11 @@ static void windowInitialize(Window *window, const char* title, int width, int h
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, 32);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
-	SDL_GL_SetSwapInterval(1);
-	SDL_SetRelativeMouseMode(SDL_TRUE);
 
 	window->glContext = SDL_GL_CreateContext(window->window);
+
+	SDL_GL_SetSwapInterval(1);
+	SDL_SetRelativeMouseMode(SDL_TRUE);
 
 	if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
 	{
