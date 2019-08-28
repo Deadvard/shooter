@@ -286,14 +286,6 @@ void rendererInitialize(Renderer *renderer)
 
 	init(&renderer->prim);
 
-	renderer->chunk = chunkCreate();
-	for (int z = 0; z < CHUNK_SIZE; ++z)
-	for (int y = 0; y < CHUNK_SIZE; ++y)
-	for (int x = 0; x < CHUNK_SIZE; ++x)
-	{
-		renderer->chunk->block[x][y][z] = (rand() % 6);
-	}
-
 	renderer->cubeTexture = imageTextureCreate("resources/textures/cube.png");
 }
 
@@ -305,7 +297,7 @@ void rendererUpdate(Renderer* renderer, float deltaTime)
 	renderer->weather.sunDirection.x = glm::cos(timer);
 }
 
-void renderScene(Renderer *renderer)
+void renderScene(Renderer *renderer, Chunk* chunk)
 {
 	glUseProgram(renderer->primaryShader);
 	glUniform3fv(glGetUniformLocation(renderer->primaryShader, "camPos"), 1, &renderer->cam.position[0]);
@@ -354,7 +346,7 @@ void renderScene(Renderer *renderer)
 	glBindTexture(GL_TEXTURE_2D, renderer->cubeTexture);
 	glUniformMatrix4fv(0, 1, GL_FALSE, &mvp[0][0]);
 	glUniform1i(1, 0);	
-	chunkRender(renderer->chunk);
+	chunkRender(chunk);
 
 	glDepthFunc(GL_LEQUAL);
 	glUseProgram(renderer->skybox.shader);

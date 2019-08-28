@@ -8,6 +8,7 @@
 #include "physics.h"
 #include "gameplay.h"
 #include "ui.h"
+#include "cube.h"
 
 #define pi32 3.14159265359f
 
@@ -115,6 +116,16 @@ void run()
 
 	Gameplay gameplay;
 	gameplayInitialize(&gameplay, &renderer);
+
+	Chunk *chunk;
+
+	chunk = chunkCreate();
+	for (int z = 0; z < CHUNK_SIZE; ++z)
+		for (int y = 0; y < CHUNK_SIZE; ++y)
+			for (int x = 0; x < CHUNK_SIZE; ++x)
+			{
+				chunk->block[x][y][z] = (rand() % 6);
+			}
 
 	MenuState menuState;
 	for (int i = 0; i < 10; ++i)
@@ -308,7 +319,7 @@ void run()
 			physicsUpdate(&cameraFocus.position, physicsData);
 		}
 		
-		renderScene(&renderer);
+		renderScene(&renderer, chunk);
 		renderUI(&renderer, &ui);
 		
 		SDL_GL_SwapWindow(window.window);

@@ -82,7 +82,6 @@ struct Renderer
 	unsigned int cubeShader;
 	unsigned int cubeVAO;
 	unsigned int cubeTexture;
-	Chunk *chunk;
 	
 	ImmidiateMode im;
 	Primitives prim;
@@ -106,7 +105,7 @@ unsigned int shaderProgramCreate(const char *vertexPath, const char *fragmentPat
 
 unsigned imageTextureCreate(const char *path);
 unsigned textTextureCreate(const char *path, const char *text);
-void renderScene(Renderer *renderer);
+void renderScene(Renderer *renderer, Chunk* chunk);
 void renderUI(Renderer *renderer, UserInterface *ui);
 
 #endif

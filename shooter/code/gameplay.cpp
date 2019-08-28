@@ -8,6 +8,14 @@ unsigned int addActor(Gameplay* gameplay, Renderer* renderer, unsigned int meshI
 	return gameplay->numActors++;
 }
 
+void updateMovement(Gameplay* gameplay, Renderer* renderer)
+{
+	for (unsigned int i = 0; i < gameplay->numActors; ++i)
+	{
+		renderer->activeModels[gameplay->actors[i].modelIndex].position += gameplay->actors[i].direction * gameplay->actors[i].speed;
+	}
+}
+
 void gameplayInitialize(Gameplay* gameplay, Renderer* renderer)
 {
 	gameplay->numActors = 0;
@@ -20,10 +28,7 @@ void gameplayInitialize(Gameplay* gameplay, Renderer* renderer)
 
 void gameplayUpdate(Gameplay* gameplay, Renderer* renderer, float deltaTime)
 {
-	for (unsigned int i = 0; i < gameplay->numActors; ++i)
-	{
-		renderer->activeModels[gameplay->actors[i].modelIndex].position += gameplay->actors[i].direction * gameplay->actors[i].speed;
-	}
+	updateMovement(gameplay, renderer);
 
 	if (renderer->thunderEffect.isActive)
 	{
@@ -31,14 +36,11 @@ void gameplayUpdate(Gameplay* gameplay, Renderer* renderer, float deltaTime)
 
 		if (timer > deltaTime)
 		{
-
 			rendererRefreshThunder(renderer);
-
 			timer = 0.0f;
 		}
 		else
 			timer+= deltaTime;
-
 	}
 }
 
