@@ -60,6 +60,9 @@ struct Renderer
 	unsigned int quadShader;
 	unsigned int matrixBuffer;
 	unsigned int skyboxShader;
+	
+	unsigned int octaShader;
+	unsigned int octaBuffer;
 
 	glm::mat4 projection;
 
