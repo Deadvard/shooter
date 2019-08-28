@@ -297,7 +297,7 @@ void rendererUpdate(Renderer* renderer, float deltaTime)
 	renderer->weather.sunDirection.x = glm::cos(timer);
 }
 
-void renderScene(Renderer *renderer, Chunk* chunk)
+void renderScene(Renderer *renderer, Chunk* chunks[])
 {
 	glUseProgram(renderer->primaryShader);
 	glUniform3fv(glGetUniformLocation(renderer->primaryShader, "camPos"), 1, &renderer->cam.position[0]);
@@ -337,16 +337,20 @@ void renderScene(Renderer *renderer, Chunk* chunk)
 		glDrawArrays(GL_LINES, 0, 64);
 		glBindVertexArray(0);
 	}
+	int z = 0;
+	for (int i = 0; i < 100; ++i)
+	{
+		glm::mat4 mvp = renderer->projection * view * glm::translate(glm::mat4(1.0f), glm::vec3(16 * (i % 10), 0.0f,z));
+		z = i % 10 == 9?z+=16:z;
 
-	glm::mat4 mvp = renderer->projection * view * glm::translate(glm::mat4(1.0f), glm::vec3(10.0f, 0.0f, -10.0f));
-
-	glUseProgram(renderer->cubeShader);
-	glBindVertexArray(renderer->cubeVAO);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, renderer->cubeTexture);
-	glUniformMatrix4fv(0, 1, GL_FALSE, &mvp[0][0]);
-	glUniform1i(1, 0);	
-	chunkRender(chunk);
+		glUseProgram(renderer->cubeShader);
+		glBindVertexArray(renderer->cubeVAO);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, renderer->cubeTexture);
+		glUniformMatrix4fv(0, 1, GL_FALSE, &mvp[0][0]);
+		glUniform1i(1, 0);
+		chunkRender(chunks[i]);
+	}
 
 	glDepthFunc(GL_LEQUAL);
 	glUseProgram(renderer->skybox.shader);

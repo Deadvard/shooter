@@ -41,6 +41,12 @@ struct Window
 	SDL_GLContext glContext;
 };
 
+struct Chunks
+{
+	Chunk* chunks[100];
+};
+
+void initializeChunks(Chunks* chunks, int numChunks);
 void updateMenu(MenuState *menuState, glm::vec2 mousePosition, int lmbPressed);
 
 static void windowInitialize(Window *window, const char* title, int width, int height)
@@ -118,15 +124,8 @@ void run()
 	Gameplay gameplay;
 	gameplayInitialize(&gameplay, &renderer);
 
-	Chunk *chunk;
-
-	chunk = chunkCreate();
-	for (int z = 0; z < CHUNK_SIZE; ++z)
-		for (int y = 0; y < CHUNK_SIZE; ++y)
-			for (int x = 0; x < CHUNK_SIZE; ++x)
-			{
-				chunk->block[x][y][z] = (rand() % 6);
-			}
+	Chunks chunks;
+	initializeChunks(&chunks, 100);
 
 	MenuState menuState;
 	for (int i = 0; i < 10; ++i)
@@ -320,7 +319,7 @@ void run()
 			physicsUpdate(&cameraFocus.position, physicsData);
 		}
 		
-		renderScene(&renderer, chunk);
+		renderScene(&renderer, chunks.chunks);
 		renderUI(&renderer, &ui);
 		
 		SDL_GL_SwapWindow(window.window);
@@ -337,6 +336,20 @@ int pointInRectangle(float x, float y, float w, float h, float px, float py)
 	if ((y + h) < py) return false;
 
 	return true;
+}
+
+void initializeChunks(Chunks* chunks, int numChunks)
+{
+	for (int i = 0; i < numChunks; ++i)
+	{
+		chunks->chunks[i] = chunkCreate();
+		for (int z = 0; z < CHUNK_SIZE; ++z)
+			for (int y = 0; y < CHUNK_SIZE; ++y)
+				for (int x = 0; x < CHUNK_SIZE; ++x)
+				{
+					chunks->chunks[i]->block[x][y][z] = (rand() % 6);
+				}
+	}
 }
 
 void updateMenu(MenuState *menuState, glm::vec2 mousePosition, int lmbPressed)

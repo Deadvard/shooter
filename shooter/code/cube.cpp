@@ -206,7 +206,8 @@ void chunkRender(Chunk *chunk)
 	}
 
 	if (chunk->elements > 0)
-	{		
+	{	
+		glBindBuffer(GL_ARRAY_BUFFER, chunk->vbo);
 		glDrawArrays(GL_TRIANGLES, 0, chunk->elements);
 	}
 }
