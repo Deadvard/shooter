@@ -1,0 +1,4 @@
+jump = space
+forward = w
+nr = 5
+width = 1280

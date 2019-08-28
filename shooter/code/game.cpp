@@ -10,6 +10,8 @@
 #include "ui.h"
 #include "cube.h"
 
+#include "parser.h"
+
 #define pi32 3.14159265359f
 
 int pointInRectangle(float x, float y, float w, float h, float px, float py);
@@ -152,6 +154,15 @@ void run()
 	int windowSelected = false;
 	int resizeX = false;
 	int resizeY = false;
+
+	char *data = readEntireFile("resources/input.txt");
+	StringPair16 pairs[32];
+	parse(data, pairs, 32);
+
+	for (int i = 0; i < 4; ++i)
+	{
+		printf("%s = %s\n", pairs[i].key.data, pairs[i].value.data);
+	}
 
 	int running = true;
 	while (running)
