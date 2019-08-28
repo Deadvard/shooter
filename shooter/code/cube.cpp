@@ -190,9 +190,6 @@ void chunkUpdate(Chunk *chunk)
 
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
-
-	/*glVertexAttribDivisor(0, 0);
-	glVertexAttribDivisor(1, 6);*/
 	
 	glVertexAttribIPointer(0, 1, GL_UNSIGNED_SHORT, sizeof(uint16), 0);
 	glVertexAttribIPointer(1, 1, GL_UNSIGNED_SHORT, sizeof(uint16), (void *)(chunk->elements * sizeof(uint16)));
@@ -208,6 +205,11 @@ void chunkRender(Chunk *chunk)
 	if (chunk->elements > 0)
 	{	
 		glBindBuffer(GL_ARRAY_BUFFER, chunk->vbo);
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
+		glVertexAttribIPointer(0, 1, GL_UNSIGNED_SHORT, sizeof(uint16), 0);
+		glVertexAttribIPointer(1, 1, GL_UNSIGNED_SHORT, sizeof(uint16), (void *)(chunk->elements * sizeof(uint16)));
+
 		glDrawArrays(GL_TRIANGLES, 0, chunk->elements);
 	}
 }
