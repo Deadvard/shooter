@@ -1,0 +1,5 @@
+jump = space
+forward = w
+title = shooter
+width = 1280
+height = 720

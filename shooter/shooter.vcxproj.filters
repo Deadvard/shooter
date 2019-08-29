@@ -12,6 +12,7 @@
     <ClInclude Include="code\particle.h" />
     <ClInclude Include="code\ui.h" />
     <ClInclude Include="code\cube.h" />
+    <ClInclude Include="code\parser.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="code\renderer.cpp" />
