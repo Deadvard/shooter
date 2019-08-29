@@ -116,9 +116,33 @@ void run()
 
 	UserInterface ui;
 	ui.nrOfElements = 0;
+
+	char *data = readEntireFile("resources/input.txt");
+	StringPair16 pairs[32];
+	parse(data, pairs, 32);
+	free(data);
+
+	int width = 0;
+	int height = 0;
+	const char *title = 0;
+	for (int i = 0; i < 5; ++i)
+	{
+		if (stringIsEqual(&pairs[i].key, &string16("title")))
+		{
+			title = pairs[i].value.data;
+		}
+		if (stringIsEqual(&pairs[i].key, &string16("width")))
+		{
+			width = stringToInt(&pairs[i].value);
+		}
+		if (stringIsEqual(&pairs[i].key, &string16("height")))
+		{
+			height = stringToInt(&pairs[i].value);
+		}
+	}
 	
 	Window window;
-	windowInitialize(&window, "shooter", 1280, 720);
+	windowInitialize(&window, title, width, height);
 
 	Renderer renderer;
 	rendererInitialize(&renderer);
@@ -154,15 +178,6 @@ void run()
 	int windowSelected = false;
 	int resizeX = false;
 	int resizeY = false;
-
-	char *data = readEntireFile("resources/input.txt");
-	StringPair16 pairs[32];
-	parse(data, pairs, 32);
-
-	for (int i = 0; i < 4; ++i)
-	{
-		printf("%s = %s\n", pairs[i].key.data, pairs[i].value.data);
-	}
 
 	int running = true;
 	while (running)

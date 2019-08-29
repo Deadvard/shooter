@@ -1,4 +1,5 @@
 jump = space
 forward = w
-nr = 5
+title = shooter
 width = 1280
+height = 720
