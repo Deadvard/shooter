@@ -196,6 +196,9 @@ void run()
 				{
 					int x,y;
 					SDL_GetMouseState(&x, &y);
+
+
+
 					gameplayAddBlock(&cameraFocus, &glm::vec2(x,y), chunks.chunks[0]);
 				}
 				break;
