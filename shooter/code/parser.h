@@ -26,7 +26,7 @@ String16 string16(const char * cstr)
 {
 	String16 result;
 	int i = 0;
-	while (cstr[0] && i < 16)
+	while (cstr[i] && i < 16)
 	{
 		result.data[i] = cstr[i];
 		++i;
@@ -36,26 +36,34 @@ String16 string16(const char * cstr)
 	return result;
 }
 
-bool32 stringIsEqual(String16 *a, String16 *b)
+bool32 stringIsEqual(char *a, char *b, uint32 length)
 {
-	int length = a->length < b->length ? a->length : b->length;
-	for (int i = 0; i < length; ++i)
+	for (int i = 0; a[i] && b[i] && i < length; ++i)
 	{
-		if (a->data[i] != b->data[i]) return false;
+		if (a[i] != b[i]) return false;
 	}
 
 	return true;
 }
 
-int stringToInt(String16 *str)
+uint32 stringToUint(char *str, uint32 length)
 {
-	int result = 0;
-	int len = strlen(str->data);
-	for (int i = 0; i < str->length; ++i)
+	uint32 result = 0;
+	for (int i = 0; str[i] && i < length; ++i)
 	{
-		result = result * 10 + (str->data[i] - '0');
+		result = result * 10 + (str[i] - '0');
 	}
 	return result;
+}
+
+bool32 string16IsEqual(String16 *a, String16 *b)
+{
+	return stringIsEqual(a->data, b->data, 16);
+}
+
+uint32 string16ToUint(String16 *str)
+{
+	return stringToUint(str->data, 16);
 }
 
 inline bool isEndOfLine(char c)

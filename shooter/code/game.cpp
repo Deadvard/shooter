@@ -122,22 +122,22 @@ void run()
 	parse(data, pairs, 32);
 	free(data);
 
-	int width = 0;
-	int height = 0;
+	uint32 width = 0;
+	uint32 height = 0;
 	const char *title = 0;
 	for (int i = 0; i < 5; ++i)
 	{
-		if (stringIsEqual(&pairs[i].key, &string16("title")))
+		if (string16IsEqual(&pairs[i].key, &string16("title")))
 		{
 			title = pairs[i].value.data;
 		}
-		if (stringIsEqual(&pairs[i].key, &string16("width")))
+		if (string16IsEqual(&pairs[i].key, &string16("width")))
 		{
-			width = stringToInt(&pairs[i].value);
+			width = string16ToUint(&pairs[i].value);
 		}
-		if (stringIsEqual(&pairs[i].key, &string16("height")))
+		if (string16IsEqual(&pairs[i].key, &string16("height")))
 		{
-			height = stringToInt(&pairs[i].value);
+			height = string16ToUint(&pairs[i].value);
 		}
 	}
 	
