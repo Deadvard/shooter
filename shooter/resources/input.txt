@@ -1,5 +1,9 @@
 jump = space
-forward = w
+forward = W
+left = A
+backwards = S
+right = D
+quit = Escape
 title = shooter
 width = 1280
 height = 720

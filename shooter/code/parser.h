@@ -6,7 +6,6 @@
 
 struct String16
 {
-	uint32 length;
 	char data[16];
 };
 
@@ -25,20 +24,22 @@ struct String
 String16 string16(const char * cstr)
 {
 	String16 result;
-	int i = 0;
-	while (cstr[i] && i < 16)
+	int len = 0;
+	while (cstr[len])
 	{
-		result.data[i] = cstr[i];
-		++i;
+		result.data[len] = cstr[len];
+		++len;
 	}
-
-	result.length = i;
+	for (int i = len; i < 16; ++i)
+	{
+		result.data[i] = 0;
+	}
 	return result;
 }
 
 bool32 stringIsEqual(char *a, char *b, uint32 length)
 {
-	for (int i = 0; a[i] && b[i] && i < length; ++i)
+	for (int i = 0; i < length; ++i)
 	{
 		if (a[i] != b[i]) return false;
 	}
@@ -144,8 +145,6 @@ static void getPair(char **at, StringPair16 *pair)
 	}
 	pair->key.data[15] = 0;
 	pair->value.data[15] = 0;
-	pair->key.length = key.length < 15 ? key.length : 15;
-	pair->value.length = value.length < 15 ? value.length : 15;
 }
 
 void parse(char *fileContents, StringPair16 *pairs, uint32 size)

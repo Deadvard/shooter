@@ -13,6 +13,7 @@
     <ClInclude Include="code\ui.h" />
     <ClInclude Include="code\cube.h" />
     <ClInclude Include="code\parser.h" />
+    <ClInclude Include="code\input.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="code\renderer.cpp" />
