@@ -11,6 +11,7 @@
 #include "cube.h"
 
 #include "parser.h"
+#include "input.h"
 
 #define pi32 3.14159265359f
 
@@ -119,13 +120,14 @@ void run()
 
 	char *data = readEntireFile("resources/input.txt");
 	StringPair16 pairs[32];
+	memset(pairs, 0, sizeof(pairs));
 	parse(data, pairs, 32);
 	free(data);
 
 	uint32 width = 0;
 	uint32 height = 0;
 	const char *title = 0;
-	for (int i = 0; i < 5; ++i)
+	for (int i = 0; i < 32; ++i)
 	{
 		if (string16IsEqual(&pairs[i].key, &string16("title")))
 		{
@@ -179,6 +181,10 @@ void run()
 	int resizeX = false;
 	int resizeY = false;
 
+	Keyboard keyboard;
+	bindKeys(&keyboard, pairs, 32);
+	for (int i = 0; i < 128; ++i) keyboard.isPressed[i] = false;
+
 	int running = true;
 	while (running)
 	{
@@ -207,8 +213,21 @@ void run()
 				mousePosition.y = (float)e.motion.y;
 				break;
 			}
+			case SDL_KEYDOWN:
+			{
+				if (e.key.keysym.sym < 128)
+				{
+					keyboard.isPressed[e.key.keysym.sym] = true;
+				}
+				break;
+			}
 			case SDL_KEYUP:
 			{
+				if (e.key.keysym.sym < 128)
+				{
+					keyboard.isPressed[e.key.keysym.sym] = false;
+				}
+	
 				if (e.key.keysym.scancode == SDL_SCANCODE_Q)
 				{
 					physicsOn = !physicsOn;
@@ -337,10 +356,10 @@ void run()
 		const unsigned char *keys = SDL_GetKeyboardState(0);
 		float velocity = 0.1f;
 		if (keys[SDL_SCANCODE_LSHIFT]) velocity *= 2.0f;
-		if (keys[SDL_SCANCODE_W]) cameraFocus.position += forward * velocity;
-		if (keys[SDL_SCANCODE_A]) cameraFocus.position -= right * velocity;
-		if (keys[SDL_SCANCODE_S]) cameraFocus.position -= forward * velocity;
-		if (keys[SDL_SCANCODE_D]) cameraFocus.position += right * velocity;
+		if (isPressed(&keyboard, &string16("forward"))) cameraFocus.position += forward * velocity;
+		if (isPressed(&keyboard, &string16("left"))) cameraFocus.position -= right * velocity;
+		if (isPressed(&keyboard, &string16("backwards"))) cameraFocus.position -= forward * velocity;
+		if (isPressed(&keyboard, &string16("right"))) cameraFocus.position += right * velocity;
 		renderer.cam.focus = &cameraFocus;
 
 		gameplayUpdate(&gameplay, &renderer, (float)deltaTime);
@@ -353,10 +372,9 @@ void run()
 		
 		renderScene(&renderer, chunks.chunks);
 		renderUI(&renderer, &ui);
-		
-		SDL_GL_SwapWindow(window.window);
 
-		running = running && !keys[SDL_SCANCODE_ESCAPE];
+		SDL_GL_SwapWindow(window.window);
+		running = running && !isPressed(&keyboard, &string16("quit"));
 	}
 }
 
