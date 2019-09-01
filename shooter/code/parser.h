@@ -39,7 +39,7 @@ String16 string16(const char * cstr)
 
 bool32 stringIsEqual(char *a, char *b, uint32 length)
 {
-	for (int i = 0; i < length; ++i)
+	for (uint32 i = 0; i < length; ++i)
 	{
 		if (a[i] != b[i]) return false;
 	}
@@ -50,7 +50,7 @@ bool32 stringIsEqual(char *a, char *b, uint32 length)
 uint32 stringToUint(char *str, uint32 length)
 {
 	uint32 result = 0;
-	for (int i = 0; str[i] && i < length; ++i)
+	for (uint32 i = 0; str[i] && i < length; ++i)
 	{
 		result = result * 10 + (str[i] - '0');
 	}
