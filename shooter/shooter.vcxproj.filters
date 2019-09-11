@@ -14,6 +14,7 @@
     <ClInclude Include="code\cube.h" />
     <ClInclude Include="code\parser.h" />
     <ClInclude Include="code\input.h" />
+    <ClInclude Include="code\net.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="code\renderer.cpp" />
@@ -28,6 +29,7 @@
     <ClCompile Include="code\particle.cpp" />
     <ClCompile Include="code\ui.cpp" />
     <ClCompile Include="code\cube.cpp" />
+    <ClCompile Include="code\net.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\lightning.frag" />
