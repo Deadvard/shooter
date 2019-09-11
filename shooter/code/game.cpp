@@ -98,23 +98,6 @@ void run()
 	Model cameraFocus;
 	cameraFocus.position = glm::vec3(0.0f);
 
-	PhysicsData *physicsData = (PhysicsData *)malloc(sizeof(PhysicsData));
-	physicsData->position = glm::vec3(-50.0f);
-	for (int i = 0; i < 1000000; ++i)
-	{
-		physicsData->heights[i] = 0.0f;
-	}
-
-	float h = 10.0f;
-	for (int i = 0; i < 100; ++i)
-	{
-		h -= 0.1f;
-		for (int j = i * 1000; j < (i * 1000 + 1000); ++j)
-		{
-			physicsData->heights[j] = h;
-		}
-	}
-
 	UserInterface ui;
 	ui.nrOfElements = 0;
 
