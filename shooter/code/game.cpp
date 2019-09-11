@@ -155,6 +155,14 @@ void run()
 	Chunks chunks;
 	initializeChunks(&chunks, 100);
 
+	int z = 0;
+	for (int i = 0; i < 100; ++i)
+	{
+		chunks.chunks[i]->position = glm::vec3(10.0f + 16 * (i % 10), 0.0f, z);
+		z = i % 10 == 9 ? z += 16 : z;
+	}
+
+
 	MenuState menuState;
 	for (int i = 0; i < 10; ++i)
 	{
@@ -353,6 +361,8 @@ void run()
 		
 		glm::vec3 right = glm::normalize(glm::cross(forward, UP));
 
+		glm::vec3 oldPos = cameraFocus.position;
+		
 		const unsigned char *keys = SDL_GetKeyboardState(0);
 		float velocity = 0.1f;
 		if (keys[SDL_SCANCODE_LSHIFT]) velocity *= 2.0f;
@@ -362,13 +372,49 @@ void run()
 		if (isPressed(&keyboard, &string16("right"))) cameraFocus.position += right * velocity;
 		renderer.cam.focus = &cameraFocus;
 
-		gameplayUpdate(&gameplay, &renderer, (float)deltaTime);
-		rendererUpdate(&renderer, (float)deltaTime);
-
 		if (physicsOn)
 		{
-			physicsUpdate(&cameraFocus.position, physicsData);
+			glm::vec3 pos = cameraFocus.position;
+
+			for (int j = 0; j < 100; ++j)
+			{
+				Chunk *chunk = chunks.chunks[j];
+				AABB left;
+				left.position = pos;
+				left.size = glm::vec3(1.0f, 2.0f, 1.0f);
+
+				AABB chunkAAB;
+				chunkAAB.position = chunk->position;
+				chunkAAB.size = glm::vec3(16.0f, 16.0f, 16.0f);
+				chunkAAB.size += left.size;
+				if (point_in_aabb(&chunkAAB, &pos))
+				{
+					for (int i = 0; i < CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE; ++i)
+					{
+						if (chunk->block[i])
+						{
+							int x = i % CHUNK_SIZE;
+							int y = (i / CHUNK_SIZE) % CHUNK_SIZE;
+							int z = i / (CHUNK_SIZE * CHUNK_SIZE);
+
+							AABB right;
+							right.position = chunk->position + glm::vec3(x, y, z);
+							right.size = glm::vec3(0.5f);
+
+							right.size += left.size;
+
+							if (point_in_aabb(&right, &glm::vec3(pos.x, oldPos.y, oldPos.z))) pos.x = oldPos.x;
+							if (point_in_aabb(&right, &glm::vec3(oldPos.x, pos.y, oldPos.z))) pos.y = oldPos.y;
+							if (point_in_aabb(&right, &glm::vec3(oldPos.x, oldPos.y, pos.z))) pos.z = oldPos.z;
+						}
+					}
+				}
+			}
+			cameraFocus.position = pos;
 		}
+
+		gameplayUpdate(&gameplay, &renderer, (float)deltaTime);
+		rendererUpdate(&renderer, (float)deltaTime);
 		
 		renderScene(&renderer, chunks.chunks);
 		renderUI(&renderer, &ui);

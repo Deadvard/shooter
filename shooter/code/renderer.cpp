@@ -337,11 +337,10 @@ void renderScene(Renderer *renderer, Chunk* chunks[])
 		glDrawArrays(GL_LINES, 0, 64);
 		glBindVertexArray(0);
 	}
-	int z = 0;
+
 	for (int i = 0; i < 100; ++i)
 	{
-		glm::mat4 mvp = renderer->projection * view * glm::translate(glm::mat4(1.0f), glm::vec3(10.0f + 16 * (i % 10), 0.0f,z));
-		z = i % 10 == 9?z+=16:z;
+		glm::mat4 mvp = renderer->projection * view * glm::translate(glm::mat4(1.0f), chunks[i]->position);
 
 		glUseProgram(renderer->cubeShader);
 		glBindVertexArray(renderer->cubeVAO);
