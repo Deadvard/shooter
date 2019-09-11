@@ -24,7 +24,7 @@ bool32 isPressed(Keyboard *keyboard, String16 *virtualKey)
 
 void bindKeys(Keyboard *keyboard, StringPair16 *pairs, uint32 length)
 {	
-	for (int i = 0; i < length; ++i)
+	for (uint32 i = 0; i < length; ++i)
 	{
 		for (int j = 0; j < 128; ++j)
 		{

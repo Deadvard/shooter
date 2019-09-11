@@ -260,10 +260,8 @@ void rendererInitialize(Renderer *renderer)
 	renderer->primaryShader = shaderProgramCreate("resources/shaders/primary_shader.vert", "resources/shaders/primary_shader.frag");
 	renderer->textShader = shaderProgramCreate("resources/shaders/text.vert", "resources/shaders/text.frag");
 	renderer->thunderShader = shaderProgramCreate("resources/shaders/thunder.vert", "resources/shaders/thunder.frag");
-	renderer->quadShader = shaderProgramCreate("resources/shaders/quad.vert", "resources/shaders/quad.frag");
 	renderer->prim.shader = shaderProgramCreate("resources/shaders/primitive.vert", "resources/shaders/primitive.frag");
 	renderer->skybox.shader = shaderProgramCreate("resources/shaders/cubemap.vert", "resources/shaders/cubemap.frag");
-	renderer->octaShader = shaderProgramCreate("resources/shaders/octacube.vert", "resources/shaders/octacube.frag");
 	
 	renderer->cubeShader = shaderProgramCreate("resources/shaders/cube.vert", "resources/shaders/cube.frag");
 	glGenVertexArrays(1, &renderer->cubeVAO);
@@ -339,11 +337,10 @@ void renderScene(Renderer *renderer, Chunk* chunks[])
 		glDrawArrays(GL_LINES, 0, 64);
 		glBindVertexArray(0);
 	}
-	int z = 0;
+
 	for (int i = 0; i < 100; ++i)
 	{
-		glm::mat4 mvp = renderer->projection * view * glm::translate(glm::mat4(1.0f), glm::vec3(16 * (i % 10), 0.0f,z));
-		z = i % 10 == 9?z+=16:z;
+		glm::mat4 mvp = renderer->projection * view * glm::translate(glm::mat4(1.0f), chunks[i]->position);
 
 		glUseProgram(renderer->cubeShader);
 		glBindVertexArray(renderer->cubeVAO);

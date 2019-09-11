@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <glad/glad.h>
+#include <glm/glm.hpp>
 
 #include "memory.h"
 
@@ -13,6 +14,7 @@ struct Chunk
 	uint8 block[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
 	unsigned int vbo;
 	int elements;
+	glm::vec3 position;
 	bool32 changed;
 };
 

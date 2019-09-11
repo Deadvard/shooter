@@ -72,12 +72,12 @@ Mesh importMesh(MeshStorage *storage, const char* path)
 	}
 
 	Mesh result;
-	result.firstVertex = storage->numberOfVertices;
-	result.sizeVertex = data.size();
-	result.firstIndex = storage->numberOfIndices;
-	result.sizeIndex = indices.size();
-	storage->numberOfVertices += vertices.size();
-	storage->numberOfIndices += indices.size();
+	result.firstVertex = (int)storage->numberOfVertices;
+	result.sizeVertex = (int)data.size();
+	result.firstIndex = (int)storage->numberOfIndices;
+	result.sizeIndex = (int)indices.size();
+	storage->numberOfVertices += (int)vertices.size();
+	storage->numberOfIndices += (int)indices.size();
 
 	glBindBuffer(GL_ARRAY_BUFFER, storage->vertexBuffer);
 	glBufferSubData(GL_ARRAY_BUFFER, sizeof(Vertex) * result.firstVertex, sizeof(float) * data.size(), &data[0]);
