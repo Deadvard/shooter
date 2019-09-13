@@ -62,15 +62,16 @@ static void editBlock(Model *cameraFocus, Chunks *chunks)
 	ray.origin = cameraFocus->position;
 	ray.direction = glm::normalize(glm::inverse(cameraFocus->rotation) * FORWARD);
 
+	uint8 *block = 0;
+	bool32 *changed = 0;
+	float closest = 10.0f;
+	
 	for (int j = 0; j < 100; ++j)
 	{
 		Chunk *chunk = chunks->chunks[j];
 		AABB chunkAAB;
 		chunkAAB.position = chunk->position + 8.0f;
 		chunkAAB.size = glm::vec3(8.0f, 8.0f, 8.0f);
-
-		uint8 *block = 0;
-		float closest = 10.0f;
 
 		if (raycast(&chunkAAB, &ray) > 0.0f)
 		{
@@ -90,15 +91,18 @@ static void editBlock(Model *cameraFocus, Chunks *chunks)
 				{
 					closest = result;
 					block = &chunk->block[x][y][z];
+					changed = &chunk->changed;
 				}
 			}
 		}
 
-		if (block)
-		{
-			*block = 0;
-			chunk->changed = true;
-		}
+		
+	}
+
+	if (block && changed)
+	{
+		*block = 0;
+		*changed = true;
 	}
 }
 
