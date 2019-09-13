@@ -234,10 +234,9 @@ void run()
 				}
 				if (e.key.keysym.scancode == SDL_SCANCODE_M)
 				{
-					glm::vec3 forward = cameraFocus.rotation * FORWARD;
-					glm::vec3 position = cameraFocus.position;
-
-					glm::vec3 pos = position + forward * 3.0f;
+					Ray ray;
+					ray.origin = cameraFocus.position;
+					ray.direction = glm::normalize(glm::inverse(cameraFocus.rotation) * FORWARD);//glm::normalize(cameraFocus.rotation * FORWARD);
 
 					for (int j = 0; j < 100; ++j)
 					{
@@ -246,7 +245,7 @@ void run()
 						chunkAAB.position = chunk->position + 8.0f;
 						chunkAAB.size = glm::vec3(8.0f, 8.0f, 8.0f);
 
-						if (point_in_aabb(&chunkAAB, &pos))
+						if (raycast(&chunkAAB, &ray) > 0.0f)
 						{
 							for (int i = 0; i < CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE; ++i)
 							{
@@ -255,10 +254,10 @@ void run()
 								int z = i / (CHUNK_SIZE * CHUNK_SIZE);
 
 								AABB right;
-								right.position = chunk->position + glm::vec3(x, y, z);
+								right.position = chunk->position + glm::vec3(x, y, z) + 0.5f;
 								right.size = glm::vec3(0.5f);
 
-								if (point_in_aabb(&right, &pos))
+								if (raycast(&right, &ray) > 0.0f)
 								{
 									chunk->block[x][y][z] = 0;
 									chunk->changed = true;

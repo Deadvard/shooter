@@ -1,6 +1,39 @@
 #include "physics.h"
 #include <stdio.h>
 
+float raycast(AABB *aabb, Ray *ray)
+{
+	glm::vec3 min = get_min(aabb);
+	glm::vec3 max = get_max(aabb);
+
+	float t1 = (min.x - ray->origin.x) / ray->direction.x;
+	float t2 = (max.x - ray->origin.x) / ray->direction.x;
+	float t3 = (min.y - ray->origin.y) / ray->direction.y;
+	float t4 = (max.y - ray->origin.y) / ray->direction.y;
+	float t5 = (min.z - ray->origin.z) / ray->direction.z;
+	float t6 = (max.z - ray->origin.z) / ray->direction.z;
+
+	float t_min = glm::max(
+		glm::max(glm::min(t1, t2), glm::min(t3, t4)),
+		glm::min(t5, t6));
+
+	float t_max = glm::min(
+		glm::min(glm::max(t1, t2), glm::max(t3, t4)),
+		glm::max(t5, t6));
+
+	if (t_max < 0.0f)
+		return -1;
+
+	if (t_min > t_max)
+		return -1;
+
+
+	if (t_min < 0.0f)
+		return t_max;
+
+	return t_min;
+}
+
 bool point_in_aabb(AABB* aabb, glm::vec3* point)
 {
 	glm::vec3 min = get_min(aabb);

@@ -5,6 +5,12 @@
 
 typedef struct
 {
+	glm::vec3 origin;
+	glm::vec3 direction;
+} Ray;
+
+typedef struct
+{
 	glm::vec3 position;
 	glm::vec3 size;
 } AABB;
@@ -22,5 +28,7 @@ struct PhysicsData
 };
 
 void physicsUpdate(glm::vec3 *player, PhysicsData *data);
+
+float raycast(AABB *aabb, Ray *ray);
 
 #endif
