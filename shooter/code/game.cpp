@@ -15,6 +15,10 @@
 
 #define pi32 3.14159265359f
 
+static const glm::vec3 FORWARD = glm::vec3(0.0f, 0.0f, -1.0f);
+static const glm::vec3 UP = glm::vec3(0.0f, 1.0f, 0.0f);
+static const glm::vec3 RIGHT = glm::vec3(1.0f, 0.0f, 0.0f);
+
 int pointInRectangle(float x, float y, float w, float h, float px, float py);
 
 enum ButtonState
@@ -230,12 +234,37 @@ void run()
 				}
 				if (e.key.keysym.scancode == SDL_SCANCODE_M)
 				{
-					int x,y;
-					SDL_GetMouseState(&x, &y);
+					glm::vec3 forward = cameraFocus.rotation * FORWARD;
+					glm::vec3 position = cameraFocus.position;
 
+					glm::vec3 pos = position + forward * 3.0f;
 
+					for (int j = 0; j < 100; ++j)
+					{
+						Chunk *chunk = chunks.chunks[j];
+						AABB chunkAAB;
+						chunkAAB.position = chunk->position;
+						chunkAAB.size = glm::vec3(16.0f, 16.0f, 16.0f);
 
-					gameplayAddBlock(&cameraFocus, &glm::vec2(x,y), chunks.chunks[0]);
+						if (point_in_aabb(&chunkAAB, &pos))
+						{
+							for (int i = 0; i < CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE; ++i)
+							{
+								int x = i % CHUNK_SIZE;
+								int y = (i / CHUNK_SIZE) % CHUNK_SIZE;
+								int z = i / (CHUNK_SIZE * CHUNK_SIZE);
+
+								AABB right;
+								right.position = chunk->position + glm::vec3(x, y, z);
+								right.size = glm::vec3(0.5f);
+
+								if (point_in_aabb(&right, &pos))
+								{
+									chunk->block[x][y][z] = 0;
+								}
+							}
+						}
+					}
 				}
 				break;
 			}
@@ -313,10 +342,6 @@ void run()
 
 		glClearColor(135.0f / 255.0f, 206.0f / 255.0f, 235.0f / 255.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		static const glm::vec3 FORWARD = glm::vec3(0.0f, 0.0f, -1.0f);
-		static const glm::vec3 UP = glm::vec3(0.0f, 1.0f, 0.0f);
-		static const glm::vec3 RIGHT = glm::vec3(1.0f, 0.0f, 0.0f);
 
 		rot += pi32 * (float)deltaTime;
 		renderer.activeModels[1].rotation = glm::angleAxis(rot, glm::vec3(0, 1.f, 0));
