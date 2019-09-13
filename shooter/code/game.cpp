@@ -261,6 +261,7 @@ void run()
 								if (point_in_aabb(&right, &pos))
 								{
 									chunk->block[x][y][z] = 0;
+									chunk->changed = true;
 								}
 							}
 						}
