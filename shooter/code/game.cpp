@@ -193,6 +193,8 @@ void run()
 	Chunks chunks;
 	initializeChunks(&chunks, 100);
 
+	Chunk *selection = chunkCreate();
+
 	int z = 0;
 	for (int i = 0; i < 100; ++i)
 	{
@@ -313,6 +315,70 @@ void run()
 			}
 			}
 		}
+
+
+		Ray ray;
+		ray.origin = cameraFocus.position;
+		ray.direction = glm::normalize(glm::inverse(cameraFocus.rotation) * FORWARD);
+
+		glm::vec3 chunkPosition = glm::vec3(0, 0, 0);
+		bool32 changed = false;
+		int sx = 0;
+		int sy = 0;
+		int sz = 0;
+		float closest = 10.0f;
+
+		for (int j = 0; j < 100; ++j)
+		{
+			Chunk *chunk = chunks.chunks[j];
+			AABB chunkAAB;
+			chunkAAB.position = chunk->position + 8.0f;
+			chunkAAB.size = glm::vec3(8.0f, 8.0f, 8.0f);
+
+			if (raycast(&chunkAAB, &ray) > 0.0f)
+			{
+				for (int i = 0; i < CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE; ++i)
+				{
+					int x = i % CHUNK_SIZE;
+					int y = (i / CHUNK_SIZE) % CHUNK_SIZE;
+					int z = i / (CHUNK_SIZE * CHUNK_SIZE);
+
+					if (chunk->block[x][y][z])
+					{
+						AABB right;
+						right.position = chunk->position + glm::vec3(x, y, z) + 0.5f;
+						right.size = glm::vec3(0.5f);
+
+						float result = raycast(&right, &ray);
+
+						if (result > 0.0f && result < closest)
+						{
+							closest = result;
+							sx = x;
+							sy = y;
+							sz = z;
+							changed = true;
+							chunkPosition = chunk->position;
+						}
+					}
+				}
+			}
+		}
+
+		if (changed)
+		{
+			for (int z = 0; z < CHUNK_SIZE; ++z)
+			for (int y = 0; y < CHUNK_SIZE; ++y)
+			for (int x = 0; x < CHUNK_SIZE; ++x)
+			{
+				selection->block[x][y][z] = 0;
+			}
+			selection->position = chunkPosition;
+			selection->block[sx][sy][sz] = 4;
+			selection->changed = true;
+		}
+
+
 
 		clear(&ui);
 		if (menuVisible)
@@ -451,7 +517,7 @@ void run()
 		gameplayUpdate(&gameplay, &renderer, (float)deltaTime);
 		rendererUpdate(&renderer, (float)deltaTime);
 		
-		renderScene(&renderer, chunks.chunks);
+		renderScene(&renderer, chunks.chunks, selection);
 		renderUI(&renderer, &ui);
 
 		SDL_GL_SwapWindow(window.window);

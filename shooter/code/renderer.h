@@ -104,7 +104,7 @@ unsigned int shaderProgramCreate(const char *vertexPath, const char *fragmentPat
 
 unsigned imageTextureCreate(const char *path);
 unsigned textTextureCreate(const char *path, const char *text);
-void renderScene(Renderer *renderer, Chunk* chunks[]);
+void renderScene(Renderer *renderer, Chunk* chunks[], Chunk *selection);
 void renderUI(Renderer *renderer, UserInterface *ui);
 
 #endif
