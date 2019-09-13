@@ -247,6 +247,8 @@ void run()
 
 						if (raycast(&chunkAAB, &ray) > 0.0f)
 						{
+							uint8 *block = 0;
+							float closest = 10.0f;
 							for (int i = 0; i < CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE; ++i)
 							{
 								int x = i % CHUNK_SIZE;
@@ -257,11 +259,19 @@ void run()
 								right.position = chunk->position + glm::vec3(x, y, z) + 0.5f;
 								right.size = glm::vec3(0.5f);
 
-								if (raycast(&right, &ray) > 0.0f)
+								float result = raycast(&right, &ray);
+
+								if (result > 0.0f && result < closest)
 								{
-									chunk->block[x][y][z] = 0;
-									chunk->changed = true;
+									closest = result;
+									block = &chunk->block[x][y][z];
 								}
+							}
+
+							if (block)
+							{
+								*block = 0;
+								chunk->changed = true;
 							}
 						}
 					}
