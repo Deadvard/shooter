@@ -56,6 +56,52 @@ struct Chunks
 void initializeChunks(Chunks* chunks, int numChunks);
 void updateMenu(MenuState *menuState, glm::vec2 mousePosition, int lmbPressed);
 
+static void editBlock(Model *cameraFocus, Chunks *chunks)
+{
+	Ray ray;
+	ray.origin = cameraFocus->position;
+	ray.direction = glm::normalize(glm::inverse(cameraFocus->rotation) * FORWARD);
+
+	for (int j = 0; j < 100; ++j)
+	{
+		Chunk *chunk = chunks->chunks[j];
+		AABB chunkAAB;
+		chunkAAB.position = chunk->position + 8.0f;
+		chunkAAB.size = glm::vec3(8.0f, 8.0f, 8.0f);
+
+		uint8 *block = 0;
+		float closest = 10.0f;
+
+		if (raycast(&chunkAAB, &ray) > 0.0f)
+		{
+			for (int i = 0; i < CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE; ++i)
+			{
+				int x = i % CHUNK_SIZE;
+				int y = (i / CHUNK_SIZE) % CHUNK_SIZE;
+				int z = i / (CHUNK_SIZE * CHUNK_SIZE);
+
+				AABB right;
+				right.position = chunk->position + glm::vec3(x, y, z) + 0.5f;
+				right.size = glm::vec3(0.5f);
+
+				float result = raycast(&right, &ray);
+
+				if (result > 0.0f && result < closest)
+				{
+					closest = result;
+					block = &chunk->block[x][y][z];
+				}
+			}
+		}
+
+		if (block)
+		{
+			*block = 0;
+			chunk->changed = true;
+		}
+	}
+}
+
 static void windowInitialize(Window *window, const char* title, int width, int height)
 {
 	SDL_Init(SDL_INIT_EVERYTHING);
@@ -232,50 +278,6 @@ void run()
 					menuVisible = !menuVisible;
 					SDL_SetRelativeMouseMode((SDL_bool)(!menuVisible));
 				}
-				if (e.key.keysym.scancode == SDL_SCANCODE_M)
-				{
-					Ray ray;
-					ray.origin = cameraFocus.position;
-					ray.direction = glm::normalize(glm::inverse(cameraFocus.rotation) * FORWARD);//glm::normalize(cameraFocus.rotation * FORWARD);
-
-					for (int j = 0; j < 100; ++j)
-					{
-						Chunk *chunk = chunks.chunks[j];
-						AABB chunkAAB;
-						chunkAAB.position = chunk->position + 8.0f;
-						chunkAAB.size = glm::vec3(8.0f, 8.0f, 8.0f);
-
-						if (raycast(&chunkAAB, &ray) > 0.0f)
-						{
-							uint8 *block = 0;
-							float closest = 10.0f;
-							for (int i = 0; i < CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE; ++i)
-							{
-								int x = i % CHUNK_SIZE;
-								int y = (i / CHUNK_SIZE) % CHUNK_SIZE;
-								int z = i / (CHUNK_SIZE * CHUNK_SIZE);
-
-								AABB right;
-								right.position = chunk->position + glm::vec3(x, y, z) + 0.5f;
-								right.size = glm::vec3(0.5f);
-
-								float result = raycast(&right, &ray);
-
-								if (result > 0.0f && result < closest)
-								{
-									closest = result;
-									block = &chunk->block[x][y][z];
-								}
-							}
-
-							if (block)
-							{
-								*block = 0;
-								chunk->changed = true;
-							}
-						}
-					}
-				}
 				break;
 			}
 			case SDL_MOUSEBUTTONDOWN:
@@ -283,6 +285,7 @@ void run()
 				if (e.button.button == SDL_BUTTON_LEFT)
 				{
 					lmbPressed = true;
+					editBlock(&cameraFocus, &chunks);
 				}
 				break;
 			}
@@ -290,11 +293,11 @@ void run()
 			{
 				if (e.button.button == SDL_BUTTON_LEFT)
 				{
-					gameplayShoot(&gameplay, &cameraFocus, &renderer);
 					lmbPressed = false;
 				}
 				else if (e.button.button == SDL_BUTTON_RIGHT)
 				{
+					gameplayShoot(&gameplay, &cameraFocus, &renderer);
 					gameplayActivateThunder(&gameplay, &cameraFocus, &renderer);
 				}
 				break;
