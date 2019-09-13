@@ -107,6 +107,76 @@ static void editBlock(Model *cameraFocus, Chunks *chunks, uint8 type)
 	}
 }
 
+static void addBlock(Model *cameraFocus, Chunks *chunks, uint8 type)
+{
+	Ray ray;
+	ray.origin = cameraFocus->position;
+	ray.direction = glm::normalize(glm::inverse(cameraFocus->rotation) * FORWARD);
+
+	uint8 *block = 0;
+	bool32 *changed = 0;
+	float closest = 10.0f;
+
+	for (int j = 0; j < 100; ++j)
+	{
+		Chunk *chunk = chunks->chunks[j];
+		AABB chunkAAB;
+		chunkAAB.position = chunk->position + 8.0f;
+		chunkAAB.size = glm::vec3(8.0f, 8.0f, 8.0f);
+
+		if (raycast(&chunkAAB, &ray) > 0.0f)
+		{
+			for (int i = 0; i < CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE; ++i)
+			{
+				int x = i % CHUNK_SIZE;
+				int y = (i / CHUNK_SIZE) % CHUNK_SIZE;
+				int z = i / (CHUNK_SIZE * CHUNK_SIZE);
+
+				if (chunk->block[x][y][z])
+				{
+					AABB right;
+					right.position = chunk->position + glm::vec3(x, y, z) + 0.5f;
+					right.size = glm::vec3(0.5f);
+
+					float result = raycast(&right, &ray);
+
+					if (result > 0.0f && result < closest)
+					{
+						closest = result;
+						block = &chunk->block[x][y][z];
+						changed = &chunk->changed;
+
+						glm::vec3 absDir = glm::abs(ray.direction);
+						glm::vec3 normal = glm::vec3(0, 0, 0);
+
+						if (absDir.x > absDir.y && absDir.x > absDir.z)
+						{
+							normal.x = ray.direction.x;
+						}
+						else if (absDir.y > absDir.x && absDir.y > absDir.z)
+						{
+							normal.y = ray.direction.y;
+						}
+						else if (absDir.z > absDir.x && absDir.z > absDir.y)
+						{
+							normal.z = ray.direction.z;		
+						}
+						normal = glm::normalize(normal);
+						block = &chunk->block[x - (int)normal.x][y - (int)normal.y][z - (int)normal.z];
+						changed = &chunk->changed;
+					}
+				}
+			}
+		}
+	}
+
+	if (block && changed)
+	{
+		*block = type;
+		*changed = true;
+	}
+}
+
 static void windowInitialize(Window *window, const char* title, int width, int height)
 {
 	SDL_Init(SDL_INIT_EVERYTHING);
@@ -296,7 +366,7 @@ void run()
 				}
 				if (e.button.button == SDL_BUTTON_RIGHT)
 				{
-					editBlock(&cameraFocus, &chunks, 1);
+					addBlock(&cameraFocus, &chunks, 1);
 				}
 				break;
 			}
