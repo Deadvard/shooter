@@ -43,6 +43,12 @@ struct ThunderEffect
 	float strength[65];
 };
 
+struct Crosshair
+{
+	unsigned int vao;
+	unsigned int vbo;
+};
+
 struct Camera
 {
 	float yaw;
@@ -59,6 +65,7 @@ struct Renderer
 	unsigned int thunderShader;
 	unsigned int matrixBuffer;
 	unsigned int skyboxShader;
+	unsigned int crosshairShader;
 
 	glm::mat4 projection;
 
@@ -70,6 +77,7 @@ struct Renderer
 	ThunderEffect thunderEffect;
 	Skybox skybox;
 	WeatherEffects weather;
+	Crosshair crosshair;
 
 	Font font;
 

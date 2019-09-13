@@ -124,6 +124,30 @@ void toonTextureCreate(Lighting* lighting)
 	glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); //Conditions
 }
 
+void initializeCrosshair(Crosshair* crosshair)
+{
+	float vertices[] = 
+	{
+		0.5f, -0.5f,
+		-0.5f,  0.5f,
+		-0.5f, -0.5f,
+
+		0.5f,  0.5f ,
+		-0.5f,  0.5f,
+		0.5f, -0.5f 
+	};
+
+	glGenVertexArrays(1, &crosshair->vao);
+	glBindVertexArray(crosshair->vao);
+
+	glGenBuffers(1, &crosshair->vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, crosshair->vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices[0], GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, (void*)0);
+}
+
 void initializeSkyboxTextures(Renderer* renderer)
 {
 	glGenTextures(1, &renderer->skybox.textureID);
@@ -253,6 +277,7 @@ void rendererInitialize(Renderer *renderer)
 	renderer->thunderShader = shaderProgramCreate("resources/shaders/thunder.vert", "resources/shaders/thunder.frag");
 	renderer->prim.shader = shaderProgramCreate("resources/shaders/primitive.vert", "resources/shaders/primitive.frag");
 	renderer->skybox.shader = shaderProgramCreate("resources/shaders/cubemap.vert", "resources/shaders/cubemap.frag");
+	renderer->crosshairShader = shaderProgramCreate("resources/shaders/cross.vert", "resources/shaders/cross.frag");
 	
 	renderer->cubeShader = shaderProgramCreate("resources/shaders/cube.vert", "resources/shaders/cube.frag");
 	glGenVertexArrays(1, &renderer->cubeVAO);
@@ -364,6 +389,12 @@ void renderScene(Renderer *renderer, Chunk* chunks[], Chunk *selection)
 	glBindTexture(GL_TEXTURE_CUBE_MAP, renderer->skybox.textureID);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glDepthFunc(GL_LESS);
+
+	glUseProgram(renderer->crosshairShader);
+	glm::vec2 resolution(1280, 720);
+	glUniform2fv(glGetUniformLocation(renderer->crosshairShader, "resolution"), 1, &resolution[0]);
+	glBindVertexArray(renderer->crosshair.vao);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
 void renderUI(Renderer *renderer, UserInterface *ui)
