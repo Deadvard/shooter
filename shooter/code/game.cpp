@@ -96,7 +96,7 @@ void run()
 {
 	float rot = 0.0f;
 	Model cameraFocus;
-	cameraFocus.position = glm::vec3(10 * 16 / 2, 16 + 1.5,10 * 16 / 2);
+	cameraFocus.position = glm::vec3(10 * 16 / 2, 16 + 3,10 * 16 / 2);
 
 	UserInterface ui;
 	ui.nrOfElements = 0;
@@ -361,6 +361,8 @@ void run()
 		if (physicsOn)
 		{
 			glm::vec3 pos = cameraFocus.position;
+
+			pos.y -= 0.9 * deltaTime;
 
 			for (int j = 0; j < 100; ++j)
 			{
