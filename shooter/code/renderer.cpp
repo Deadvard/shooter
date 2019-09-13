@@ -329,6 +329,18 @@ void renderScene(Renderer *renderer, Chunk* chunks[], Chunk *selection)
 		glBindVertexArray(0);
 	}
 
+	{
+		glm::mat4 mvp = renderer->projection * view * glm::translate(glm::mat4(1.0f), selection->position);
+
+		glUseProgram(renderer->cubeShader);
+		glBindVertexArray(renderer->cubeVAO);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, renderer->cubeTexture);
+		glUniformMatrix4fv(0, 1, GL_FALSE, &mvp[0][0]);
+		glUniform1i(1, 0);
+		chunkRender(selection);
+	}
+
 	for (int i = 0; i < 100; ++i)
 	{
 		glm::mat4 mvp = renderer->projection * view * glm::translate(glm::mat4(1.0f), chunks[i]->position);
@@ -340,20 +352,6 @@ void renderScene(Renderer *renderer, Chunk* chunks[], Chunk *selection)
 		glUniformMatrix4fv(0, 1, GL_FALSE, &mvp[0][0]);
 		glUniform1i(1, 0);
 		chunkRender(chunks[i]);
-	}
-
-	{
-		glDisable(GL_DEPTH_TEST);
-		glm::mat4 mvp = renderer->projection * view * glm::translate(glm::mat4(1.0f), selection->position);
-
-		glUseProgram(renderer->cubeShader);
-		glBindVertexArray(renderer->cubeVAO);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, renderer->cubeTexture);
-		glUniformMatrix4fv(0, 1, GL_FALSE, &mvp[0][0]);
-		glUniform1i(1, 0);
-		chunkRender(selection);
-		glEnable(GL_DEPTH_TEST);
 	}
 
 	glDepthFunc(GL_LEQUAL);
