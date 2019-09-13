@@ -243,8 +243,8 @@ void run()
 					{
 						Chunk *chunk = chunks.chunks[j];
 						AABB chunkAAB;
-						chunkAAB.position = chunk->position;
-						chunkAAB.size = glm::vec3(16.0f, 16.0f, 16.0f);
+						chunkAAB.position = chunk->position + 8.0f;
+						chunkAAB.size = glm::vec3(8.0f, 8.0f, 8.0f);
 
 						if (point_in_aabb(&chunkAAB, &pos))
 						{
@@ -398,8 +398,8 @@ void run()
 				left.size = glm::vec3(1.0f, 2.0f, 1.0f);
 
 				AABB chunkAAB;
-				chunkAAB.position = chunk->position;
-				chunkAAB.size = glm::vec3(16.0f, 16.0f, 16.0f);
+				chunkAAB.position = chunk->position + 8.0f;
+				chunkAAB.size = glm::vec3(8.0f, 8.0f, 8.0f);
 				chunkAAB.size += left.size;
 				if (point_in_aabb(&chunkAAB, &pos))
 				{
