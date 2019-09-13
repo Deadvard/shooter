@@ -56,7 +56,7 @@ struct Chunks
 void initializeChunks(Chunks* chunks, int numChunks);
 void updateMenu(MenuState *menuState, glm::vec2 mousePosition, int lmbPressed);
 
-static void editBlock(Model *cameraFocus, Chunks *chunks)
+static void editBlock(Model *cameraFocus, Chunks *chunks, uint8 type)
 {
 	Ray ray;
 	ray.origin = cameraFocus->position;
@@ -81,27 +81,28 @@ static void editBlock(Model *cameraFocus, Chunks *chunks)
 				int y = (i / CHUNK_SIZE) % CHUNK_SIZE;
 				int z = i / (CHUNK_SIZE * CHUNK_SIZE);
 
-				AABB right;
-				right.position = chunk->position + glm::vec3(x, y, z) + 0.5f;
-				right.size = glm::vec3(0.5f);
-
-				float result = raycast(&right, &ray);
-
-				if (result > 0.0f && result < closest)
+				if (chunk->block[x][y][z])
 				{
-					closest = result;
-					block = &chunk->block[x][y][z];
-					changed = &chunk->changed;
+					AABB right;
+					right.position = chunk->position + glm::vec3(x, y, z) + 0.5f;
+					right.size = glm::vec3(0.5f);
+
+					float result = raycast(&right, &ray);
+
+					if (result > 0.0f && result < closest)
+					{
+						closest = result;
+						block = &chunk->block[x][y][z];
+						changed = &chunk->changed;
+					}
 				}
 			}
-		}
-
-		
+		}	
 	}
 
 	if (block && changed)
 	{
-		*block = 0;
+		*block = type;
 		*changed = true;
 	}
 }
@@ -289,7 +290,11 @@ void run()
 				if (e.button.button == SDL_BUTTON_LEFT)
 				{
 					lmbPressed = true;
-					editBlock(&cameraFocus, &chunks);
+					editBlock(&cameraFocus, &chunks, 0);
+				}
+				if (e.button.button == SDL_BUTTON_RIGHT)
+				{
+					editBlock(&cameraFocus, &chunks, 1);
 				}
 				break;
 			}
@@ -301,8 +306,8 @@ void run()
 				}
 				else if (e.button.button == SDL_BUTTON_RIGHT)
 				{
-					gameplayShoot(&gameplay, &cameraFocus, &renderer);
-					gameplayActivateThunder(&gameplay, &cameraFocus, &renderer);
+					//gameplayShoot(&gameplay, &cameraFocus, &renderer);
+					//gameplayActivateThunder(&gameplay, &cameraFocus, &renderer);
 				}
 				break;
 			}
