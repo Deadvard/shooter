@@ -235,16 +235,7 @@ void rendererRefreshThunder(Renderer* renderer)
 
 void loadMeshes(Renderer* renderer)
 {
-	char *data = readEntireFile("resources/assets/result.bin");
-	renderer->meshes[renderer->numMeshes++] = meshFromBuffer(&renderer->meshStorage, data);
-	free(data);
-
-	data = readEntireFile("resources/assets/gubbe.bin");
-	renderer->meshes[renderer->numMeshes++] = meshFromBuffer(&renderer->meshStorage, data);
-	free(data);
-
 	renderer->meshes[renderer->numMeshes++] = importMesh(&renderer->meshStorage, "resources/assets/monkey.tfs");
-	renderer->meshes[renderer->numMeshes++] = importMesh(&renderer->meshStorage, "resources/assets/floor.tfs");
 }
 
 unsigned int rendererAddModel(Renderer* renderer, int meshIndex, glm::vec3 startingPos)

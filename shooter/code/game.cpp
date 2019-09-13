@@ -96,7 +96,7 @@ void run()
 {
 	float rot = 0.0f;
 	Model cameraFocus;
-	cameraFocus.position = glm::vec3(0.0f);
+	cameraFocus.position = glm::vec3(10 * 16 / 2, 16 + 1.5,10 * 16 / 2);
 
 	UserInterface ui;
 	ui.nrOfElements = 0;

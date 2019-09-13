@@ -21,9 +21,6 @@ void gameplayInitialize(Gameplay* gameplay, Renderer* renderer)
 	gameplay->numActors = 0;
 
 	addActor(gameplay, renderer, 0, glm::vec3(0, 0, -10));
-	addActor(gameplay, renderer, 1, glm::vec3(0, 20, 0));
-	addActor(gameplay, renderer, 2, glm::vec3(5, 0, 0));
-	addActor(gameplay, renderer, 3, glm::vec3(0, -5, 0));
 }
 
 void gameplayUpdate(Gameplay* gameplay, Renderer* renderer, float deltaTime)
@@ -47,7 +44,7 @@ void gameplayUpdate(Gameplay* gameplay, Renderer* renderer, float deltaTime)
 void gameplayShoot(Gameplay* gameplay, Model* cameraFocus, Renderer* renderer)
 {
 	glm::vec3 forward = glm::normalize(glm::inverse(cameraFocus->rotation) * glm::vec3(0,0,-1));
-	unsigned int bullet = addActor(gameplay, renderer, 2, cameraFocus->position);
+	unsigned int bullet = addActor(gameplay, renderer, 0, cameraFocus->position);
 	gameplay->actors[bullet].direction = forward;
 	gameplay->actors[bullet].speed = 0.5f;
 	renderer->activeModels[gameplay->actors[bullet].modelIndex].rotation = glm::inverse(cameraFocus->rotation);
