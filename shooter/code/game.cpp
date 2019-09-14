@@ -546,16 +546,15 @@ void run()
 		if (physicsOn)
 		{
 			glm::vec3 pos = cameraFocus.position;
-
-			pos.y -= 0.9 * deltaTime;
+			pos.y -= 9.82 * deltaTime;
 
 			for (int j = 0; j < 100; ++j)
 			{
 				Chunk *chunk = chunks.chunks[j];
 				AABB left;
 				left.position = pos;
-				left.size = glm::vec3(1.0f, 2.0f, 1.0f);
-
+				left.size = glm::vec3(0.4f, 1.2f, 0.4f);
+				
 				AABB chunkAAB;
 				chunkAAB.position = chunk->position + 8.0f;
 				chunkAAB.size = glm::vec3(8.0f, 8.0f, 8.0f);
@@ -564,14 +563,14 @@ void run()
 				{
 					for (int i = 0; i < CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE; ++i)
 					{
-						if (chunk->block[i])
+						int x = i % CHUNK_SIZE;
+						int y = (i / CHUNK_SIZE) % CHUNK_SIZE;
+						int z = i / (CHUNK_SIZE * CHUNK_SIZE);
+						
+						if (chunk->block[x][y][z])
 						{
-							int x = i % CHUNK_SIZE;
-							int y = (i / CHUNK_SIZE) % CHUNK_SIZE;
-							int z = i / (CHUNK_SIZE * CHUNK_SIZE);
-
 							AABB right;
-							right.position = chunk->position + glm::vec3(x, y, z);
+							right.position = chunk->position + glm::vec3(x, y, z) + 0.5f;
 							right.size = glm::vec3(0.5f);
 
 							right.size += left.size;
