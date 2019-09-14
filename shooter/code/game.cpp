@@ -397,6 +397,7 @@ void run()
 		int sy = 0;
 		int sz = 0;
 		float closest = 10.0f;
+		uint8 type = 0;
 
 		for (int j = 0; j < 100; ++j)
 		{
@@ -429,6 +430,7 @@ void run()
 							sz = z;
 							changed = true;
 							chunkPosition = chunk->position;
+							type = chunk->block[x][y][z];
 						}
 					}
 				}
@@ -444,7 +446,7 @@ void run()
 				selection->block[x][y][z] = 0;
 			}
 			selection->position = chunkPosition;
-			selection->block[sx][sy][sz] = 4;
+			selection->block[sx][sy][sz] = type;
 			selection->changed = true;
 		}
 

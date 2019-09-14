@@ -356,26 +356,28 @@ void renderScene(Renderer *renderer, Chunk* chunks[], Chunk *selection)
 
 	{
 		glm::mat4 mvp = renderer->projection * view * glm::translate(glm::mat4(1.0f), selection->position);
-
+		float ambient[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 		glUseProgram(renderer->cubeShader);
 		glBindVertexArray(renderer->cubeVAO);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, renderer->cubeTexture);
 		glUniformMatrix4fv(0, 1, GL_FALSE, &mvp[0][0]);
 		glUniform1i(1, 0);
+		glUniform4fv(2, 1, ambient);
 		chunkRender(selection);
 	}
 
 	for (int i = 0; i < 100; ++i)
 	{
 		glm::mat4 mvp = renderer->projection * view * glm::translate(glm::mat4(1.0f), chunks[i]->position);
-
+		float ambient[4] = { 0.7f, 0.7f, 0.7f, 1.0f };
 		glUseProgram(renderer->cubeShader);
 		glBindVertexArray(renderer->cubeVAO);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, renderer->cubeTexture);
-		glUniformMatrix4fv(0, 1, GL_FALSE, &mvp[0][0]);
+		glUniformMatrix4fv(0, 1, GL_FALSE, &mvp[0][0]);		
 		glUniform1i(1, 0);
+		glUniform4fv(2, 1, ambient);
 		chunkRender(chunks[i]);
 	}
 
