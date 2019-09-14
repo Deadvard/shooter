@@ -2,12 +2,12 @@
 #include <stdio.h>
 enum FaceDirection
 {
-	faceLeft,
-	faceRight,
-	faceBottom,
-	faceTop,	
-	faceFront,
-	faceBack
+	facePosX = 0x1, // 0001
+	facePosY = 0x2, // 0010
+	facePosZ = 0x4, // 0100
+	faceNegX = 0x9, // 1001
+	faceNegY = 0xA, // 1010
+	faceNegZ = 0xC  // 1100
 };
 
 Chunk * chunkCreate()
