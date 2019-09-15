@@ -53,19 +53,26 @@ struct Chunks
 	Chunk* chunks[100];
 };
 
+struct SelectedBlock
+{
+	Chunk *chunk;
+	int x;
+	int y;
+	int z;
+};
+
 void initializeChunks(Chunks* chunks, int numChunks);
 void updateMenu(MenuState *menuState, glm::vec2 mousePosition, int lmbPressed);
 
-static void editBlock(Model *cameraFocus, Chunks *chunks, uint8 type)
+static SelectedBlock selectedBlock(Ray *ray, Chunks *chunks)
 {
-	Ray ray;
-	ray.origin = cameraFocus->position;
-	ray.direction = glm::normalize(glm::inverse(cameraFocus->rotation) * FORWARD);
-
-	uint8 *block = 0;
-	bool32 *changed = 0;
+	SelectedBlock block;
+	block.chunk = 0;
+	block.x = 0;
+	block.y = 0;
+	block.z = 0;
 	float closest = 10.0f;
-	
+
 	for (int j = 0; j < 100; ++j)
 	{
 		Chunk *chunk = chunks->chunks[j];
@@ -73,7 +80,7 @@ static void editBlock(Model *cameraFocus, Chunks *chunks, uint8 type)
 		chunkAAB.position = chunk->position + 8.0f;
 		chunkAAB.size = glm::vec3(8.0f, 8.0f, 8.0f);
 
-		if (raycast(&chunkAAB, &ray) > 0.0f)
+		if (raycast(&chunkAAB, ray) > 0.0f)
 		{
 			for (int i = 0; i < CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE; ++i)
 			{
@@ -87,94 +94,22 @@ static void editBlock(Model *cameraFocus, Chunks *chunks, uint8 type)
 					right.position = chunk->position + glm::vec3(x, y, z) + 0.5f;
 					right.size = glm::vec3(0.5f);
 
-					float result = raycast(&right, &ray);
+					float result = raycast(&right, ray);
 
 					if (result > 0.0f && result < closest)
 					{
+						block.chunk = chunk;
+						block.x = x;
+						block.y = y;
+						block.z = z;
 						closest = result;
-						block = &chunk->block[x][y][z];
-						changed = &chunk->changed;
-					}
-				}
-			}
-		}	
-	}
-
-	if (block && changed)
-	{
-		*block = type;
-		*changed = true;
-	}
-}
-
-static void addBlock(Model *cameraFocus, Chunks *chunks, uint8 type)
-{
-	Ray ray;
-	ray.origin = cameraFocus->position;
-	ray.direction = glm::normalize(glm::inverse(cameraFocus->rotation) * FORWARD);
-
-	uint8 *block = 0;
-	bool32 *changed = 0;
-	float closest = 10.0f;
-
-	for (int j = 0; j < 100; ++j)
-	{
-		Chunk *chunk = chunks->chunks[j];
-		AABB chunkAAB;
-		chunkAAB.position = chunk->position + 8.0f;
-		chunkAAB.size = glm::vec3(8.0f, 8.0f, 8.0f);
-
-		if (raycast(&chunkAAB, &ray) > 0.0f)
-		{
-			for (int i = 0; i < CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE; ++i)
-			{
-				int x = i % CHUNK_SIZE;
-				int y = (i / CHUNK_SIZE) % CHUNK_SIZE;
-				int z = i / (CHUNK_SIZE * CHUNK_SIZE);
-
-				if (chunk->block[x][y][z])
-				{
-					AABB right;
-					right.position = chunk->position + glm::vec3(x, y, z) + 0.5f;
-					right.size = glm::vec3(0.5f);
-
-					float result = raycast(&right, &ray);
-
-					if (result > 0.0f && result < closest)
-					{
-						closest = result;
-						block = &chunk->block[x][y][z];
-						changed = &chunk->changed;
-
-						glm::vec3 absDir = glm::abs(ray.direction);
-						glm::vec3 normal = glm::vec3(0, 0, 0);
-
-						if (absDir.x > absDir.y && absDir.x > absDir.z)
-						{
-							normal.x = ray.direction.x;
-						}
-						else if (absDir.y > absDir.x && absDir.y > absDir.z)
-						{
-							normal.y = ray.direction.y;
-						}
-						else if (absDir.z > absDir.x && absDir.z > absDir.y)
-						{
-							normal.z = ray.direction.z;		
-						}
-						normal = glm::normalize(normal);
-						block = &chunk->block[x - (int)normal.x][y - (int)normal.y][z - (int)normal.z];
-						changed = &chunk->changed;
 					}
 				}
 			}
 		}
 	}
 
-	if (block && changed)
-	{
-		*block = type;
-		*changed = true;
-	}
+	return block;
 }
 
 static void windowInitialize(Window *window, const char* title, int width, int height)
@@ -313,6 +248,11 @@ void run()
 		float dx = 0.0f;
 		float dy = 0.0f;
 
+		Ray ray;
+		ray.origin = cameraFocus.position;
+		ray.direction = glm::normalize(glm::inverse(cameraFocus.rotation) * FORWARD);
+		SelectedBlock selBlock = selectedBlock(&ray, &chunks);
+
 		SDL_Event e;
 		while (SDL_PollEvent(&e))
 		{
@@ -362,11 +302,20 @@ void run()
 				if (e.button.button == SDL_BUTTON_LEFT)
 				{
 					lmbPressed = true;
-					editBlock(&cameraFocus, &chunks, 0);
+
+					if (selBlock.chunk)
+					{
+						selBlock.chunk->block[selBlock.x][selBlock.y][selBlock.z] = 0;
+						selBlock.chunk->changed = true;
+					}
 				}
 				if (e.button.button == SDL_BUTTON_RIGHT)
 				{
-					addBlock(&cameraFocus, &chunks, 1);
+					if (selBlock.chunk)
+					{
+						selBlock.chunk->block[selBlock.x][selBlock.y][selBlock.z] = 1;
+						selBlock.chunk->changed = true;
+					}
 				}
 				break;
 			}
@@ -386,58 +335,7 @@ void run()
 			}
 		}
 
-
-		Ray ray;
-		ray.origin = cameraFocus.position;
-		ray.direction = glm::normalize(glm::inverse(cameraFocus.rotation) * FORWARD);
-
-		glm::vec3 chunkPosition = glm::vec3(0, 0, 0);
-		bool32 changed = false;
-		int sx = 0;
-		int sy = 0;
-		int sz = 0;
-		float closest = 10.0f;
-		uint8 type = 0;
-
-		for (int j = 0; j < 100; ++j)
-		{
-			Chunk *chunk = chunks.chunks[j];
-			AABB chunkAAB;
-			chunkAAB.position = chunk->position + 8.0f;
-			chunkAAB.size = glm::vec3(8.0f, 8.0f, 8.0f);
-
-			if (raycast(&chunkAAB, &ray) > 0.0f)
-			{
-				for (int i = 0; i < CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE; ++i)
-				{
-					int x = i % CHUNK_SIZE;
-					int y = (i / CHUNK_SIZE) % CHUNK_SIZE;
-					int z = i / (CHUNK_SIZE * CHUNK_SIZE);
-
-					if (chunk->block[x][y][z])
-					{
-						AABB right;
-						right.position = chunk->position + glm::vec3(x, y, z) + 0.5f;
-						right.size = glm::vec3(0.5f);
-
-						float result = raycast(&right, &ray);
-
-						if (result > 0.0f && result < closest)
-						{
-							closest = result;
-							sx = x;
-							sy = y;
-							sz = z;
-							changed = true;
-							chunkPosition = chunk->position;
-							type = chunk->block[x][y][z];
-						}
-					}
-				}
-			}
-		}
-
-		if (changed)
+		if (selBlock.chunk)
 		{
 			for (int z = 0; z < CHUNK_SIZE; ++z)
 			for (int y = 0; y < CHUNK_SIZE; ++y)
@@ -445,8 +343,9 @@ void run()
 			{
 				selection->block[x][y][z] = 0;
 			}
-			selection->position = chunkPosition;
-			selection->block[sx][sy][sz] = type;
+			selection->position = selBlock.chunk->position;
+			selection->block[selBlock.x][selBlock.y][selBlock.z] = 
+				selBlock.chunk->block[selBlock.x][selBlock.y][selBlock.z];
 			selection->changed = true;
 		}
 
