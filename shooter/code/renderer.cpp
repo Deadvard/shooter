@@ -281,6 +281,13 @@ void rendererInitialize(Renderer *renderer)
 	
 	renderer->cubeShader = shaderProgramCreate("resources/shaders/cube.vert", "resources/shaders/cube.frag");
 	glGenVertexArrays(1, &renderer->cubeVAO);
+	glBindVertexArray(renderer->cubeVAO);
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribIFormat(renderer->cubeVAO, 0, GL_UNSIGNED_SHORT, 0);
+	glVertexAttribIFormat(renderer->cubeVAO, 1, GL_UNSIGNED_SHORT, 0);
+	glVertexAttribBinding(0, 0);
+	glVertexAttribBinding(1, 1);
 
 	renderer->projection = glm::perspective(glm::radians(90.0f), 16.0f / 9.0f, 0.01f, 1000.0f);
 

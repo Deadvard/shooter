@@ -76,12 +76,12 @@ void chunkUpdate(Chunk *chunk)
 				vertices[i++] = cubeVert(x    , y    , z + 1);
 				vertices[i++] = cubeVert(x    , y + 1, z + 1);
 				
-				types[t++] = type;
-				types[t++] = type;
-				types[t++] = type;
-				types[t++] = type;
-				types[t++] = type;
-				types[t++] = type;
+				types[t++] = (type << 4) + faceNegX;
+				types[t++] = (type << 4) + faceNegX;
+				types[t++] = (type << 4) + faceNegX;
+				types[t++] = (type << 4) + faceNegX;
+				types[t++] = (type << 4) + faceNegX;
+				types[t++] = (type << 4) + faceNegX;
 			}
 
 			neighbor = 0;
@@ -95,12 +95,12 @@ void chunkUpdate(Chunk *chunk)
 				vertices[i++] = cubeVert(x + 1, y + 1, z    );
 				vertices[i++] = cubeVert(x + 1, y + 1, z + 1);
 				
-				types[t++] = type;
-				types[t++] = type;
-				types[t++] = type;
-				types[t++] = type;
-				types[t++] = type;
-				types[t++] = type;
+				types[t++] = (type << 4) + facePosX;
+				types[t++] = (type << 4) + facePosX;
+				types[t++] = (type << 4) + facePosX;
+				types[t++] = (type << 4) + facePosX;
+				types[t++] = (type << 4) + facePosX;
+				types[t++] = (type << 4) + facePosX;
 			}
 
 			neighbor = 0;
@@ -114,12 +114,12 @@ void chunkUpdate(Chunk *chunk)
 				vertices[i++] = cubeVert(x    , y    , z + 1);
 				vertices[i++] = cubeVert(x    , y    , z    );
 				
-				types[t++] = type | 0x8000;
-				types[t++] = type | 0x8000;
-				types[t++] = type | 0x8000;
-				types[t++] = type | 0x8000;
-				types[t++] = type | 0x8000;
-				types[t++] = type | 0x8000;
+				types[t++] = (type << 4) + faceNegY;
+				types[t++] = (type << 4) + faceNegY;
+				types[t++] = (type << 4) + faceNegY;
+				types[t++] = (type << 4) + faceNegY;
+				types[t++] = (type << 4) + faceNegY;
+				types[t++] = (type << 4) + faceNegY;
 			}
 
 			neighbor = 0;
@@ -133,12 +133,12 @@ void chunkUpdate(Chunk *chunk)
 				vertices[i++] = cubeVert(x + 1, y + 1, z    );
 				vertices[i++] = cubeVert(x    , y + 1, z    );
 				
-				types[t++] = type | 0x8000;
-				types[t++] = type | 0x8000;
-				types[t++] = type | 0x8000;
-				types[t++] = type | 0x8000;
-				types[t++] = type | 0x8000;
-				types[t++] = type | 0x8000;
+				types[t++] = (type << 4) + facePosY;
+				types[t++] = (type << 4) + facePosY;
+				types[t++] = (type << 4) + facePosY;
+				types[t++] = (type << 4) + facePosY;
+				types[t++] = (type << 4) + facePosY;
+				types[t++] = (type << 4) + facePosY;
 			}
 
 			neighbor = 0;
@@ -152,12 +152,12 @@ void chunkUpdate(Chunk *chunk)
 				vertices[i++] = cubeVert(x + 1, y    , z    );
 				vertices[i++] = cubeVert(x    , y    , z    );
 				
-				types[t++] = type;
-				types[t++] = type;
-				types[t++] = type;
-				types[t++] = type;
-				types[t++] = type;
-				types[t++] = type;
+				types[t++] = (type << 4) + faceNegZ;
+				types[t++] = (type << 4) + faceNegZ;
+				types[t++] = (type << 4) + faceNegZ;
+				types[t++] = (type << 4) + faceNegZ;
+				types[t++] = (type << 4) + faceNegZ;
+				types[t++] = (type << 4) + faceNegZ;
 			}
 
 			neighbor = 0;
@@ -171,12 +171,12 @@ void chunkUpdate(Chunk *chunk)
 				vertices[i++] = cubeVert(x    , y + 1, z + 1);
 				vertices[i++] = cubeVert(x    , y    , z + 1);
 				
-				types[t++] = type;
-				types[t++] = type;
-				types[t++] = type;
-				types[t++] = type;
-				types[t++] = type;
-				types[t++] = type;
+				types[t++] = (type << 4) + facePosZ;
+				types[t++] = (type << 4) + facePosZ;
+				types[t++] = (type << 4) + facePosZ;
+				types[t++] = (type << 4) + facePosZ;
+				types[t++] = (type << 4) + facePosZ;
+				types[t++] = (type << 4) + facePosZ;
 			}
 		}
 	}
@@ -187,12 +187,7 @@ void chunkUpdate(Chunk *chunk)
 	
 	glBufferSubData(GL_ARRAY_BUFFER, 0, chunk->elements * sizeof(uint16), vertices);
 	glBufferSubData(GL_ARRAY_BUFFER, chunk->elements * sizeof(uint16), t * sizeof(uint16), types);
-
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	
-	glVertexAttribIPointer(0, 1, GL_UNSIGNED_SHORT, sizeof(uint16), 0);
-	glVertexAttribIPointer(1, 1, GL_UNSIGNED_SHORT, sizeof(uint16), (void *)(chunk->elements * sizeof(uint16)));
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void chunkRender(Chunk *chunk)
@@ -204,11 +199,8 @@ void chunkRender(Chunk *chunk)
 
 	if (chunk->elements > 0)
 	{	
-		glBindBuffer(GL_ARRAY_BUFFER, chunk->vbo);
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-		glVertexAttribIPointer(0, 1, GL_UNSIGNED_SHORT, sizeof(uint16), 0);
-		glVertexAttribIPointer(1, 1, GL_UNSIGNED_SHORT, sizeof(uint16), (void *)(chunk->elements * sizeof(uint16)));
+		glBindVertexBuffer(0, chunk->vbo, 0, sizeof(uint16));
+		glBindVertexBuffer(1, chunk->vbo, chunk->elements * sizeof(uint16), sizeof(uint16));
 
 		glDrawArrays(GL_TRIANGLES, 0, chunk->elements);
 	}
