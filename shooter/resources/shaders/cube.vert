@@ -32,7 +32,7 @@ void main()
 	}
 
 	vec3 normal = vec3(type & 0x1, (type & 0x2) >> 1, (type & 0x4) >> 2);
-	if (bool(type & 0x6))
+	if (bool(type & 0x8))
 	{
 		normal = -normal;
 	}
