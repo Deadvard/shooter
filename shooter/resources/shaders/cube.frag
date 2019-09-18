@@ -18,7 +18,7 @@ void main()
 	vec3 lightDir = normalize(lightPos - worldPos);
 	float diff = max(dot(n, lightDir), 0.0);
 
-	vec3 diffuse = diff * vec3(1,0,1);
+	vec3 diffuse = diff * vec3(1,0,0);
 
-	frag = (ambient + vec4(diffuse.xyz, 0)) * vec4(texture(cubeTexture, texcoord).xyz, 1.0);
+	frag = vec4(diffuse, 1) * vec4(texture(cubeTexture, texcoord).xyz, 1.0);
 }
