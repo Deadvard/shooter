@@ -289,7 +289,7 @@ void rendererInitialize(Renderer *renderer)
 
 	init(&renderer->prim);
 
-	renderer->cubeTexture = imageTextureCreate("resources/textures/maybe.png");
+	renderer->cubeTexture = imageTextureCreate("resources/textures/maybe2.png");
 }
 
 void rendererUpdate(Renderer* renderer, float deltaTime)
@@ -351,7 +351,7 @@ void renderScene(Renderer *renderer, Chunk* chunks[], Chunk *selection)
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, renderer->cubeTexture);
 		glUniformMatrix4fv(0, 1, GL_FALSE, &mvp[0][0]);
-		glUniform3fv(glGetUniformLocation(renderer->cubeShader, "camPos"), 1, &renderer->cam.position[0]);
+		glUniform3fv(glGetUniformLocation(renderer->cubeShader, "sunDir"), 1, &renderer->weather.sunDirection[0]);
 		glUniform3fv(glGetUniformLocation(renderer->cubeShader, "chunkPos"), 1, &chunks[i]->position[0]);
 		glUniform1i(1, 0);
 		glUniform4fv(2, 1, ambient);
