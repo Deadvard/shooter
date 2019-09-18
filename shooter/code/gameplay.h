@@ -2,15 +2,7 @@
 #define GAMEPLAY_H
 #include "game.h"
 #include "renderer.h"
-#include <queue>
 #include "cube.h"
-
-struct ThunderGameplay
-{
-	glm::vec3 start;
-	glm::vec3 end;
-	std::queue<glm::vec3> queue;
-};
 
 struct Actor
 {
@@ -23,15 +15,12 @@ struct Gameplay
 {
 	Actor actors[128];
 	unsigned int numActors;
-	ThunderGameplay thunderGameplay;
 };
 
 void gameplayInitialize(Gameplay* gameplay, Renderer* renderer);
 void gameplayUpdate(Gameplay* gameplay, Renderer* renderer, float deltaTime);
 
 void gameplayShoot(Gameplay* gameplay, Model* cameraFocus, Renderer* renderer);
-
-void gameplayActivateThunder(Gameplay* gameplay, Model* cameraFocus, Renderer* renderer);
 
 void gameplayAddBlock(Model* cameraFocus, glm::vec2* mousePos, Chunk* relevantChunk);
 

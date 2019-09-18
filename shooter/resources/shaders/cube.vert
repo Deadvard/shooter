@@ -7,6 +7,9 @@ layout (location = 0) uniform mat4 mvp;
 
 out vec2 texcoord;
 out vec3 worldnormal;
+out vec3 worldPos;
+
+uniform vec3 chunkPos;
 
 void main()
 {	
@@ -38,5 +41,6 @@ void main()
 	worldnormal = normal;
 
 	vec3 vcoord = vec3(x, y, z);
+	worldPos = chunkPos + vcoord;
 	gl_Position = mvp * vec4(vcoord, 1.0);
 }

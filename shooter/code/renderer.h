@@ -33,16 +33,6 @@ struct WeatherEffects
 	glm::vec3 sunDirection;
 };
 
-struct ThunderEffect
-{
-	bool isActive;
-	unsigned int thunderVao;
-	unsigned int thunderVbo;
-
-	glm::vec3 positions[65];
-	float strength[65];
-};
-
 struct Crosshair
 {
 	unsigned int vao;
@@ -62,7 +52,6 @@ struct Renderer
 {
 	unsigned int primaryShader;
 	unsigned int textShader;
-	unsigned int thunderShader;
 	unsigned int matrixBuffer;
 	unsigned int skyboxShader;
 	unsigned int crosshairShader;
@@ -74,7 +63,6 @@ struct Renderer
 	Model activeModels[128];
 	unsigned int numActiveModels;
 
-	ThunderEffect thunderEffect;
 	Skybox skybox;
 	WeatherEffects weather;
 	Crosshair crosshair;
@@ -97,7 +85,6 @@ struct Renderer
 unsigned int rendererAddModel(Renderer* renderer, int meshIndex, glm::vec3 startingPos);
 void rendererInitialize(Renderer *renderer);
 void rendererUpdate(Renderer* renderer, float deltaTime);
-void rendererRefreshThunder(Renderer* renderer);
 
 static glm::mat4 matrixView(Camera *c)
 {

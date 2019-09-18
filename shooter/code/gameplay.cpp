@@ -26,19 +26,6 @@ void gameplayInitialize(Gameplay* gameplay, Renderer* renderer)
 void gameplayUpdate(Gameplay* gameplay, Renderer* renderer, float deltaTime)
 {
 	updateMovement(gameplay, renderer);
-
-	if (renderer->thunderEffect.isActive)
-	{
-		static float timer = 10.0f;
-
-		if (timer > deltaTime)
-		{
-			rendererRefreshThunder(renderer);
-			timer = 0.0f;
-		}
-		else
-			timer+= deltaTime;
-	}
 }
 
 void gameplayShoot(Gameplay* gameplay, Model* cameraFocus, Renderer* renderer)
@@ -48,38 +35,6 @@ void gameplayShoot(Gameplay* gameplay, Model* cameraFocus, Renderer* renderer)
 	gameplay->actors[bullet].direction = forward;
 	gameplay->actors[bullet].speed = 0.5f;
 	renderer->activeModels[gameplay->actors[bullet].modelIndex].rotation = glm::inverse(cameraFocus->rotation);
-}
-
-void gameplayActivateThunder(Gameplay* gameplay, Model* cameraFocus, Renderer* renderer)
-{
-	renderer->thunderEffect.isActive = true;
-
-	glm::vec3 forward = glm::normalize(glm::inverse(cameraFocus->rotation) * glm::vec3(0, 0, -1));
-	gameplay->thunderGameplay.start = cameraFocus->position;
-	gameplay->thunderGameplay.end = cameraFocus->position + forward * 20.f;
-
-	glm::vec3 middle = (gameplay->thunderGameplay.end - gameplay->thunderGameplay.start) * 0.5f;
-	glm::vec3 offset = glm::normalize(glm::cross(gameplay->thunderGameplay.end, gameplay->thunderGameplay.start));
-	middle += offset;
-
-	renderer->thunderEffect.positions[0] = gameplay->thunderGameplay.start;
-	renderer->thunderEffect.positions[32] = middle;
-	renderer->thunderEffect.positions[64] = gameplay->thunderGameplay.end;
-
-	float interpolationOffset = 0.05f;
-	glm::vec3 temp = glm::mix(gameplay->thunderGameplay.start, middle, interpolationOffset);
-	for (int i = 1; i < 32; ++i)
-	{
-		renderer->thunderEffect.positions[i] = temp;
-		temp = glm::mix(temp, middle, interpolationOffset);
-	}
-
-	temp = glm::mix(middle, gameplay->thunderGameplay.end, interpolationOffset);
-	for (int i = 33; i < 64; ++i)
-	{
-		renderer->thunderEffect.positions[i] = temp;
-		temp = glm::mix(temp, gameplay->thunderGameplay.end, interpolationOffset);
-	}
 }
 
 void gameplayAddBlock(Model* cameraFocus, glm::vec2* mousePos, Chunk* relevantChunk)

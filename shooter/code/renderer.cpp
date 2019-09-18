@@ -239,24 +239,6 @@ void initializeSkyboxMesh(Renderer* renderer)
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
 }
 
-void initializeThunder(Renderer* renderer)
-{
-	glGenVertexArrays(1, &renderer->thunderEffect.thunderVao);
-	glBindVertexArray(renderer->thunderEffect.thunderVao);
-	glGenBuffers(1, &renderer->thunderEffect.thunderVbo);
-	glBindBuffer(GL_ARRAY_BUFFER, renderer->thunderEffect.thunderVbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * 65, &renderer->thunderEffect.positions[0], GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
-	renderer->thunderEffect.isActive = false;
-}
-
-void rendererRefreshThunder(Renderer* renderer)
-{
-	glBindBuffer(GL_ARRAY_BUFFER, renderer->thunderEffect.thunderVbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * 65, &renderer->thunderEffect.positions[0], GL_STATIC_DRAW);
-}
-
 void loadMeshes(Renderer* renderer)
 {
 	renderer->meshes[renderer->numMeshes++] = importMesh(&renderer->meshStorage, "resources/assets/monkey.tfs");
@@ -274,7 +256,6 @@ void rendererInitialize(Renderer *renderer)
 {	
 	renderer->primaryShader = shaderProgramCreate("resources/shaders/primary_shader.vert", "resources/shaders/primary_shader.frag");
 	renderer->textShader = shaderProgramCreate("resources/shaders/text.vert", "resources/shaders/text.frag");
-	renderer->thunderShader = shaderProgramCreate("resources/shaders/thunder.vert", "resources/shaders/thunder.frag");
 	renderer->prim.shader = shaderProgramCreate("resources/shaders/primitive.vert", "resources/shaders/primitive.frag");
 	renderer->skybox.shader = shaderProgramCreate("resources/shaders/cubemap.vert", "resources/shaders/cubemap.frag");
 	renderer->crosshairShader = shaderProgramCreate("resources/shaders/cross.vert", "resources/shaders/cross.frag");
@@ -302,7 +283,6 @@ void rendererInitialize(Renderer *renderer)
 	toonTextureCreate(&renderer->lighting);
 
 	loadMeshes(renderer);
-	initializeThunder(renderer);
 	initializeSkyboxTextures(renderer);
 	initializeSkyboxMesh(renderer);
 	fontCreate(&renderer->font, "resources/fonts/font.ttf");
@@ -349,18 +329,6 @@ void renderScene(Renderer *renderer, Chunk* chunks[], Chunk *selection)
 
 	glBindVertexArray(0);
 
-	if (renderer->thunderEffect.isActive) // Temp
-	{
-		glUseProgram(renderer->thunderShader);
-
-		glBindVertexArray(renderer->thunderEffect.thunderVao);
-		glUniformMatrix4fv(glGetUniformLocation(renderer->thunderShader, "view"), 1, GL_FALSE, &view[0][0]);
-		glUniformMatrix4fv(glGetUniformLocation(renderer->thunderShader, "projection"), 1, GL_FALSE, &renderer->projection[0][0]);
-		glLineWidth(5.f);
-		glDrawArrays(GL_LINES, 0, 64);
-		glBindVertexArray(0);
-	}
-
 	{
 		glm::mat4 mvp = renderer->projection * view * glm::translate(glm::mat4(1.0f), selection->position);
 		float ambient[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -382,7 +350,9 @@ void renderScene(Renderer *renderer, Chunk* chunks[], Chunk *selection)
 		glBindVertexArray(renderer->cubeVAO);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, renderer->cubeTexture);
-		glUniformMatrix4fv(0, 1, GL_FALSE, &mvp[0][0]);		
+		glUniformMatrix4fv(0, 1, GL_FALSE, &mvp[0][0]);
+		glUniform3fv(glGetUniformLocation(renderer->cubeShader, "camPos"), 1, &renderer->cam.position[0]);
+		glUniform3fv(glGetUniformLocation(renderer->cubeShader, "chunkPos"), 1, &chunks[i]->position[0]);
 		glUniform1i(1, 0);
 		glUniform4fv(2, 1, ambient);
 		chunkRender(chunks[i]);
