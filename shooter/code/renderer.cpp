@@ -289,7 +289,7 @@ void rendererInitialize(Renderer *renderer)
 
 	init(&renderer->prim);
 
-	renderer->cubeTexture = imageTextureCreate("resources/textures/spritesheet.png");
+	renderer->cubeTexture = imageTextureCreate("resources/textures/maybe.png");
 }
 
 void rendererUpdate(Renderer* renderer, float deltaTime)

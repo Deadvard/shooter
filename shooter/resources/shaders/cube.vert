@@ -18,18 +18,16 @@ void main()
 	uint z =  coord        & 0x1F;	
 	uint textype = (type >> 4);
 
-	const int num_textures = 271;
-
 	if (bool(type & 0x2))
 	{
 		texcoord = vec2((
-			float(x % 2)  + textype) / num_textures, 
+			float(x % 2)  + textype) / 11.0, 
 			z % 2);
 	}
 	else
 	{
 		texcoord = vec2((
-			float((x + z) % 2) + textype) / num_textures, 
+			float((x + z) % 2) + textype) / 11.0, 
 			y % 2);
 	}
 
