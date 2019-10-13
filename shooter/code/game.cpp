@@ -72,14 +72,14 @@ static SelectedBlock selectedBlock(Ray *ray, Chunks *chunks)
 	block.y = 0;
 	block.z = 0;
 	float closest = 10.0f;
-
+    
 	for (int j = 0; j < 100; ++j)
 	{
 		Chunk *chunk = chunks->chunks[j];
 		AABB chunkAAB;
 		chunkAAB.position = chunk->position + 8.0f;
 		chunkAAB.size = glm::vec3(8.0f, 8.0f, 8.0f);
-
+        
 		if (raycast(&chunkAAB, ray) > 0.0f)
 		{
 			for (int i = 0; i < CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE; ++i)
@@ -87,15 +87,15 @@ static SelectedBlock selectedBlock(Ray *ray, Chunks *chunks)
 				int x = i % CHUNK_SIZE;
 				int y = (i / CHUNK_SIZE) % CHUNK_SIZE;
 				int z = i / (CHUNK_SIZE * CHUNK_SIZE);
-
+                
 				if (chunk->block[x][y][z])
 				{
 					AABB right;
 					right.position = chunk->position + glm::vec3(x, y, z) + 0.5f;
 					right.size = glm::vec3(0.5f);
-
+                    
 					float result = raycast(&right, ray);
-
+                    
 					if (result > 0.0f && result < closest)
 					{
 						block.chunk = chunk;
@@ -108,27 +108,27 @@ static SelectedBlock selectedBlock(Ray *ray, Chunks *chunks)
 			}
 		}
 	}
-
+    
 	return block;
 }
 
 static void windowInitialize(Window *window, const char* title, int width, int height)
 {
 	SDL_Init(SDL_INIT_EVERYTHING);
-
+    
 	window->window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-		width, height, SDL_WINDOW_OPENGL);
-
+                                      width, height, SDL_WINDOW_OPENGL);
+    
 	if (!window->window)
 	{
 		printf("Unable to create window\n");
 		printf("SLD Error : %s\n", SDL_GetError());
 	}
-
+    
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-
+    
 	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
@@ -136,12 +136,12 @@ static void windowInitialize(Window *window, const char* title, int width, int h
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, 32);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
-
+    
 	window->glContext = SDL_GL_CreateContext(window->window);
-
+    
 	SDL_GL_SetSwapInterval(1);
 	SDL_SetRelativeMouseMode(SDL_TRUE);
-
+    
 	if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
 	{
 		printf("Failed to initialize GLAD");
@@ -157,16 +157,16 @@ void run()
 	float rot = 0.0f;
 	Model cameraFocus;
 	cameraFocus.position = glm::vec3(10 * 16 / 2, 16 + 3,10 * 16 / 2);
-
+    
 	UserInterface ui;
 	ui.nrOfElements = 0;
-
+    
 	char *data = readEntireFile("resources/input.txt");
 	StringPair16 pairs[32];
 	memset(pairs, 0, sizeof(pairs));
 	parse(data, pairs, 32);
 	free(data);
-
+    
 	uint32 width = 0;
 	uint32 height = 0;
 	const char *title = 0;
@@ -188,26 +188,26 @@ void run()
 	
 	Window window;
 	windowInitialize(&window, title, width, height);
-
+    
 	Renderer renderer;
 	rendererInitialize(&renderer);
-
+    
 	Gameplay gameplay;
 	gameplayInitialize(&gameplay, &renderer);
-
+    
 	Chunks chunks;
 	initializeChunks(&chunks, 100);
-
+    
 	Chunk *selection = chunkCreate();
-
+    
 	int z = 0;
 	for (int i = 0; i < 100; ++i)
 	{
 		chunks.chunks[i]->position = glm::vec3(10.0f + 16 * (i % 10), 0.0f, z);
 		z = i % 10 == 9 ? z += 16 : z;
 	}
-
-
+    
+    
 	MenuState menuState;
 	for (int i = 0; i < 10; ++i)
 	{
@@ -220,12 +220,12 @@ void run()
 	glm::vec2 mousePosition = glm::vec2(0.0f);
 	int menuVisible = false;
 	int lmbPressed = false;
-
+    
 	double lastTime = (double)SDL_GetTicks() / 1000.0;
 	double deltaTime = 0.0;
-
+    
 	int physicsOn = true;
-
+    
 	float wx = 100.0f;
 	float wy = 100.0f;
 	float ww = 100.0f;
@@ -233,113 +233,113 @@ void run()
 	int windowSelected = false;
 	int resizeX = false;
 	int resizeY = false;
-
+    
 	Keyboard keyboard;
 	bindKeys(&keyboard, pairs, 32);
 	for (int i = 0; i < 128; ++i) keyboard.isPressed[i] = false;
-
+    
 	int running = true;
 	while (running)
 	{
 		double now = (double)SDL_GetTicks() / 1000.0;
 		deltaTime = now - lastTime;
 		lastTime = now;
-
+        
 		float dx = 0.0f;
 		float dy = 0.0f;
-
+        
 		Ray ray;
 		ray.origin = cameraFocus.position;
 		ray.direction = glm::normalize(glm::inverse(cameraFocus.rotation) * FORWARD);
 		SelectedBlock selBlock = selectedBlock(&ray, &chunks);
-
+        
 		SDL_Event e;
 		while (SDL_PollEvent(&e))
 		{
 			switch (e.type)
 			{
-			case SDL_QUIT:
-			{
-				running = false;
-				break;
-			}
-			case SDL_MOUSEMOTION:
-			{
-				dx += e.motion.xrel;
-				dy += e.motion.yrel;
-				mousePosition.x = (float)e.motion.x;
-				mousePosition.y = (float)e.motion.y;
-				break;
-			}
-			case SDL_KEYDOWN:
-			{
-				if (e.key.keysym.sym < 128)
-				{
-					keyboard.isPressed[e.key.keysym.sym] = true;
-				}
-				break;
-			}
-			case SDL_KEYUP:
-			{
-				if (e.key.keysym.sym < 128)
-				{
-					keyboard.isPressed[e.key.keysym.sym] = false;
-				}
-	
-				if (e.key.keysym.scancode == SDL_SCANCODE_Q)
-				{
-					physicsOn = !physicsOn;
-				}
-				if (e.key.keysym.scancode == SDL_SCANCODE_I)
-				{
-					menuVisible = !menuVisible;
-					SDL_SetRelativeMouseMode((SDL_bool)(!menuVisible));
-				}
-				break;
-			}
-			case SDL_MOUSEBUTTONDOWN:
-			{
-				if (e.button.button == SDL_BUTTON_LEFT)
-				{
-					lmbPressed = true;
-
-					if (selBlock.chunk)
-					{
-						selBlock.chunk->block[selBlock.x][selBlock.y][selBlock.z] = 0;
-						selBlock.chunk->changed = true;
-					}
-				}
-				if (e.button.button == SDL_BUTTON_RIGHT)
-				{
-					if (selBlock.chunk)
-					{
-						selBlock.chunk->block[selBlock.x][selBlock.y][selBlock.z] = 1;
-						selBlock.chunk->changed = true;
-					}
-				}
-				break;
-			}
-			case SDL_MOUSEBUTTONUP:
-			{
-				if (e.button.button == SDL_BUTTON_LEFT)
-				{
-					lmbPressed = false;
-				}
-				else if (e.button.button == SDL_BUTTON_RIGHT)
-				{
-					//gameplayShoot(&gameplay, &cameraFocus, &renderer);
-					//gameplayActivateThunder(&gameplay, &cameraFocus, &renderer);
-				}
-				break;
-			}
+                case SDL_QUIT:
+                {
+                    running = false;
+                    break;
+                }
+                case SDL_MOUSEMOTION:
+                {
+                    dx += e.motion.xrel;
+                    dy += e.motion.yrel;
+                    mousePosition.x = (float)e.motion.x;
+                    mousePosition.y = (float)e.motion.y;
+                    break;
+                }
+                case SDL_KEYDOWN:
+                {
+                    if (e.key.keysym.scancode < 128)
+                    {
+						keyboard.isPressed[e.key.keysym.scancode] = true;
+                    }
+                    break;
+                }
+                case SDL_KEYUP:
+                {
+                    if (e.key.keysym.scancode < 128)
+                    {
+                        keyboard.isPressed[e.key.keysym.scancode] = false;
+                    }
+                    
+                    if (e.key.keysym.scancode == SDL_SCANCODE_Q)
+                    {
+                        physicsOn = !physicsOn;
+                    }
+                    if (e.key.keysym.scancode == SDL_SCANCODE_I)
+                    {
+                        menuVisible = !menuVisible;
+                        SDL_SetRelativeMouseMode((SDL_bool)(!menuVisible));
+                    }
+                    break;
+                }
+                case SDL_MOUSEBUTTONDOWN:
+                {
+                    if (e.button.button == SDL_BUTTON_LEFT)
+                    {
+                        lmbPressed = true;
+                        
+                        if (selBlock.chunk)
+                        {
+                            selBlock.chunk->block[selBlock.x][selBlock.y][selBlock.z] = 0;
+                            selBlock.chunk->changed = true;
+                        }
+                    }
+                    if (e.button.button == SDL_BUTTON_RIGHT)
+                    {
+                        if (selBlock.chunk)
+                        {
+                            selBlock.chunk->block[selBlock.x][selBlock.y][selBlock.z] = 1;
+                            selBlock.chunk->changed = true;
+                        }
+                    }
+                    break;
+                }
+                case SDL_MOUSEBUTTONUP:
+                {
+                    if (e.button.button == SDL_BUTTON_LEFT)
+                    {
+                        lmbPressed = false;
+                    }
+                    else if (e.button.button == SDL_BUTTON_RIGHT)
+                    {
+                        //gameplayShoot(&gameplay, &cameraFocus, &renderer);
+                        //gameplayActivateThunder(&gameplay, &cameraFocus, &renderer);
+                    }
+                    break;
+                }
 			}
 		}
-
+        
 		if (selBlock.chunk)
 		{
 			for (int z = 0; z < CHUNK_SIZE; ++z)
-			for (int y = 0; y < CHUNK_SIZE; ++y)
-			for (int x = 0; x < CHUNK_SIZE; ++x)
+                for (int y = 0; y < CHUNK_SIZE; ++y)
+                for (int x = 0; x < CHUNK_SIZE; ++x)
 			{
 				selection->block[x][y][z] = 0;
 			}
@@ -348,9 +348,9 @@ void run()
 				selBlock.chunk->block[selBlock.x][selBlock.y][selBlock.z];
 			selection->changed = true;
 		}
-
-
-
+        
+        
+        
 		clear(&ui);
 		if (menuVisible)
 		{
@@ -358,7 +358,7 @@ void run()
 			{
 				float halfW = ww * 0.5f;
 				float halfH = wh * 0.5f;
-
+                
 				if (pointInRectangle(wx + ww * 0.9f, wy, halfW, halfH, mousePosition.x, mousePosition.y))
 				{
 					resizeX = true;
@@ -367,7 +367,7 @@ void run()
 				{
 					resizeY = true;
 				}
-
+                
 				if (pointInRectangle(wx, wy, halfW * 0.9f, halfH * 0.9f, mousePosition.x, mousePosition.y))
 				{
 					windowSelected = true;
@@ -379,7 +379,7 @@ void run()
 				resizeY = false;
 				windowSelected = false;			
 			}
-
+            
 			if (windowSelected && !resizeX && !resizeY)
 			{
 				wx += dx;
@@ -398,29 +398,29 @@ void run()
 			
 			uiwindow(&ui, "text", wx, wy, ww, wh);
 		}		
-
+        
 		glClearColor(135.0f / 255.0f, 206.0f / 255.0f, 235.0f / 255.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+        
 		rot += pi32 * (float)deltaTime;
 		renderer.activeModels[1].rotation = glm::angleAxis(rot, glm::vec3(0, 1.f, 0));
-
+        
 		if (!menuVisible)
 		{
 			float sensitivity = 0.01f;
 			float max = pi32 * 0.4f;
 			float min = -max;
-
+            
 			renderer.cam.yaw += (float)dx * sensitivity;
 			renderer.cam.pitch += (float)dy * sensitivity;
 			if (renderer.cam.pitch < min) renderer.cam.pitch = min;
 			if (renderer.cam.pitch > max) renderer.cam.pitch = max;
 		}
-
+        
 		glm::quat qPitch = glm::angleAxis(renderer.cam.pitch, glm::vec3(1, 0, 0));
 		glm::quat qYaw = glm::angleAxis(renderer.cam.yaw, glm::vec3(0, 1, 0));
 		glm::quat qRotate = glm::normalize(qPitch * qYaw);
-
+        
 		cameraFocus.rotation = qRotate;
 		glm::vec3 forward = glm::normalize(glm::inverse(qRotate) * FORWARD);
 		
@@ -430,7 +430,7 @@ void run()
 		}
 		
 		glm::vec3 right = glm::normalize(glm::cross(forward, UP));
-
+        
 		glm::vec3 oldPos = cameraFocus.position;
 		
 		const unsigned char *keys = SDL_GetKeyboardState(0);
@@ -441,12 +441,12 @@ void run()
 		if (isPressed(&keyboard, &string16("backwards"))) cameraFocus.position -= forward * velocity;
 		if (isPressed(&keyboard, &string16("right"))) cameraFocus.position += right * velocity;
 		renderer.cam.focus = &cameraFocus;
-
+        
 		if (physicsOn)
 		{
 			glm::vec3 pos = cameraFocus.position;
 			pos.y -= 9.82 * deltaTime;
-
+            
 			for (int j = 0; j < 100; ++j)
 			{
 				Chunk *chunk = chunks.chunks[j];
@@ -471,9 +471,9 @@ void run()
 							AABB right;
 							right.position = chunk->position + glm::vec3(x, y, z) + 0.5f;
 							right.size = glm::vec3(0.5f);
-
+                            
 							right.size += left.size;
-
+                            
 							if (point_in_aabb(&right, &glm::vec3(pos.x, oldPos.y, oldPos.z))) pos.x = oldPos.x;
 							if (point_in_aabb(&right, &glm::vec3(oldPos.x, pos.y, oldPos.z))) pos.y = oldPos.y;
 							if (point_in_aabb(&right, &glm::vec3(oldPos.x, oldPos.y, pos.z))) pos.z = oldPos.z;
@@ -483,13 +483,13 @@ void run()
 			}
 			cameraFocus.position = pos;
 		}
-
+        
 		gameplayUpdate(&gameplay, &renderer, (float)deltaTime);
 		rendererUpdate(&renderer, (float)deltaTime);
 		
 		renderScene(&renderer, chunks.chunks, selection);
 		renderUI(&renderer, &ui);
-
+        
 		SDL_GL_SwapWindow(window.window);
 		running = running && !isPressed(&keyboard, &string16("quit"));
 	}
@@ -501,7 +501,7 @@ int pointInRectangle(float x, float y, float w, float h, float px, float py)
 	if ((y - h) > py) return false;
 	if ((x + w) < px) return false;
 	if ((y + h) < py) return false;
-
+    
 	return true;
 }
 
@@ -512,10 +512,10 @@ void initializeChunks(Chunks* chunks, int numChunks)
 		chunks->chunks[i] = chunkCreate();
 		for (int z = 0; z < CHUNK_SIZE; ++z)
 			for (int y = 0; y < CHUNK_SIZE; ++y)
-				for (int x = 0; x < CHUNK_SIZE; ++x)
-				{
-					chunks->chunks[i]->block[x][y][z] = (rand() % 6);
-				}
+            for (int x = 0; x < CHUNK_SIZE; ++x)
+        {
+            chunks->chunks[i]->block[x][y][z] = (rand() % 6);
+        }
 	}
 }
 

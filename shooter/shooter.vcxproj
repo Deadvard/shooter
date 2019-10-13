@@ -148,7 +148,6 @@
     <ClInclude Include="code\input.h" />
     <ClInclude Include="code\memory.h" />
     <ClInclude Include="code\mesh.h" />
-    <ClInclude Include="code\net.h" />
     <ClInclude Include="code\parser.h" />
     <ClInclude Include="code\particle.h" />
     <ClInclude Include="code\physics.h" />
@@ -164,7 +163,6 @@
     <ClCompile Include="code\main.cpp" />
     <ClCompile Include="code\memory.cpp" />
     <ClCompile Include="code\mesh.cpp" />
-    <ClCompile Include="code\net.cpp" />
     <ClCompile Include="code\particle.cpp" />
     <ClCompile Include="code\physics.cpp" />
     <ClCompile Include="code\renderer.cpp" />

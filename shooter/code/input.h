@@ -28,7 +28,7 @@ void bindKeys(Keyboard *keyboard, StringPair16 *pairs, uint32 length)
 	{
 		for (int j = 0; j < 128; ++j)
 		{
-			if (string16IsEqual(&pairs[i].value, &string16(SDL_GetKeyName(j))))
+			if (string16IsEqual(&pairs[i].value, &string16(SDL_GetScancodeName((SDL_Scancode)j))))
 			{
 				if (j >= 'A' && j <= 'Z') j += 32;
 				keyboard->virtualKeys[j] = pairs[i].key;
