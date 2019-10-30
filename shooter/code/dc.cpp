@@ -124,7 +124,7 @@ void computeCubes(densityField* df)
 				points[j] = globalPos + corners[v1];
 			else
 			{
-				points[j] = vertexInterpolation(corners[v1], corners[v2], df->densities[i * 8 + j] + v1, df->densities[i * 8 + j] + v2);
+				points[j] = globalPos + vertexInterpolation(corners[v1], corners[v2], df->densities[i * 8 + j] + v1, df->densities[i * 8 + j] + v2);
 			}
 
 		}
