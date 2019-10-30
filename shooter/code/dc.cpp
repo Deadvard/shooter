@@ -71,27 +71,16 @@ void initField(densityField* df)
 
 void computeCubes(densityField* df)
 {
-	glm::vec3 corners[8];
-	corners[0] = glm::vec3();
-	corners[1] = glm::vec3();
-	corners[2] = glm::vec3();
-	corners[3] = glm::vec3();
-	corners[4] = glm::vec3();
-	corners[5] = glm::vec3();
-	corners[6] = glm::vec3();
-	corners[7] = glm::vec3();
+	for (int i = 0; i < worldsize / 8; ++i)
+	{
+		int index = 0;
+		for(int j = 0; j < 8; ++j)
+			if (df->densities[i * 8 + j] < 1.f) index |= (1 << j);
 
-	int index = 0;
-	float isolevel = 1.f;
-	if (df->densities[i] < isolevel) index |= 1;
-	if (df->densities[i] < isolevel) index |= 2;
-	if (df->densities[i] < isolevel) index |= 4;
-	if (df->densities[i] < isolevel) index |= 8;
-	if (df->densities[i] < isolevel) index |= 16;
-	if (df->densities[i] < isolevel) index |= 32;
-	if (df->densities[i] < isolevel) index |= 64;
-	if (df->densities[i] < isolevel) index |= 128;
+		df->cubes->index = edgeTable[index];
+		//generate vertex
 
+	}
 }
 
 DcChunk * dcChunkCreate()
