@@ -43,6 +43,26 @@ static int intersectionTable[12][2] =
 	{ 6, 7 }, { 7, 4 }, { 0, 4 }, { 1, 5 }, { 2, 6 }, { 3, 7 }
 };
 
+glm::vec3 vertexInterpolation(glm::vec3 p1, glm::vec3 p2, float valp1, float valp2)
+{
+	double mu;
+	double isolevel = 0.f;
+	glm::vec3 out;
+
+	if (abs(isolevel - valp1) < 0.00001)
+		return(p1);
+	if (abs(isolevel - valp2) < 0.00001)
+		return(p2);
+	if (abs(valp1 - valp2) < 0.00001)
+		return(p1);
+	mu = (isolevel - valp1) / (valp2 - valp1);
+	out.x = p1.x + mu * (p2.x - p1.x);
+	out.y = p1.y + mu * (p2.y - p1.y);
+	out.z = p1.z + mu * (p2.z - p1.z);
+
+	return(out);
+}
+
 void addBox(densityField* df, glm::vec3 pt)
 {
 	float height = 1.f;
@@ -80,15 +100,33 @@ void computeCubes(densityField* df)
 		df->cubes[i * 8 + j] = i * 8 + j;
 
 		int edgeInfo = edgeTable[index];
-
+		glm::vec3 corners[8];
+		corners[0] = glm::vec3(0, 0, 0);
+		corners[1] = glm::vec3(1, 0, 0);
+		corners[2] = glm::vec3(1, 1, 0);
+		corners[3] = glm::vec3(0, 1, 0);
+		corners[4] = glm::vec3(0, 0, 1);
+		corners[5] = glm::vec3(1, 0, 1);
+		corners[6] = glm::vec3(1, 1, 1);
+		corners[7] = glm::vec3(0, 1, 1);
 		//generate vertex
 		glm::vec3 points[12];
 		for (int j = 0; j < 12; ++j)
 		{
 			int v1 = intersectionTable[j][0];
 			int v2 = intersectionTable[j][1];
-			if(df->densities[i * 8 + v1] < 1.f)
-				points[j] = glm::vec3(0);//FIX PLEASE;
+			glm::vec3 globalPos = glm::vec3(i / (32 * 32), (i / 32) % 32, i % 32);
+			if(abs(df->densities[i * 8 + v1]) < 1e-3)
+				points[j] = globalPos + corners[v1];
+			else if (abs(df->densities[i * 8 + v2]) < 1e-3)
+				points[j] = globalPos + corners[v2];
+			else if (abs(df->densities[i * 8 + v1] - df->densities[i * 8 + v2]) < 1e-3)
+				points[j] = globalPos + corners[v1];
+			else
+			{
+				points[j] = vertexInterpolation(corners[v1], corners[v2], df->densities[i * 8 + j] + v1, df->densities[i * 8 + j] + v2);
+			}
+
 		}
 	}
 }
