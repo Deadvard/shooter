@@ -17,6 +17,19 @@ struct Cell
 	uint8 z;
 };
 
+#define worldsize 32 * 32 * 32
+
+struct Cube
+{
+	int index;
+	glm::vec3* meshPt;
+};
+
+struct densityField
+{
+	float* densities;
+	Cube* cubes;
+};
 
 struct DcChunk
 {

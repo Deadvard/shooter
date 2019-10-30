@@ -43,6 +43,57 @@ static int intersectionTable[12][2] =
 	{ 6, 7 }, { 7, 4 }, { 0, 4 }, { 1, 5 }, { 2, 6 }, { 3, 7 }
 };
 
+void addBox(densityField* df, glm::vec3 pt)
+{
+	float height = 1.f;
+	float depth = 1.f;
+	int index = pt.x * height*depth + pt.y * depth + pt.z;
+	for(int i = 0; i < 8; ++i)
+		df->densities[index + i] = 1.f;
+}
+
+void initField(densityField* df)
+{
+	df->densities = new float[worldsize];
+	df->cubes = new Cube[worldsize / 8];
+	for (int i = 0; i < worldsize; ++i)
+	{
+		df->densities[i] = -1.f;
+		if (i % 8 == 0)
+		{
+			df->cubes[i].index = -1;
+			df->cubes[i].meshPt = nullptr;
+		}
+	}
+
+	addBox(df, glm::vec3(0,0,0));
+}
+
+void computeCubes(densityField* df)
+{
+	glm::vec3 corners[8];
+	corners[0] = glm::vec3();
+	corners[1] = glm::vec3();
+	corners[2] = glm::vec3();
+	corners[3] = glm::vec3();
+	corners[4] = glm::vec3();
+	corners[5] = glm::vec3();
+	corners[6] = glm::vec3();
+	corners[7] = glm::vec3();
+
+	int index = 0;
+	float isolevel = 1.f;
+	if (df->densities[i] < isolevel) index |= 1;
+	if (df->densities[i] < isolevel) index |= 2;
+	if (df->densities[i] < isolevel) index |= 4;
+	if (df->densities[i] < isolevel) index |= 8;
+	if (df->densities[i] < isolevel) index |= 16;
+	if (df->densities[i] < isolevel) index |= 32;
+	if (df->densities[i] < isolevel) index |= 64;
+	if (df->densities[i] < isolevel) index |= 128;
+
+}
+
 DcChunk * dcChunkCreate()
 {
 	DcChunk *chunk = (DcChunk *)malloc(sizeof(DcChunk));
