@@ -61,8 +61,8 @@ void initField(densityField* df)
 		df->densities[i] = -1.f;
 		if (i % 8 == 0)
 		{
-			df->cubes[i].index = -1;
-			df->cubes[i].meshPt = nullptr;
+			df->cubes[i / 8].index = -1;
+			df->cubes[i / 8].meshPt = nullptr;
 		}
 	}
 
@@ -73,13 +73,16 @@ void computeCubes(densityField* df)
 {
 	for (int i = 0; i < worldsize / 8; ++i)
 	{
-		glm::vec3 points[12];
 		int index = 0;
 		for(int j = 0; j < 8; ++j)
 			if (df->densities[i * 8 + j] < 1.f) index |= (1 << j);
 
-		df->cubes->index = edgeTable[index];
+		df->cubes[i * 8 + j] = i * 8 + j;
+
+		int edgeInfo = edgeTable[index];
+
 		//generate vertex
+		glm::vec3 points[12];
 		for (int j = 0; j < 12; ++j)
 		{
 			int v1 = intersectionTable[j][0];
