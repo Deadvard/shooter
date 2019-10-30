@@ -73,13 +73,20 @@ void computeCubes(densityField* df)
 {
 	for (int i = 0; i < worldsize / 8; ++i)
 	{
+		glm::vec3 points[12];
 		int index = 0;
 		for(int j = 0; j < 8; ++j)
 			if (df->densities[i * 8 + j] < 1.f) index |= (1 << j);
 
 		df->cubes->index = edgeTable[index];
 		//generate vertex
-
+		for (int j = 0; j < 12; ++j)
+		{
+			int v1 = intersectionTable[j][0];
+			int v2 = intersectionTable[j][1];
+			if(df->densities[i * 8 + v1] < 1.f)
+				points[j] = glm::vec3(0);//FIX PLEASE;
+		}
 	}
 }
 
