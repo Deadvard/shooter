@@ -20,4 +20,8 @@ void main()
 	vec3 diffuse = diff * vec3(1,1,1);
 
 	frag = (ambient + vec4(diffuse, 0)) * vec4(texture(cubeTexture, texcoord).xyz, 1.0);
+
+	float outline = 0.01;
+	if(mod(texcoord.x,11.0) < outline || mod(texcoord.x,11.0) > (1.0 - outline) || texcoord.y < outline || texcoord.y > (1.0-outline))
+		frag = vec4(0,0,0,1);
 }
