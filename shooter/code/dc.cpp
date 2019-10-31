@@ -156,7 +156,8 @@ void computeCubes(densityField* df)
 			matrix[rows][2] = normals[j].z;
 
 			glm::vec3 p = points[j] - massPoint;
-			vector[rows++] = (double)(normals[j] * p);
+			glm::vec3 n = normals[j] * p;
+			vector[rows++] = (double)(n.x + n.y + n.z);
 
 			newPointNormal += normals[j];
 
