@@ -22,7 +22,8 @@ struct Cell
 struct Cube
 {
 	int index;
-	glm::vec3* meshPt;
+	glm::vec3 meshPt;
+	glm::vec3 meshNormal;
 };
 
 struct densityField

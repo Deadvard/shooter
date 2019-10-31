@@ -1,5 +1,8 @@
 #include "dc.h"
 #include <stdio.h>
+#include "qef.h"
+
+using namespace ThreeD;
 
 static int edgeTable[256] =
 {
@@ -162,6 +165,13 @@ void computeCubes(densityField* df)
 			newPointNormal += normals[j];
 
 		}
+
+		glm::vec3 newPointV;
+		QEF::evaluate(matrix, vector, rows, &newPointV);
+		newPointV += massPoint;
+
+		//df->cubes[i].meshPt = _mesh->addPoint(newPointV);
+		df->cubes[i].meshNormal = glm::normalize(newPointNormal);
 	}
 }
 
