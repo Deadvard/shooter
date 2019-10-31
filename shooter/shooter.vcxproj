@@ -152,6 +152,7 @@
     <ClInclude Include="code\parser.h" />
     <ClInclude Include="code\particle.h" />
     <ClInclude Include="code\physics.h" />
+    <ClInclude Include="code\qef.h" />
     <ClInclude Include="code\renderer.h" />
     <ClInclude Include="code\ui.h" />
   </ItemGroup>
@@ -167,6 +168,7 @@
     <ClCompile Include="code\mesh.cpp" />
     <ClCompile Include="code\particle.cpp" />
     <ClCompile Include="code\physics.cpp" />
+    <ClCompile Include="code\qef.cpp" />
     <ClCompile Include="code\renderer.cpp" />
     <ClCompile Include="code\ui.cpp" />
   </ItemGroup>
