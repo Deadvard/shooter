@@ -142,14 +142,23 @@ void computeCubes(densityField* df)
 		massPoint /= (float)numIntersections;
 
 		glm::vec3 newPointNormal = glm::vec3(0);
-		glm::vec3 qefPoints[12];
+		double matrix[12][3];
+		double vector[12];
+		int rows = 0;
+
 		for (int j = 0; j < 12; ++j)
 		{
 			if (!(edgeInfo & (1 << j)))
 				continue;
-			qefPoints[j] = points[j] - massPoint;
-			newPointNormal += normals[j];
 
+			matrix[rows][0] = normals[j].x;
+			matrix[rows][1] = normals[j].y;
+			matrix[rows][2] = normals[j].z;
+
+			glm::vec3 p = points[j] - massPoint;
+			vector[rows++] = (double)(normals[j] * p);
+
+			newPointNormal += normals[j];
 
 		}
 	}
