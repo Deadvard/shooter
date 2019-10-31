@@ -98,6 +98,7 @@ void computeCubes(densityField* df)
 			if (df->densities[i * 8 + j] < 1.f) index |= (1 << j);
 
 		int edgeInfo = edgeTable[index];
+		if(edgeInfo == 0) continue;
 
 		glm::vec3 corners[8];
 		corners[0] = glm::vec3(0, 0, 0);
@@ -110,7 +111,7 @@ void computeCubes(densityField* df)
 		corners[7] = glm::vec3(0, 1, 1);
 
 		glm::vec3 points[12];
-		memset(points, 0, sizeof(glm::vec3) * 12);
+		glm::vec3 normals[12];
 		glm::vec3 massPoint = glm::vec3(0);
 		unsigned int numIntersections = 0;
 
@@ -132,11 +133,21 @@ void computeCubes(densityField* df)
 			{
 				points[j] = globalPos + vertexInterpolation(corners[v1], corners[v2], df->densities[i * 8 + j] + v1, df->densities[i * 8 + j] + v2);
 			}
+			static glm::vec3 sphereOrigin = glm::vec3(5,5,5);
+			normals[j] = points[j] - sphereOrigin;
 			massPoint += points[j];
 			numIntersections++;
 		}
 
 		massPoint /= (float)numIntersections;
+
+		glm::vec3 newPointNormal = glm::vec3(0);
+		for (int j = 0; j < 12; ++j)
+		{
+			if (!(edgeInfo & (1 << j)))
+				continue;
+
+		}
 	}
 }
 
