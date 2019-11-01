@@ -7,6 +7,8 @@ using namespace ThreeD;
 #define epsilon 1e-3
 #define worldsize 32 * 32 * 32
 
+#include <utility>
+
 static int edgeTable[256] =
 {
 	0x0  , 0x109, 0x203, 0x30a, 0x406, 0x50f, 0x605, 0x70c,
@@ -73,9 +75,26 @@ void addPoint(densityField* df, const glm::vec3& pt)
 {
 	unsigned long key = 10.0f * (pt.x * pt.x + pt.y * pt.y + pt.z * pt.z);
 
-	MeshPoint newPoint;
-	newPoint.position = pt;
-	df->pointMap.insert(key, newPoint);
+	auto& _points = df->pointMap;
+
+	auto it0 = _points.lower_bound(key - 1);
+	if (it0 == _points.end())
+		it0 = _points.lower_bound(key);
+	auto it1 = _points.upper_bound(key + 1);
+
+	auto it = it0;
+
+	// if match not found, create a new point
+	MeshPoint mpoint;
+	mpoint.position = pt;
+	auto pair = std::make_pair(key, mpoint);
+	if (it0 != _points.end())
+		it = _points.insert(it0, pair);
+	else
+		it = _points.insert(pair);
+	const MeshPoint &newmpoint = it->second;
+	//return &newmpoint.point;
+	return (MeshPoint *)&newmpoint;
 }
 
 void addBox(densityField* df, glm::vec3 pt)
