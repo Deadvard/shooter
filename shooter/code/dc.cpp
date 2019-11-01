@@ -4,6 +4,8 @@
 
 using namespace ThreeD;
 
+#define epsilon 1e-3
+
 static int edgeTable[256] =
 {
 	0x0  , 0x109, 0x203, 0x30a, 0x406, 0x50f, 0x605, 0x70c,
@@ -85,7 +87,6 @@ void initField(densityField* df)
 		if (i % 8 == 0)
 		{
 			df->cubes[i / 8].index = -1;
-			df->cubes[i / 8].meshPt = nullptr;
 		}
 	}
 
@@ -98,10 +99,10 @@ void computeCubes(densityField* df)
 	{
 		int index = 0;
 		for(int j = 0; j < 8; ++j)
-			if (df->densities[i * 8 + j] < 1.f) index |= (1 << j);
+			if (df->densities[i * 8 + j] > (0.f - epsilon)) index |= (1 << j);
 
 		int edgeInfo = edgeTable[index];
-		if(edgeInfo == 0) continue;
+		if(edgeInfo == 0 || edgeInfo == 255) continue;
 
 		glm::vec3 corners[8];
 		corners[0] = glm::vec3(0, 0, 0);
@@ -112,7 +113,7 @@ void computeCubes(densityField* df)
 		corners[5] = glm::vec3(1, 0, 1);
 		corners[6] = glm::vec3(1, 1, 1);
 		corners[7] = glm::vec3(0, 1, 1);
-
+		
 		glm::vec3 points[12];
 		glm::vec3 normals[12];
 		glm::vec3 massPoint = glm::vec3(0);
@@ -126,11 +127,11 @@ void computeCubes(densityField* df)
 			int v1 = intersectionTable[j][0];
 			int v2 = intersectionTable[j][1];
 			glm::vec3 globalPos = glm::vec3(i / (32 * 32), (i / 32) % 32, i % 32);
-			if(abs(df->densities[i * 8 + v1]) < 1e-3)
+			if(abs(df->densities[i * 8 + v1]) < epsilon)
 				points[j] = globalPos + corners[v1];
-			else if (abs(df->densities[i * 8 + v2]) < 1e-3)
+			else if (abs(df->densities[i * 8 + v2]) < epsilon)
 				points[j] = globalPos + corners[v2];
-			else if (abs(df->densities[i * 8 + v1] - df->densities[i * 8 + v2]) < 1e-3)
+			else if (abs(df->densities[i * 8 + v1] - df->densities[i * 8 + v2]) < epsilon)
 				points[j] = globalPos + corners[v1];
 			else
 			{
@@ -163,7 +164,6 @@ void computeCubes(densityField* df)
 			vector[rows++] = (double)(n.x + n.y + n.z);
 
 			newPointNormal += normals[j];
-
 		}
 
 		glm::vec3 newPointV;
