@@ -69,6 +69,15 @@ glm::vec3 vertexInterpolation(glm::vec3 p1, glm::vec3 p2, float valp1, float val
 	return(out);
 }
 
+void addPoint(densityField* df, const glm::vec3& pt)
+{
+	unsigned long key = 10.0f * (pt.x * pt.x + pt.y * pt.y + pt.z * pt.z);
+
+	MeshPoint newPoint;
+	newPoint.position = pt;
+	df->pointMap.insert(key, newPoint);
+}
+
 void addBox(densityField* df, glm::vec3 pt)
 {
 	float height = 1.f;
@@ -171,8 +180,8 @@ void computeCubes(densityField* df)
 		QEF::evaluate(matrix, vector, rows, &newPointV);
 		newPointV += massPoint;
 
-		//df->cubes[i].meshPt = _mesh->addPoint(newPointV);
-		df->cubes[i].meshNormal = glm::normalize(newPointNormal);
+		df->cubes[i].meshPt.position = addPoint(newPointV);
+		df->cubes[i].meshPt.normal = glm::normalize(newPointNormal);
 	}
 }
 
