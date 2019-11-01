@@ -5,6 +5,7 @@
 using namespace ThreeD;
 
 #define epsilon 1e-3
+#define worldsize 32 * 32 * 32
 
 static int edgeTable[256] =
 {

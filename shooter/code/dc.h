@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <glad/glad.h>
 #include <glm/glm.hpp>
+#include <map>
 
 #include "memory.h"
 
@@ -17,17 +18,22 @@ struct Cell
 	uint8 z;
 };
 
-#define worldsize 32 * 32 * 32
+struct MeshPoint
+{
+	glm::vec3 position;
+	glm::vec3 normal;
+	glm::vec3 faces[3];
+};
 
 struct Cube
 {
 	int index;
-	glm::vec3 meshPt;
-	glm::vec3 meshNormal;
+	MeshPoint meshPt;
 };
 
 struct densityField
 {
+	std::multimap<unsigned long, MeshPoint> pointMap;
 	float* densities;
 	Cube* cubes;
 };
