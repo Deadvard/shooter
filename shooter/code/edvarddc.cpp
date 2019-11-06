@@ -51,6 +51,7 @@ void dcChunkUpdate(DcChunk *chunk)
 				float fy = y + 0.5f;
 				float fz = z + 0.5f;
 				
+				chunk->cells[x][y][z] = cellIndex;
 				chunk->vertices[cellIndex] = dcVert(fx, fy, fz, 0, 0);
 				++cellIndex;
 			}
