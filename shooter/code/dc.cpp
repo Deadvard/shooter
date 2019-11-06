@@ -94,7 +94,7 @@ void addPoint(densityField* df, const glm::vec3& pt)
 		it = _points.insert(pair);
 	const MeshPoint &newmpoint = it->second;
 	//return &newmpoint.point;
-	return (MeshPoint *)&newmpoint;
+	//return (MeshPoint *)&newmpoint;
 }
 
 void addBox(densityField* df, glm::vec3 pt)
@@ -199,8 +199,8 @@ void computeCubes(densityField* df)
 		QEF::evaluate(matrix, vector, rows, &newPointV);
 		newPointV += massPoint;
 
-		df->cubes[i].meshPt.position = addPoint(newPointV);
-		df->cubes[i].meshPt.normal = glm::normalize(newPointNormal);
+		//df->cubes[i].meshPt.position = addPoint(newPointV);
+		//df->cubes[i].meshPt.normal = glm::normalize(newPointNormal);
 	}
 }
 

@@ -142,6 +142,7 @@
   <ItemGroup>
     <ClInclude Include="code\cube.h" />
     <ClInclude Include="code\dc.h" />
+    <ClInclude Include="code\edvarddc.h" />
     <ClInclude Include="code\font.h" />
     <ClInclude Include="code\game.h" />
     <ClInclude Include="code\gameplay.h" />
@@ -159,6 +160,7 @@
   <ItemGroup>
     <ClCompile Include="code\cube.cpp" />
     <ClCompile Include="code\dc.cpp" />
+    <ClCompile Include="code\edvarddc.cpp" />
     <ClCompile Include="code\font.cpp" />
     <ClCompile Include="code\game.cpp" />
     <ClCompile Include="code\gameplay.cpp" />
