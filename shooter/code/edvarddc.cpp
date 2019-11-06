@@ -11,7 +11,7 @@ DcChunk * dcChunkCreate()
 	return chunk;
 }
 
-DcVertex dcVert(uint8 x, uint8 y, uint8 z, float u, float v)
+DcVertex dcVert(float x, float y, float z, float u, float v)
 {
 	DcVertex vertex;
 	vertex.position = glm::vec3(x, y, z);
@@ -25,6 +25,39 @@ void dcChunkUpdate(DcChunk *chunk)
 {
 	chunk->changed = false;
 	chunk->indexCount = 0;
+
+	static int const CHUNK_SIZE = 32;
+
+	int cellIndex = 0;
+	for (int i = 0; i < ArrayCount(chunk->distances); ++i)
+	{
+		int x = i % 32;
+		int y = (i / 32) % 32;
+		int z = i / (32 * 32);
+		
+		if (x < CHUNK_SIZE - 1 && y < CHUNK_SIZE - 1 && z < CHUNK_SIZE - 1)
+		{
+			uint8 caseCode =
+				int(chunk->distances[x+1][y  ][z+1] < 0) << 7 |
+				int(chunk->distances[x+1][y+1][z+1] < 0) << 6 |
+				int(chunk->distances[x  ][y+1][z+1] < 0) << 5 |
+				int(chunk->distances[x  ][y  ][z+1] < 0) << 4 |
+				int(chunk->distances[x+1][y+1][z+1] < 0) << 3 |
+				int(chunk->distances[x+1][y+1][z  ] < 0) << 2 |
+				int(chunk->distances[x+1][y  ][z  ] < 0) << 1 |
+				int(chunk->distances[x  ][y  ][z  ] < 0) << 0;
+
+			if (caseCode != 0 && caseCode != 255)
+			{
+				float fx = x + 0.5f;
+				float fy = y + 0.5f;
+				float fz = z + 0.5f;
+				
+				chunk->vertices[cellIndex] = dcVert(fx, fy, fz, 0, 0);
+				++cellIndex;
+			}
+		}
+	}
 	
 	for (int i = 0; i < ArrayCount(chunk->cells); ++i)
 	{
