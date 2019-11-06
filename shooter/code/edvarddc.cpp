@@ -57,6 +57,8 @@ void dcChunkUpdate(DcChunk *chunk)
 			}
 		}
 	}
+
+	chunk->vertexCount = cellIndex;
 	
 	int i = 0;
 	for (int z = 0; z < CHUNK_SIZE; ++z)
@@ -140,8 +142,11 @@ void dcChunkUpdate(DcChunk *chunk)
 	}
 	chunk->indexCount = i;
 
-
-
+	glBindBuffer(GL_ARRAY_BUFFER, chunk->vertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, chunk->vertexCount * sizeof(DcVertex), chunk->vertices, GL_STATIC_DRAW);
+	
+	glBindBuffer(GL_ARRAY_BUFFER, chunk->indexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, chunk->indexCount * sizeof(uint16), chunk->indices, GL_STATIC_DRAW);
 }
 
 void dcVertexAttribPointers()
@@ -166,11 +171,11 @@ void dcChunkRender(DcChunk *chunk)
 		dcChunkUpdate(chunk);
 	}
 
-	if (chunk->elements > 0)
+	if (chunk->vertexCount > 0)
 	{
-		glBindBuffer(GL_ARRAY_BUFFER, chunk->vbo);
+		glBindBuffer(GL_ARRAY_BUFFER, chunk->indexBuffer);
 		dcVertexAttribPointers();
 
-		glDrawArrays(GL_TRIANGLES, 0, chunk->elements);
+		glDrawElements(GL_TRIANGLES, chunk->indexCount, GL_UNSIGNED_SHORT, 0);
 	}
 }

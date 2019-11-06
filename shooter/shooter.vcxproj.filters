@@ -14,7 +14,6 @@
     <ClInclude Include="code\cube.h" />
     <ClInclude Include="code\parser.h" />
     <ClInclude Include="code\input.h" />
-    <ClInclude Include="code\dc.h" />
     <ClInclude Include="code\qef.h" />
     <ClInclude Include="code\edvarddc.h" />
   </ItemGroup>
@@ -31,7 +30,6 @@
     <ClCompile Include="code\particle.cpp" />
     <ClCompile Include="code\ui.cpp" />
     <ClCompile Include="code\cube.cpp" />
-    <ClCompile Include="code\dc.cpp" />
     <ClCompile Include="code\qef.cpp" />
     <ClCompile Include="code\edvarddc.cpp" />
   </ItemGroup>
