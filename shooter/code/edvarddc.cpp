@@ -29,12 +29,10 @@ void dcChunkUpdate(DcChunk *chunk)
 	static int const CHUNK_SIZE = 32;
 
 	int cellIndex = 0;
-	for (int i = 0; i < ArrayCount(chunk->distances); ++i)
-	{
-		int x = i % 32;
-		int y = (i / 32) % 32;
-		int z = i / (32 * 32);
-		
+	for (int z = 0; z < CHUNK_SIZE - 1; ++z)
+	for (int y = 0; y < CHUNK_SIZE - 1; ++y)
+	for (int x = 0; x < CHUNK_SIZE - 1; ++x)
+	{		
 		if (x < CHUNK_SIZE - 1 && y < CHUNK_SIZE - 1 && z < CHUNK_SIZE - 1)
 		{
 			uint8 caseCode =
@@ -59,14 +57,11 @@ void dcChunkUpdate(DcChunk *chunk)
 		}
 	}
 	
-	for (int i = 0; i < ArrayCount(chunk->cells); ++i)
+	int i = 0;
+	for (int z = 0; z < CHUNK_SIZE; ++z)
+	for (int y = 0; y < CHUNK_SIZE; ++y)
+	for (int x = 0; x < CHUNK_SIZE; ++x)
 	{
-		int x = i % 32;
-		int y = (i / 32) % 32;
-		int z = i / (32 * 32);
-
-		static int const CHUNK_SIZE = 32;
-
 		if (chunk->distances[x][y][z] > 0)
 		{
 			int neighbor = 0;
@@ -140,7 +135,11 @@ void dcChunkUpdate(DcChunk *chunk)
 				chunk->indices[i++] = chunk->cells[x    ][y + 1][z + 1];
 				chunk->indices[i++] = chunk->cells[x    ][y    ][z + 1];
 			}
+		}
 	}
+	chunk->indexCount = i;
+
+
 
 }
 
