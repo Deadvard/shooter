@@ -27,10 +27,10 @@ struct DcChunk
 	uint16 cells[32][32][32];
 	
 	
-	DcVertex vertices[ArrayCount(distances)];
+	DcVertex vertices[32 * 32 * 32 * 5];
 	uint32 vertexCount;
 
-	uint16 indices[ArrayCount(distances)];
+	uint16 indices[32 * 32 * 32 * 5];
 	uint32 indexCount;
 	
 	

@@ -259,6 +259,9 @@ void rendererInitialize(Renderer *renderer)
 	renderer->prim.shader = shaderProgramCreate("resources/shaders/primitive.vert", "resources/shaders/primitive.frag");
 	renderer->skybox.shader = shaderProgramCreate("resources/shaders/cubemap.vert", "resources/shaders/cubemap.frag");
 	renderer->crosshairShader = shaderProgramCreate("resources/shaders/cross.vert", "resources/shaders/cross.frag");
+
+	renderer->dcShader = shaderProgramCreate("resources/shaders/dc.vert", "resources/shaders/dc.frag");
+	renderer->dcChunk = dcChunkCreate();
 	
 	renderer->cubeShader = shaderProgramCreate("resources/shaders/cube.vert", "resources/shaders/cube.frag");
 	glGenVertexArrays(1, &renderer->cubeVAO);
@@ -357,6 +360,11 @@ void renderScene(Renderer *renderer, Chunk* chunks[], Chunk *selection)
 		glUniform4fv(2, 1, ambient);
 		chunkRender(chunks[i]);
 	}
+
+
+	glUseProgram(renderer->dcShader);
+	//dcChunkRender(renderer->dcChunk);
+
 
 	glDepthFunc(GL_LEQUAL);
 	glUseProgram(renderer->skybox.shader);

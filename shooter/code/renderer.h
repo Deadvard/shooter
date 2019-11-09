@@ -7,6 +7,7 @@
 #include "font.h"
 #include "ui.h"
 #include "cube.h"
+#include "edvarddc.h"
 
 struct Skybox
 {
@@ -55,6 +56,9 @@ struct Renderer
 	unsigned int matrixBuffer;
 	unsigned int skyboxShader;
 	unsigned int crosshairShader;
+
+	unsigned int dcShader;
+	DcChunk *dcChunk;
 
 	glm::mat4 projection;
 

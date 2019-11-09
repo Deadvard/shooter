@@ -5,6 +5,15 @@ DcChunk * dcChunkCreate()
 	DcChunk *chunk = (DcChunk *)malloc(sizeof(DcChunk));
 	memset(chunk, 0, sizeof(DcChunk));
 
+	static int const CHUNK_SIZE = 32;
+
+	for (int z = 0; z < CHUNK_SIZE / 2; ++z)
+	for (int y = 0; y < CHUNK_SIZE; ++y)
+	for (int x = 0; x < CHUNK_SIZE; ++x)
+	{
+		chunk->distances[x][y][z] = -10;
+	}
+
 	chunk->changed = true;
 	glGenBuffers(1, &chunk->vertexBuffer);
 	glGenBuffers(1, &chunk->indexBuffer);
@@ -33,37 +42,34 @@ void dcChunkUpdate(DcChunk *chunk)
 	for (int y = 0; y < CHUNK_SIZE - 1; ++y)
 	for (int x = 0; x < CHUNK_SIZE - 1; ++x)
 	{		
-		if (x < CHUNK_SIZE - 1 && y < CHUNK_SIZE - 1 && z < CHUNK_SIZE - 1)
-		{
-			uint8 caseCode =
-				int(chunk->distances[x+1][y  ][z+1] < 0) << 7 |
-				int(chunk->distances[x+1][y+1][z+1] < 0) << 6 |
-				int(chunk->distances[x  ][y+1][z+1] < 0) << 5 |
-				int(chunk->distances[x  ][y  ][z+1] < 0) << 4 |
-				int(chunk->distances[x+1][y+1][z+1] < 0) << 3 |
-				int(chunk->distances[x+1][y+1][z  ] < 0) << 2 |
-				int(chunk->distances[x+1][y  ][z  ] < 0) << 1 |
-				int(chunk->distances[x  ][y  ][z  ] < 0) << 0;
+		uint8 caseCode =
+			int(chunk->distances[x+1][y  ][z+1] < 0) << 7 |
+			int(chunk->distances[x+1][y+1][z+1] < 0) << 6 |
+			int(chunk->distances[x  ][y+1][z+1] < 0) << 5 |
+			int(chunk->distances[x  ][y  ][z+1] < 0) << 4 |
+			int(chunk->distances[x+1][y+1][z+1] < 0) << 3 |
+			int(chunk->distances[x+1][y+1][z  ] < 0) << 2 |
+			int(chunk->distances[x+1][y  ][z  ] < 0) << 1 |
+			int(chunk->distances[x  ][y  ][z  ] < 0) << 0;
 
-			if (caseCode != 0 && caseCode != 255)
-			{
-				float fx = x + 0.5f;
-				float fy = y + 0.5f;
-				float fz = z + 0.5f;
-				
-				chunk->cells[x][y][z] = cellIndex;
-				chunk->vertices[cellIndex] = dcVert(fx, fy, fz, 0, 0);
-				++cellIndex;
-			}
+		if (caseCode != 0 && caseCode != 255)
+		{
+			float fx = x + 0.5f;
+			float fy = y + 0.5f;
+			float fz = z + 0.5f;
+			
+			chunk->cells[x][y][z] = cellIndex;
+			chunk->vertices[cellIndex] = dcVert(fx, fy, fz, 0, 0);
+			++cellIndex;
 		}
 	}
 
 	chunk->vertexCount = cellIndex;
 	
 	int i = 0;
-	for (int z = 0; z < CHUNK_SIZE; ++z)
-	for (int y = 0; y < CHUNK_SIZE; ++y)
-	for (int x = 0; x < CHUNK_SIZE; ++x)
+	for (int z = 0; z < CHUNK_SIZE - 1; ++z)
+	for (int y = 0; y < CHUNK_SIZE - 1; ++y)
+	for (int x = 0; x < CHUNK_SIZE - 1; ++x)
 	{
 		if (chunk->distances[x][y][z] > 0)
 		{
