@@ -15,6 +15,7 @@ DcChunk * dcChunkCreate()
 	}
 
 	chunk->changed = true;
+	glGenVertexArrays(1, &chunk->vertexArray);
 	glGenBuffers(1, &chunk->vertexBuffer);
 	glGenBuffers(1, &chunk->indexBuffer);
 	return chunk;
@@ -148,6 +149,8 @@ void dcChunkUpdate(DcChunk *chunk)
 	}
 	chunk->indexCount = i;
 
+	glBindVertexArray(chunk->vertexArray);
+
 	glBindBuffer(GL_ARRAY_BUFFER, chunk->vertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, chunk->vertexCount * sizeof(DcVertex), chunk->vertices, GL_STATIC_DRAW);
 	
@@ -179,6 +182,7 @@ void dcChunkRender(DcChunk *chunk)
 
 	if (chunk->vertexCount > 0)
 	{
+		glBindVertexArray(chunk->vertexArray);
 		glBindBuffer(GL_ARRAY_BUFFER, chunk->indexBuffer);
 		dcVertexAttribPointers();
 

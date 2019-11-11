@@ -27,13 +27,13 @@ struct DcChunk
 	uint16 cells[32][32][32];
 	
 	
-	DcVertex vertices[32 * 32 * 32 * 5];
+	DcVertex vertices[32 * 32 * 32];
 	uint32 vertexCount;
 
-	uint16 indices[32 * 32 * 32 * 5];
+	uint16 indices[32 * 32 * 32 * 4];
 	uint32 indexCount;
 	
-	
+	unsigned int vertexArray;
 	unsigned int vertexBuffer;
 	unsigned int indexBuffer;
 	bool32 changed;

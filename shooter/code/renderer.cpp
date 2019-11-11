@@ -363,7 +363,7 @@ void renderScene(Renderer *renderer, Chunk* chunks[], Chunk *selection)
 
 
 	glUseProgram(renderer->dcShader);
-	//dcChunkRender(renderer->dcChunk);
+	dcChunkRender(renderer->dcChunk);
 
 
 	glDepthFunc(GL_LEQUAL);
